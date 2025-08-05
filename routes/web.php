@@ -15,6 +15,10 @@ Route::get('/persiswa/siswa', function () {
     return view('persiswa.siswa');
 })->middleware(['auth', 'verified'])->name('persiswa.siswa');
 
+Route::get('/perkelas/kelas', function () {
+    return view('perkelas.kelas');
+})->middleware(['auth', 'verified'])->name('perkelas.kelas');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
