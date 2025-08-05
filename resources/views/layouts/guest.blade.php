@@ -22,8 +22,10 @@
                 </a>
             </div> --}}
 
-            <div class="w-1/2 min-h-screen justify-center bg-red-200 items-center">
-                {{ $slot }}
+            <div class="w-1/2 flex min-h-screen justify-center bg-neutral-200 items-center">
+                <div class="w-full mx-12 text-white">
+                    {{ $slot }}
+                </div>
             </div>
             <div class="">
                 s
