@@ -100,7 +100,7 @@
                                 0185354558
                             </td>
                             <td class="px-6 py-4">
-                                Hadir
+                                juga
                             </td>
                         </tr>
                     </tbody>
