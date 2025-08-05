@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class SiswaController extends Controller
+class inputkehadiranController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        
+        //
     }
 
     /**
@@ -19,7 +19,7 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        //
+        return view('inputkehadiran');
     }
 
     /**
