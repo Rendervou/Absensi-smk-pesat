@@ -1,3 +1,27 @@
+<style>
+    .fade-in {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loginBox = document.getElementById('login-box');
+        if (loginBox) {
+            setTimeout(() => {
+                loginBox.classList.add('show');
+            }, 100); // bisa diatur delay jika mau
+        }
+    });
+</script>
+
 <x-guest-layout>
     <div class="w-screen h-screen flex flex-col md:flex-row">
         <!-- Left side: Login Form -->
