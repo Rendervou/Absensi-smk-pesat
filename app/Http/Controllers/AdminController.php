@@ -13,6 +13,10 @@ class AdminController extends Controller
     {
         return view('admin.dashboard');
     }
+    public function absensi()
+    {
+        return view('admin.absensi');
+    }
 
     /**
      * Show the form for creating a new resource.

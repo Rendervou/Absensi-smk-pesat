@@ -14,6 +14,9 @@ Route::get('/', function () {
 Route::get('/user/dashboard', function () {
     return view('user.dashboard');
 })->name('user.dashboard');
+Route::get('/user/absensi', function () {
+    return view('user.absensi');
+})->name('user.absensi');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -23,6 +26,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function(){
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/absensi', [AdminController::class, 'absensi'])->name('admin.absensi');
 });
 
 
