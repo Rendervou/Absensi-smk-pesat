@@ -17,6 +17,25 @@ Route::get('/user/dashboard', function () {
 Route::get('/user/absensi', function () {
     return view('user.absensi');
 })->name('user.absensi');
+Route::get('/inputkehadiran', function () {
+    return view('inputkehadiran');
+})->middleware(['auth'])->name('inputkehadiran');
+
+Route::get('dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/persiswa/siswa', function () {
+    return view('persiswa.siswa');
+})->middleware(['auth', 'verified'])->name('persiswa.siswa');
+
+Route::get('/perkelas/kelas', function () {
+    return view('perkelas.kelas');
+})->middleware(['auth', 'verified'])->name('perkelas.kelas');
+
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->middleware(['auth', 'verified'])->name('admin.dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,4 +49,4 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
 });
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
