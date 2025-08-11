@@ -21,10 +21,6 @@ Route::get('/inputkehadiran', function () {
     return view('inputkehadiran');
 })->middleware(['auth'])->name('inputkehadiran');
 
-Route::get('dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::get('/persiswa/siswa', function () {
     return view('persiswa.siswa');
 })->middleware(['auth', 'verified'])->name('persiswa.siswa');
