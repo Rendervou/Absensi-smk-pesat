@@ -28,6 +28,7 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
     Route::get('/admin/absensi', [AdminController::class, 'absensi'])->name('admin.absensi');
     Route::get('/admin/kelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
     Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
+    Route::get('/admin/siswabaru', [datasiswaController::class, 'create'])->name('admin.siswabaru');
     Route::get('/admin/kelasbaru', [AdminController::class, 'kelasBaru'])->name('admin.kelasbaru');
 });
 
