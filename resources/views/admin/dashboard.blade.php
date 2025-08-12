@@ -24,23 +24,23 @@
 
                             <!-- Statistik Cards -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6 sm:rounded-lg">
-                                <div class="stat-card bg-gradient-to-br from-gray-800 to-gray-900 text-white size-56 rounded-xl p-5">
+                                <div class="stat-card bg-gradient-to-br from-gray-800 to-gray-900 text-white size-56 rounded-xl p-5 relative">
                                     <p class="text-sm opacity-75">Total Siswa</p>
                                     <h2 class="number ">308</h2>
                                 </div>
-                                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white size-56 rounded-xl p-5">
+                                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white size-56 rounded-xl p-5 relative">
                                     <p class="text-sm opacity-75">Total Hadir Hari Ini</p>
                                     <h2 class="number ">240</h2>
                                 </div>
-                                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white size-56 rounded-xl p-5">
+                                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white size-56 rounded-xl p-5 relative">
                                     <p class="text-sm opacity-75">Izin</p>
                                     <h2 class="number ">2</h2>
                                 </div>
-                                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white size-56 rounded-xl p-5">
+                                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white size-56 rounded-xl p-5 relative">
                                     <p class="text-sm opacity-75">Sakit</p>
                                     <h2 class="number ">11</h2>
                                 </div>
-                                <div class="stat-card bg-gradient-to-br from-black to-gray-800 text-white size-56 rounded-xl p-5">
+                                <div class="stat-card bg-gradient-to-br from-black to-gray-800 text-white size-56 rounded-xl p-5 relative">
                                     <p class="text-sm opacity-75">Tanpa Keterangan</p>
                                     <h2 class="number ">0</h2>
                                 </div>
