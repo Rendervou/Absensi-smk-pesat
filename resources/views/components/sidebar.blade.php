@@ -95,7 +95,7 @@
                         </x-nav-link>
                     </li>
                     <li>
-                        <x-nav-link :active="request()->routeIs('admin.kelasbaru')">
+                        <x-nav-link :href="route('admin.kelasbaru')" :active="request()->routeIs('admin.kelasbaru')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
 
                             <span class="hidden lg:block">{{ __('Input Kelas Baru') }}</span>
