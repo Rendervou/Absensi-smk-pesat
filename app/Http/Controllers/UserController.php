@@ -4,23 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class AdminController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function dashboard()
+    public function index()
     {
-        return view('admin.dashboard');
+        return view('user.dashboard');
+        
     }
     public function absensi()
-    {
-        return view('admin.absensi');
-    }
-    public function perKelas()
 {
-    // $data = Absensi::orderBy('kelas')->get();
-    return view('admin.kelas');
+    return view('user.absensi'); // pastikan view-nya ada di resources/views/user/absensi.blade.php
 }
 
     /**
