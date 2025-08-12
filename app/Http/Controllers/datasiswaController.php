@@ -29,7 +29,19 @@ class datasiswaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+                $request->validate([
+            'nama_siswa' => 'required|min:2',
+            'nis' => 'required|min:2',
+            'kompetensi_keahlian' => 'required|min:2',
+        ]);
+
+        DataSiswa::create([
+            'nama_siswa'=> $request->nama_siswa,
+            'nis'=> $request->nis,
+            'kompetensi_keahlian'=> $request->kompetensi_keahlian,
+        ]);
+
+         return redirect()->route('admin.index')->with(['success' => 'Data Berhasil Disimpan!']);
     }
 
     /**
