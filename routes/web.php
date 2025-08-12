@@ -1,6 +1,7 @@
     <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\datakelasController;
 use App\Http\Controllers\datasiswaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -25,11 +26,12 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function(){
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/absensi', [AdminController::class, 'absensi'])->name('admin.absensi');
+    Route::get('/admin/absensi', [datasiswaController::class, 'index'])->name('admin.absensi');
     Route::get('/admin/kelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
     Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
+    Route::get('/admin/kelasbaru', [datakelasController::class, 'create'])->name('admin.kelasbaru');
     Route::get('/admin/siswabaru', [datasiswaController::class, 'create'])->name('admin.siswabaru');
-    Route::get('/admin/kelasbaru', [AdminController::class, 'kelasBaru'])->name('admin.kelasbaru');
+
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {

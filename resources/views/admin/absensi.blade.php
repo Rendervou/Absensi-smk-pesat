@@ -42,6 +42,9 @@
                                 </th>
                             </tr>
                         </thead>
+                        @foreach ($data_siswa as $siswa)
+                            
+                        
                         <tbody>
                             <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800">
                                 <th scope="row"
@@ -49,12 +52,12 @@
                                     1
                                 </th>
                                 <td class="px-6 py-4">
-                                    Daffa Rafif Ramadhan
+                                    {{ $siswa->nama_siswa }}
                                 </td>
                                 <td class="py-4">
                                     <fieldset class="flex justify-around items-center gap-10">
                                         <div class="flex items-center mb-4">
-                                            <input id="kehadiran-opsi-1" type="radio" name="kehadiran" value="hadir"
+                                            <input id="kehadiran-opsi-1" type="radio" name="kehadiran_{{ $siswa->id }}" value="hadir"
                                                 class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                                                 checked>
                                             <label for="kehadiran-opsi-1"
@@ -64,7 +67,7 @@
                                         </div>
 
                                         <div class="flex items-center mb-4">
-                                            <input id="kehadiran-opsi-2" type="radio" name="kehadiran" value="sakit"
+                                            <input id="kehadiran-opsi-2" type="radio" name="kehadiran_{{ $siswa->id }}" value="sakit"
                                                 class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="kehadiran-opsi-2"
                                                 class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -73,7 +76,7 @@
                                         </div>
 
                                         <div class="flex items-center mb-4">
-                                            <input id="kehadiran-opsi-3" type="radio" name="kehadiran" value="izin"
+                                            <input id="kehadiran-opsi-3" type="radio" name="kehadiran_{{ $siswa->id }}" value="izin"
                                                 class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="kehadiran-opsi-3"
                                                 class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -82,7 +85,7 @@
                                         </div>
 
                                         <div class="flex items-center mb-4">
-                                            <input id="kehadiran-opsi-4" type="radio" name="kehadiran" value="alpha"
+                                            <input id="kehadiran-opsi-4" type="radio" name="kehadiran_{{ $siswa->id }}" value="alpha"
                                                 class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
                                             <label for="kehadiran-opsi-4"
                                                 class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -93,6 +96,7 @@
                                 </td>
                             </tr>
                         </tbody>
+                        @endforeach
                     </table>
                 </div>
                 <div class="flex justify-center">

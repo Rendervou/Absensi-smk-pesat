@@ -19,7 +19,7 @@ class datakelasController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.kelasbaru');
     }
 
     /**
