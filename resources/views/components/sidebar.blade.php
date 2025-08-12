@@ -3,30 +3,71 @@
         <img src="{{ asset('assets/smkpesat.webp')}}" alt="" class="w-24 mb-6">
 
         <ul class="space-y-2">
-            
-            <li>
-                <x-nav-link :href="auth()->user()->role === 'admin' ? route('admin.dashboard') : route('user.dashboard')"
-                :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.dashboard' : 'user.dashboard')">
 
-                <i class=" items-center flex fi fi-rr-objects-column text-lg"></i>
-               <span class="hidden lg:block">{{ __('Dashboard') }}</span> 
-            </x-nav-link>
+            <li>
+                <x-nav-link
+                    :href="auth()->user()->role === 'admin' ? route('admin.dashboard') : route('user.dashboard')"
+                    :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.dashboard' : 'user.dashboard')">
+
+                    <i class=" items-center flex fi fi-rr-objects-column text-lg"></i>
+                    <span class="hidden lg:block">{{ __('Dashboard') }}</span>
+                </x-nav-link>
             </li>
             <li>
                 <x-nav-link :href="auth()->user()->role === 'admin' ? route('admin.absensi') : route('user.absensi')"
-                :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.absensi' : 'user.absensi')">
+                    :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.absensi' : 'user.absensi')">
 
-                                    <i class="fi fi-rr-rectangle-list text-lg items-center flex"></i>
+                    <i class="fi fi-rr-rectangle-list text-lg items-center flex"></i>
 
-                <span class="hidden lg:block">{{ __('Absensi') }}</span> 
-            </x-nav-link>
+                    <span class="hidden lg:block">{{ __('Absensi') }}</span>
+                </x-nav-link>
             </li>
-            <li>
-                <a href="#" class="flex items-center gap-4 text-gray-700 p-3 rounded hover:bg-gray-100">
+            @auth
+            @if (Auth::user()->role === 'admin')
+
+            <li x-data="{ open: false }">
+                <!-- Trigger -->
+                <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"
+                    :active="request()->routeIs('admin.perKelas') || request()->routeIs('admin.perBulan')">
                     <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
-                    <span class="text-base hidden lg:block">Laporan</span>
-                </a>
+                    <span class="hidden lg:block">Laporan</span>
+                    <svg :class="{'rotate-180': open}"
+                        class="w-4 h-4 ml-auto transform transition-transform duration-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </x-nav-link>
+
+                <!-- Submenu -->
+                <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
+                    x-transition:enter-start="-translate-y-3 opacity-0"
+                    x-transition:enter-end="translate-y-0 opacity-100"
+                    x-transition:leave="transition ease-in duration-200 transform"
+                    x-transition:leave-start="translate-y-0 opacity-100"
+                    x-transition:leave-end="-translate-y-3 opacity-0" class="pl-6 space-y-2">
+
+                    <li>
+                        <x-nav-link :href="route('admin.perKelas')" :active="request()->routeIs('admin.perKelas')">
+                            <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
+
+                            <span class="hidden lg:block">{{ __('Laporan Perkelas') }}</span>
+
+                        </x-nav-link>
+                    </li>
+                    <li>
+                        <x-nav-link :active="request()->routeIs('admin.perBulan')">
+                            <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
+
+                            <span class="hidden lg:block">{{ __('Laporan Perbulan') }}</span>
+
+                        </x-nav-link>
+                    </li>
+                </ul>
             </li>
+            @endif
+            @endauth
+
+
             <li>
                 <a href="#" class="flex items-center gap-4 text-gray-700 p-3 rounded hover:bg-gray-100">
                     <i class="fi fi-rr-user-pen text-lg items-center flex"></i>
