@@ -19,7 +19,7 @@ class datasiswaController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.siswabaru');
     }
 
     /**

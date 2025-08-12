@@ -23,7 +23,7 @@ https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @include('components.sidebar')
-@include('layouts.naviwgation')
+@include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
