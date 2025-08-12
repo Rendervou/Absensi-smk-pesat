@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataSiswa;
 use Illuminate\Http\Request;
 
 class datasiswaController extends Controller
@@ -11,7 +12,8 @@ class datasiswaController extends Controller
      */
     public function index()
     {
-        //
+        $data_siswa = DataSiswa::all();
+        return view('admin.absensi', compact('data_siswa'));
     }
 
     /**
