@@ -27,6 +27,8 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/absensi', [datasiswaController::class, 'index'])->name('admin.absensi');
     Route::get('/admin/kelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
+    Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
+    Route::get('/admin/kelasbaru', [AdminController::class, 'kelasBaru'])->name('admin.kelasbaru');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {

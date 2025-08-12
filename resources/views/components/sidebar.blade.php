@@ -55,10 +55,50 @@
                         </x-nav-link>
                     </li>
                     <li>
-                        <x-nav-link :active="request()->routeIs('admin.perBulan')">
+                        <x-nav-link :href="route('admin.perBulan')" :active="request()->routeIs('admin.perBulan')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
 
                             <span class="hidden lg:block">{{ __('Laporan Perbulan') }}</span>
+
+                        </x-nav-link>
+                    </li>
+                </ul>
+            </li>
+
+            <li x-data="{ open: false }">
+                <!-- Trigger -->
+                <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"
+                    :active="request()->routeIs('admin.siswabaru') || request()->routeIs('admin.kelasbaru')">
+                    <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
+                    <span class="hidden lg:block">Data Baru</span>
+                    <svg :class="{'rotate-180': open}"
+                        class="w-4 h-4 ml-auto transform transition-transform duration-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </x-nav-link>
+
+                <!-- Submenu -->
+                <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
+                    x-transition:enter-start="-translate-y-3 opacity-0"
+                    x-transition:enter-end="translate-y-0 opacity-100"
+                    x-transition:leave="transition ease-in duration-200 transform"
+                    x-transition:leave-start="translate-y-0 opacity-100"
+                    x-transition:leave-end="-translate-y-3 opacity-0" class="pl-6 space-y-2">
+
+                    <li>
+                        <x-nav-link :href="route('admin.siswabaru')" :active="request()->routeIs('admin.siswabaru')">
+                            <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
+
+                            <span class="hidden lg:block">{{ __('Input Siswa Baru') }}</span>
+
+                        </x-nav-link>
+                    </li>
+                    <li>
+                        <x-nav-link :active="request()->routeIs('admin.kelasbaru')">
+                            <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
+
+                            <span class="hidden lg:block">{{ __('Input Kelas Baru') }}</span>
 
                         </x-nav-link>
                     </li>
