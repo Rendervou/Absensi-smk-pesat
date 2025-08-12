@@ -22,10 +22,6 @@ class AdminController extends Controller
         // $data = Absensi::orderBy('kelas')->get();
         return view('admin.kelas');
     }
-    public function siswaBaru()
-    {
-        return view('admin.siswabaru');
-    }
 
     /**
      * Show the form for creating a new resource.
