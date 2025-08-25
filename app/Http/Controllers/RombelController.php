@@ -3,17 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataKelas;
+use App\Models\DataSiswa;
+use App\Models\Rombel;
 use Illuminate\Http\Request;
 
-class datakelasController extends Controller
+class RombelController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $siswa = DataSiswa::all();
         $kelas = DataKelas::all();
-        return view('admin.kelasbaru', compact('kelas'));
+        $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
+        ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
+        ->select('data_siswas.*', 'data_kelas.*')
+        ->paginate(10);
+
+        return view('admin.rombel', compact('kelas','siswa','rombels'));
+        
     }
 
     /**
@@ -21,7 +30,6 @@ class datakelasController extends Controller
      */
     public function create()
     {
-        return view('admin.kelasbaru');
     }
 
     /**
@@ -30,14 +38,17 @@ class datakelasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_kelas' => 'required|min:2',
-        ]);
-        
-        DataKelas::create([
-            'nama_kelas'=> $request->nama_kelas,
+            'id_siswa' => 'required|exists:data_siswas,id_siswa',
+            'id_kelas' => 'required|exists:data_kelas,id_kelas',
         ]);
 
-         return redirect()->route('kelas.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        Rombel::create([
+            'id_siswa'=> $request->id_siswa,
+            'id_kelas'=> $request->id_kelas,
+        ]);
+
+         return redirect()->route('admin.rombel')->with(['success' => 'Data Berhasil Disimpan!']);
+
     }
 
     /**
@@ -68,14 +79,15 @@ class datakelasController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
-    {
-        $kelas = DataKelas::findOrFail($id);
+    {   
+        
+        $rombels = Rombel::findOrFail($id);
 
 
         //delete product
-        $kelas->delete();
+        $rombels->delete();
 
         //redirect to index
-        return redirect()->route('admin.kelasbaru')->with(['success' => 'Data Berhasil Dihapus!']);
+        return redirect()->route('admin.rombel')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
