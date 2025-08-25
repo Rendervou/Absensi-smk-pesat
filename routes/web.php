@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\datakelasController;
 use App\Http\Controllers\datasiswaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RombelController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,11 +28,17 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function(){
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/absensi', [datasiswaController::class, 'index'])->name('admin.absensi');
-    Route::get('/admin/kelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
+    Route::get('/admin/rombel', [RombelController::class, 'index'])->name('admin.rombel');
+
+    Route::get('/admin/perkelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
     Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
-    Route::get('/admin/kelasbaru', [datakelasController::class, 'create'])->name('admin.kelasbaru');
+
     Route::get('/admin/siswabaru', [datasiswaController::class, 'create'])->name('admin.siswabaru');
+    Route::get('/admin/kelas', [datakelasController::class, 'index'])->name('admin.kelasbaru');
     Route::resource('/admin', datasiswaController::class);
+    Route::resource('rombel', RombelController::class);
+    Route::resource('kelas', datakelasController::class);
+    // Route::resource('kelas', datakelasController::class);
 
 });
 
