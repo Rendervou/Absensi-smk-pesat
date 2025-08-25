@@ -20,6 +20,7 @@
                 </x-nav-link>
             </li>
 
+
             @auth
             @if (Auth::user()->role === 'admin')
             <li x-data="{ open: false }">
@@ -27,7 +28,8 @@
                     :active="request()->routeIs('admin.perKelas') || request()->routeIs('admin.perBulan')">
                     <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
                     <span class="hidden lg:block">Laporan</span>
-                    <svg :class="{'rotate-180': open}" class="hidden lg:block w-4 h-4 ml-auto transform transition-transform duration-200" fill="none"
+                    <svg :class="{'rotate-180': open}"
+                        class="hidden lg:block w-4 h-4 ml-auto transform transition-transform duration-200" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
@@ -38,8 +40,7 @@
                     x-transition:enter-end="translate-y-0 opacity-100"
                     x-transition:leave="transition ease-in duration-200 transform"
                     x-transition:leave-start="translate-y-0 opacity-100"
-                    x-transition:leave-end="-translate-y-3 opacity-0"
-                    class="pl-6 space-y-2 hidden lg:block">
+                    x-transition:leave-end="-translate-y-3 opacity-0" class="pl-6 space-y-2 hidden lg:block">
                     <li>
                         <x-nav-link :href="route('admin.perKelas')" :active="request()->routeIs('admin.perKelas')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
@@ -56,10 +57,11 @@
             </li>
             <li x-data="{ open: false }">
                 <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"
-                    :active="request()->routeIs('admin.siswabaru') || request()->routeIs('admin.kelasbaru')">
+                    :active="request()->routeIs('admin.siswabaru') || request()->routeIs('admin.kelasbaru') || request()->routeIs('admin.rombel')">
                     <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
-                    <span class="hidden lg:block">Tambah</span>
-                    <svg :class="{'rotate-180': open}" class="hidden lg:block w-4 h-4 ml-auto transform transition-transform duration-200" fill="none"
+                    <span class="hidden lg:block">Data</span>
+                    <svg :class="{'rotate-180': open}"
+                        class="hidden lg:block w-4 h-4 ml-auto transform transition-transform duration-200" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
@@ -70,27 +72,34 @@
                     x-transition:enter-end="translate-y-0 opacity-100"
                     x-transition:leave="transition ease-in duration-200 transform"
                     x-transition:leave-start="translate-y-0 opacity-100"
-                    x-transition:leave-end="-translate-y-3 opacity-0"
-                    class="pl-6 space-y-2 hidden lg:block">
+                    x-transition:leave-end="-translate-y-3 opacity-0" class="pl-6 space-y-2 hidden lg:block">
                     <li>
                         <x-nav-link :href="route('admin.siswabaru')" :active="request()->routeIs('admin.siswabaru')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
-                            <span class="hidden lg:block">{{ __('Tambah Siswa') }}</span>
+                            <span class="hidden lg:block">{{ __('Data Siswa') }}</span>
                         </x-nav-link>
                     </li>
                     <li>
                         <x-nav-link :href="route('admin.kelasbaru')" :active="request()->routeIs('admin.kelasbaru')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
-                            <span class="hidden lg:block">{{ __('Tambah Kelas') }}</span>
+                            <span class="hidden lg:block">{{ __('Data Kelas') }}</span>
                         </x-nav-link>
                     </li>
+                    <li>
+                        <x-nav-link :href="route('admin.rombel')" :active="request()->routeIs('admin.rombel')">
+                            <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
+                            <span class="hidden lg:block">{{ __('Data Rombel') }}</span>
+                        </x-nav-link>
+                    </li>
+
                 </ul>
             </li>
             @endif
             @endauth
 
             <li>
-                <a href="#" class="flex items-center justify-center lg:justify-start gap-4 text-gray-700 p-3 rounded hover:bg-gray-100">
+                <a href="#"
+                    class="flex items-center justify-center lg:justify-start gap-4 text-gray-700 p-3 rounded hover:bg-gray-100">
                     <i class="fi fi-rr-user-pen text-lg"></i>
                     <span class="hidden lg:block">Manage Account</span>
                 </a>
@@ -109,7 +118,8 @@
                 </a>
             </form>
 
-            <a href="/profile" class="flex items-center justify-center lg:justify-start gap-4 text-gray-700 p-3 rounded hover:bg-gray-100">
+            <a href="/profile"
+                class="flex items-center justify-center lg:justify-start gap-4 text-gray-700 p-3 rounded hover:bg-gray-100">
                 <i class="fi fi-rr-settings text-lg"></i>
                 <span class="hidden lg:block">{{ __('Profile') }}</span>
             </a>

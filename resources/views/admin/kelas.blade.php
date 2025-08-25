@@ -1,1 +1,1 @@
-<x-app-layout>Kelas</x-app-layout>
+<x-app-layout></x-app-layout>
