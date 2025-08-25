@@ -73,7 +73,7 @@
                     x-transition:leave-end="-translate-y-3 opacity-0"
                     class="pl-6 space-y-2 hidden lg:block">
                     <li>
-                        <x-nav-link :href="route('admin.siswabaru')" :active="request()->routeIs('admin.perKelas')">
+                        <x-nav-link :href="route('admin.siswabaru')" :active="request()->routeIs('admin.siswabaru')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
                             <span class="hidden lg:block">{{ __('Tambah Siswa') }}</span>
                         </x-nav-link>
