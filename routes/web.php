@@ -31,6 +31,7 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
     Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
     Route::get('/admin/kelasbaru', [datakelasController::class, 'create'])->name('admin.kelasbaru');
     Route::get('/admin/siswabaru', [datasiswaController::class, 'create'])->name('admin.siswabaru');
+    Route::resource('/admin', datasiswaController::class);
 
 });
 
