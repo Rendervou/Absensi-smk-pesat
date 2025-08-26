@@ -13,10 +13,10 @@
             </li>
 
             <li>
-                <x-nav-link :href="auth()->user()->role === 'admin' ? route('admin.absensi') : route('user.absensi')"
-                    :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin.absensi' : 'user.absensi')">
+                <x-nav-link :href="auth()->user()->role === 'admin' ? route('presensi.index') : route('user.presensi')"
+                    :active="request()->routeIs(auth()->user()->role === 'admin' ? 'presensi.index' : 'user.presensi')">
                     <i class="fi fi-rr-rectangle-list text-lg items-center flex"></i>
-                    <span class="hidden lg:block">{{ __('Absensi') }}</span>
+                    <span class="hidden lg:block">{{ __('Presensi') }}</span>
                 </x-nav-link>
             </li>
 
@@ -57,7 +57,7 @@
             </li>
             <li x-data="{ open: false }">
                 <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"
-                    :active="request()->routeIs('admin.siswabaru') || request()->routeIs('admin.kelasbaru') || request()->routeIs('admin.rombel')">
+                    :active="request()->routeIs('siswa.index') || request()->routeIs('kelas.index') || request()->routeIs('rombel.index') || request()->routeIs('jurusan.index')">
                     <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
                     <span class="hidden lg:block">Data</span>
                     <svg :class="{'rotate-180': open}"
@@ -74,19 +74,25 @@
                     x-transition:leave-start="translate-y-0 opacity-100"
                     x-transition:leave-end="-translate-y-3 opacity-0" class="pl-6 space-y-2 hidden lg:block">
                     <li>
-                        <x-nav-link :href="route('admin.siswabaru')" :active="request()->routeIs('admin.siswabaru')">
+                        <x-nav-link :href="route('siswa.index')" :active="request()->routeIs('siswa.index')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
                             <span class="hidden lg:block">{{ __('Data Siswa') }}</span>
                         </x-nav-link>
                     </li>
                     <li>
-                        <x-nav-link :href="route('admin.kelasbaru')" :active="request()->routeIs('admin.kelasbaru')">
+                        <x-nav-link :href="route('kelas.index')" :active="request()->routeIs('kelas.index')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
                             <span class="hidden lg:block">{{ __('Data Kelas') }}</span>
                         </x-nav-link>
                     </li>
                     <li>
-                        <x-nav-link :href="route('admin.rombel')" :active="request()->routeIs('admin.rombel')">
+                        <x-nav-link :href="route('jurusan.index')" :active="request()->routeIs('jurusan.index')">
+                            <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
+                            <span class="hidden lg:block">{{ __('Data Jurusan') }}</span>
+                        </x-nav-link>
+                    </li>
+                    <li>
+                        <x-nav-link :href="route('rombel.index')" :active="request()->routeIs('rombel.index')">
                             <i class="fi fi-rr-folder-open text-lg items-center flex"></i>
                             <span class="hidden lg:block">{{ __('Data Rombel') }}</span>
                         </x-nav-link>
@@ -109,13 +115,16 @@
         <hr class="my-4 w-full">
 
         <div class="space-y-2 w-full">
+
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();"
-                    class="text-red-500 flex items-center justify-center lg:justify-start gap-4 p-3 rounded hover:bg-gray-100">
+                <x-dropdown-link :href="route('logout')"
+                    class="text-red-500 flex items-center justify-center lg:justify-start gap-4 p-3 rounded hover:bg-gray-100"
+                    onclick="event.preventDefault(); this.closest('form').submit();">
                     <i class="fi fi-rr-exit text-lg"></i>
-                    <span class="hidden lg:block">{{ __('Log Out') }}</span>
-                </a>
+
+                    {{ __('Log Out') }}
+                </x-dropdown-link>
             </form>
 
             <a href="/profile"
