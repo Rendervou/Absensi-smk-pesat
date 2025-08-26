@@ -11,5 +11,6 @@ class Rombel extends Model
     protected $fillable = [
         'id_siswa',
         'id_kelas',
+        'id_jurusan',
     ];
 }

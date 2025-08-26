@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataSiswa;
+use App\Models\DataJurusan;
 use Illuminate\Http\Request;
 
-class datasiswaController extends Controller
+class dataJurusanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $siswa = DataSiswa::paginate(2);
-        return view('admin.siswa', compact('siswa'));
+        $jurusan = DataJurusan::all();
+        return view('admin.jurusan', compact('jurusan'));
     }
 
     /**
@@ -21,7 +21,7 @@ class datasiswaController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
@@ -29,23 +29,21 @@ class datasiswaController extends Controller
      */
     public function store(Request $request)
     {
-                $request->validate([
-            'nama_siswa' => 'required|min:2',
-            'nis' => 'required|min:2',
+        $request->validate([
+            'nama_jurusan' => 'required|min:2',
         ]);
 
-        DataSiswa::create([
-            'nama_siswa'=> $request->nama_siswa,
-            'nis'=> $request->nis,
+        DataJurusan::create([
+            'nama_jurusan'=> $request->nama_jurusan,
         ]);
 
-         return redirect()->route('siswa.index')->with(['success' => 'Data Berhasil Disimpan!']);
+         return redirect()->route('jurusan.index')->with(['success' => 'Data Berhasil Disimpan!']);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(DataJurusan $DataJurusan)
     {
         //
     }
@@ -53,7 +51,7 @@ class datasiswaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(DataJurusan $DataJurusan)
     {
         //
     }
@@ -61,7 +59,7 @@ class datasiswaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, DataJurusan $DataJurusan)
     {
         //
     }
@@ -71,13 +69,13 @@ class datasiswaController extends Controller
      */
     public function destroy(string $id)
     {
-        $siswa = DataSiswa::findOrFail($id);
+                $jurusan = DataJurusan::findOrFail($id);
 
 
         //delete product
-        $siswa->delete();
+        $jurusan->delete();
 
         //redirect to index
-        return redirect()->route('siswa.index')->with(['success' => 'Data Berhasil Dihapus!']);
+        return redirect()->route('jurusan.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
