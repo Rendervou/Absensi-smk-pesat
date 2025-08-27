@@ -13,11 +13,13 @@
             </li>
 
             <li>
-                <x-nav-link :href="auth()->user()->role === 'admin' ? route('presensi.index') : route('user.presensi')"
-                    :active="request()->routeIs(auth()->user()->role === 'admin' ? 'presensi.index' : 'user.presensi')">
-                    <i class="fi fi-rr-rectangle-list text-lg items-center flex"></i>
-                    <span class="hidden lg:block">{{ __('Presensi') }}</span>
-                </x-nav-link>
+                <x-nav-link 
+                :href="auth()->user()->role === 'admin' ? route('admin/presensi.index') : route('user/presensi.index')"
+                :active="request()->routeIs(auth()->user()->role === 'admin' ? 'admin/presensi.*' : 'user/presensi.*')">
+                <i class="fi fi-rr-rectangle-list text-lg items-center flex"></i>
+                <span class="hidden lg:block">{{ __('Presensi') }}</span>
+            </x-nav-link>
+
             </li>
 
 

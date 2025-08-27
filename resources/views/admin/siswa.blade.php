@@ -69,10 +69,10 @@
                 </div>
             </div>
         </div>
-        <div class="overflow-hidden rounded-xl border border-gray-200 shadow-lg">
+        <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-900 shadow-lg">
             <table class="w-full">
                 <!-- Table Header -->
-                <thead class="bg-gradient-to-r from-blue-50 to-indigo-50">
+                <thead class="bg-white dark:bg-gray-800 from-blue-50 to-indigo-50">
                     <tr>
                         <th
                             class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b">
@@ -113,7 +113,7 @@
 
                 <!-- Table Body -->
                 @foreach ($siswa as $s)
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                     <tr class="hover:bg-blue-50 transition-colors duration-200">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -173,7 +173,7 @@
                 </tbody>
                 @endforeach
             </table>
-            <div class="px-5 py-3 bg-gray-50">
+            <div class="px-5 py-3 bg-gray-50 dark:bg-gray-800">
                 {{ $siswa->links() }}
             </div>
         </div>

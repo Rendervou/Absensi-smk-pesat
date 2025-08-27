@@ -79,7 +79,7 @@
         </div>
 
         <!-- Right side: Illustration (Hidden on mobile) -->
-        <div class="hidden md:flex flex-1 items-center justify-center bg-white">
+        <div class="hidden md:flex flex-1 items-center justify-center bg-white dark:bg-gray-900     ">
             <img src="{{ asset('login-ilustration.png') }}" alt="Logo Pesat" class="max-w-full h-auto object-contain">
 
             {{-- <img src="{{ asset(path: 'images/login-illustration.png') }}" alt="Login Illustration" class="max-w-full h-auto object-contain"> --}}
