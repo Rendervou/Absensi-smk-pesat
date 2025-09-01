@@ -62,13 +62,13 @@
                 </div>
             </div>
         </div>
-        <div class="overflow-hidden rounded-xl border border-gray-200 shadow-lg">
+        <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-900 shadow-lg">
             <table class="w-full">
                 <!-- Table Header -->
-                <thead class="bg-gradient-to-r from-blue-50 to-indigo-50">
+                <thead class="bg-white dark:bg-gray-800">
                     <tr>
                         <th
-                            class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b">
+                            class="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider border-b">
                             <div class="flex items-center gap-2">
                                 <span
                                     class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">#</span>
@@ -76,7 +76,7 @@
                             </div>
                         </th>
                         <th
-                            class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b">
+                            class="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider border-b">
                             <div class="flex items-center gap-2">
                                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -88,7 +88,7 @@
                             </div>
                         </th>
                         <th
-                            class="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider border-b">
+                            class="px-6 py-4 text-center text-xs font-bold text-gray-700 dark:text-gray-200 uppercase tracking-wider border-b">
                             <div class="flex items-center justify-center gap-2">
                                 <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -106,7 +106,7 @@
 
                 <!-- Table Body -->
                 @foreach ($jurusan as $k)
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                     <tr class="hover:bg-blue-50 transition-colors duration-200">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -121,7 +121,7 @@
                                     {{ substr($k->nama_jurusan, 0, 2) }}
                                 </div>
                                 <span
-                                    class="inline-flex items-center px-3 py-1 rounded-full text-sm uppercase font-medium ">
+                                    class="inline-flex items-center text-gray-900 dark:text-gray-200 px-3 py-1 rounded-full text-sm uppercase font-medium ">
 
                                     {{$k->nama_jurusan}}
                                 </span>

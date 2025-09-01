@@ -22,10 +22,10 @@
         </form>
         <form class="">
 
-            <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+            <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-900 shadow-sm">
                 <table class="w-full">
                     <!-- Table Header -->
-                    <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                    <thead class="bg-white dark:bg-gray-800 from-gray-50 to-gray-100">
                         <tr>
                             <th
                                 class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b">
@@ -66,8 +66,8 @@
 
                     <!-- Table Body -->
                     @foreach ($rombels as $s)
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:white">
+                        <tr class="hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-150">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <span
@@ -78,7 +78,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                 <div>
-                                    <h3 class="text-sm font-semibold text-gray-900">{{$s->nama_siswa}}</h3>
+                                    <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-200">{{$s->nama_siswa}}</h3>
                                     <div class="text-sm text-gray-500 flex items-center gap-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -95,7 +95,7 @@
                                     <div class="flex items-center mb-4">
                                         <input id="kehadiran-opsi-1" type="radio" name="kehadiran_{{ $s->id_siswa }}"
                                             value="hadir"
-                                            class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                                            class="w-4 h-4 border-gray-400 dark:border-gray-600 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                                             checked>
                                         <label for="kehadiran-opsi-1"
                                             class="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -106,7 +106,7 @@
                                     <div class="flex items-center mb-4">
                                         <input id="kehadiran-opsi-2" type="radio" name="kehadiran_{{ $s->id_siswa }}"
                                             value="sakit"
-                                            class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600">
+                                            class="w-4 h-4 border-gray-400 dark:border-gray-600 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600">
                                         <label for="kehadiran-opsi-2"
                                             class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                             Sakit
@@ -116,7 +116,7 @@
                                     <div class="flex items-center mb-4">
                                         <input id="kehadiran-opsi-3" type="radio" name="kehadiran_{{ $s->id_siswa }}"
                                             value="izin"
-                                            class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
+                                            class="w-4 h-4 border-gray-400 dark:border-gray-600 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
                                         <label for="kehadiran-opsi-3"
                                             class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                             Izin
@@ -126,7 +126,7 @@
                                     <div class="flex items-center mb-4">
                                         <input id="kehadiran-opsi-4" type="radio" name="kehadiran_{{ $s->id_siswa }}"
                                             value="alpha"
-                                            class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
+                                            class="w-4 h-4 border-gray-400 dark:border-gray-600 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
                                         <label for="kehadiran-opsi-4"
                                             class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                             Tanpa keterangan
