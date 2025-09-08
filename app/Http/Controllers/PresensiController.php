@@ -7,6 +7,7 @@ use App\Models\DataKelas;
 use App\Models\DataSiswa;
 use App\Models\Presensi;
 use App\Models\Rombel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class PresensiController extends Controller
@@ -31,7 +32,11 @@ class PresensiController extends Controller
 
         $rombels = $rombels->paginate(10);
         
-        return view('admin.absensi', compact('presensi', 'rombels', 'siswa', 'kelas','jurusan'));
+            if (Auth::user()->role == 'admin') {
+        return view('admin.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
+    } else {
+        return view('user.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
+    }   
     }
 
     /**

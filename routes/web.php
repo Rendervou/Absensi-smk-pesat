@@ -33,26 +33,20 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
 
     Route::get('/admin/perkelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
     Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
+    Route::resource('admin/siswa', datasiswaController::class);
+    Route::resource('admin/presensi', PresensiController::class);
+    Route::resource('admin/jurusan', dataJurusanController::class);
+    Route::resource('admin/rombel', RombelController::class);
+    Route::resource('admin/kelas', datakelasController::class);
 
-    Route::resource('admin/siswa', datasiswaController::class)->names('admin.siswa');
-    Route::resource('admin/presensi', PresensiController::class)->names('admin.presensi');
-    Route::resource('admin/jurusan', dataJurusanController::class)->names('admin.jurusan');
-    Route::resource('admin/rombel', RombelController::class)->names('admin.rombel');
-    Route::resource('admin/kelas', datakelasController::class)->names('admin.kelas');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-    Route::get('/user/rombel', [RombelController::class, 'index'])->name('user.rombel');
+    Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
+    Route::resource('user/presensi', PresensiController::class);
 
-    Route::get('/user/perkelas', [UserController::class, 'perKelas'])->name('user.perKelas');
-    Route::get('/user/perbulan', [UserController::class, 'perBulan'])->name('user.perBulan');
+    // Route::get('/user/absensi', [UserController::class, 'absensi'])->name('user.absensi');
 
-    Route::resource('user/siswa', datasiswaController::class)->names('user.siswa');
-    Route::resource('user/presensi', PresensiController::class)->names('user/presensi');
-    Route::resource('user/jurusan', dataJurusanController::class)->names('user.jurusan');
-    Route::resource('user/rombel', RombelController::class)->names('user.rombel');
-    Route::resource('user/kelas', datakelasController::class)->names('user.kelas');
 });
 
 
