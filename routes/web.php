@@ -33,7 +33,6 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
 
     Route::get('/admin/perkelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
     Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
-
     Route::resource('admin/siswa', datasiswaController::class);
     Route::resource('admin/presensi', PresensiController::class);
     Route::resource('admin/jurusan', dataJurusanController::class);
@@ -44,7 +43,9 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
-    Route::get('/user/absensi', [UserController::class, 'absensi'])->name('user.absensi');
+    Route::resource('user/presensi', PresensiController::class);
+
+    // Route::get('/user/absensi', [UserController::class, 'absensi'])->name('user.absensi');
 });
 
 

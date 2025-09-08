@@ -13,8 +13,9 @@
             </li>
 
             <li>
-                <x-nav-link :href="auth()->user()->role === 'admin' ? route('presensi.index') : route('user.presensi')"
-                    :active="request()->routeIs(auth()->user()->role === 'admin' ? 'presensi.index' : 'user.presensi')">
+                <x-nav-link :href="auth()->user()->role === 'admin' ? route('presensi.index') : route('presensi.index')"
+                    :active="request()->routeIs(auth()->user()->role === 'admin' ? 'presensi.index
+                    ' : 'presensi.index')">
                     <i class="fi fi-rr-rectangle-list text-lg items-center flex"></i>
                     <span class="hidden lg:block">{{ __('Presensi') }}</span>
                 </x-nav-link>

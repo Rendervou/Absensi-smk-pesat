@@ -12,13 +12,12 @@
             <select id="kelas" name="kelas"
                 class="w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
 
-                <option selected>Pilih Kelas</option>
+                <option value="">Semua Kelas</option>
                 @foreach ($kelas as $k)
-
                 <option value="{{$k->id_kelas}}">{{$k->nama_kelas}}</option>
                 @endforeach
             </select>
-            <button type="submit" class="bg-blue-400">Cari</button>
+            <button type="submit" class="bg-orange-500 w-36 py-2 rounded-lg text-white">Cari</button>
         </form>
         <form class="">
 
@@ -78,7 +77,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                 <div>
-                                    <h3 class="text-sm font-semibold text-gray-900">{{$s->nama_siswa}}</h3>
+                                    <h3 class="text-sm font-semibold text-gray-900 uppercase">{{$s->nama_siswa}}</h3>
                                     <div class="text-sm text-gray-500 flex items-center gap-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -129,7 +128,7 @@
                                             class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
                                         <label for="kehadiran-opsi-4"
                                             class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                            Tanpa keterangan
+                                            Alpa
                                         </label>
                                     </div>
                                 </fieldset>
