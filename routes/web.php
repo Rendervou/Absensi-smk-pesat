@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\dataJurusanController;
@@ -46,7 +46,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::resource('user/presensi', PresensiController::class);
 
     // Route::get('/user/absensi', [UserController::class, 'absensi'])->name('user.absensi');
+
 });
+
 
 
 require __DIR__ . '/auth.php';
