@@ -7,7 +7,7 @@
 
     <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
         <div class="justify-between flex items-center mb-5">
-            <select id="Kelas" class="w-40 rounded border-gray-300">
+            <select id="Kelas" class="w-40 rounded bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-900 text-gray-900 dark:text-gray-200">
 
                 <option selected>Pilih Kelas</option>
                 @foreach ($kelas as $item)
@@ -108,13 +108,13 @@
         {{-- table --}}
 
         <div class="p-2">
-            <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+            <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-900 shadow-sm">
                 <table class="w-full">
                     <!-- Table Header -->
-                    <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                    <thead class="bg-white dark:bg-gray-800">
                         <tr>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b">
+                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-200 uppercase tracking-wider border-b">
                                 <div class="flex items-center gap-2">
                                     <span
                                         class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold">#</span>
@@ -122,7 +122,7 @@
                                 </div>
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b">
+                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-200 uppercase tracking-wider border-b">
                                 <div class="flex items-center gap-2">
                                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -134,7 +134,7 @@
                                 </div>
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b">
+                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-200 uppercase tracking-wider border-b">
                                 <div class="flex items-center gap-2">
                                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -146,7 +146,7 @@
                                 </div>
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b">
+                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-200 uppercase tracking-wider border-b">
                                 <div class="flex items-center gap-2">
                                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -158,7 +158,7 @@
                                 </div>
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b">
+                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-200 uppercase tracking-wider border-b">
                                 <div class="flex items-center gap-2">
                                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -176,8 +176,8 @@
 
                     <!-- Table Body -->
                     @foreach ($rombels as $item)
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50 transition-colors duration-150">
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <span
@@ -191,7 +191,7 @@
                                         AF
                                     </div> --}}
                                     <div>
-                                        <div class="text-sm font-semibold text-gray-900">{{$item->nama_siswa}}</div>
+                                        <div class="text-sm font-semibold text-gray-900 dark:text-gray-200">{{$item->nama_siswa}}</div>
                                         {{-- <div class="text-sm text-gray-500">Jurusan : </div> --}}
                                     </div>
                                 </div>

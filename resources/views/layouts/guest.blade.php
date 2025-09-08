@@ -22,7 +22,7 @@
                 </a>
             </div> --}}
 
-            <div class="w-1/2 flex min-h-screen justify-center bg-neutral-200 items-center">
+            <div class="w-1/2 flex min-h-screen justify-center bg-gray-200 dark:bg-gray-900 items-center">
                 <div class="w-full mx-12 text-white">
                     {{ $slot }}
                 </div>

@@ -38,7 +38,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama
                                     Kelas</label>
                                 <input type="text" name="nama_kelas"
-                                    class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="cth: X-1">
                             </div>
 
                             <!-- Footer -->
@@ -57,10 +57,10 @@
                 </div>
             </div>
         </div>
-        <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+        <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-900 shadow-sm">
             <table class="w-full">
                 <!-- Table Header -->
-                <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                <thead class="bg-white dark:bg-gray-800">
                     <tr>
                         <th
                             class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b">
@@ -101,7 +101,7 @@
 
                 <!-- Table Body -->
                 @foreach ($kelas as $k)
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                     <tr class="hover:bg-gray-50 transition-colors duration-150">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
