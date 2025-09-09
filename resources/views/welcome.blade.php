@@ -108,7 +108,7 @@
         
     </style>
 </head>
-<body class="min-h-screen dark:bg-slate-900 bg-slate-100 dark-pattern dark:text-gray-900 text-white overflow-hidden">
+<body class="min-h-screen dark:bg-slate-900 bg-slate-100 dark-pattern dark:text-gray-900 text-white overflow-x-hidden overflow-y-auto">
 
     <!-- Splash + Logo (akan pindah ke atas) -->
     <div id="splash-logo-container" class="fixed inset-0 flex items-center justify-center z-50">
@@ -120,7 +120,7 @@
     <!-- Main Content -->
     <div id="main-content" class="hidden">
         <!-- Hero Section -->
-        <main class="min-h-screen flex items-center justify-center px-4 py-20 relative">
+        <main class="min-h-screen flex flex-col items-center justify-start px-4 py-20 relative">
             <div class="max-w-4xl mx-auto text-center space-y-12">
                 <div class="flex items-center justify-center mt-10">
                     <div class="w-44 h-44 dark:bg-white/30 dark:backdrop-blur-sm rounded-3xl flex items-center justify-center dark:border border-white/20 hero-logo">
