@@ -12,7 +12,9 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $totalSiswa = DataSiswa::count();
+
+        return view('admin.dashboard', compact('totalSiswa'));
     }
     // public function absensi()
     // {
