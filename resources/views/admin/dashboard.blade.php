@@ -63,7 +63,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Total Siswa</p>
-                            <h2 class="number">308</h2>
+                            <h2 class="number">{{ number_format($totalSiswa) }}</h2>
                         </div>
                         <div class="p-3 bg-white/10 rounded-lg group-hover:bg-white/20 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
