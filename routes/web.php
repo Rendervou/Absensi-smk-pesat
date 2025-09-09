@@ -43,7 +43,15 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
 
 Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
-    Route::resource('user/presensi', PresensiController::class);
+Route::resource('user/presensi', PresensiController::class)->names([
+        'index'   => 'user.presensi.index',
+        'create'  => 'user.presensi.create',
+        'store'   => 'user.presensi.store',
+        'show'    => 'user.presensi.show',
+        'edit'    => 'user.presensi.edit',
+        'update'  => 'user.presensi.update',
+        'destroy' => 'user.presensi.destroy',
+    ]);
 
     // Route::get('/user/absensi', [UserController::class, 'absensi'])->name('user.absensi');
 

@@ -32,11 +32,12 @@ class PresensiController extends Controller
 
         $rombels = $rombels->paginate(10);
         
-            if (Auth::user()->role == 'admin') {
+        if (Auth::user()->role == 'admin') {
         return view('admin.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
     } else {
         return view('user.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
     }   
+
     }
 
     /**
