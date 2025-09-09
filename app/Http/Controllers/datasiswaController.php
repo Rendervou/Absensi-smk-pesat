@@ -12,7 +12,7 @@ class datasiswaController extends Controller
      */
     public function index()
     {
-        $siswa = DataSiswa::paginate(2);
+        $siswa = DataSiswa::paginate(10);
         return view('admin.siswa', compact('siswa'));
     }
 
@@ -55,7 +55,10 @@ class datasiswaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $s = DataSiswa::findOrFail($id);
+
+        //render view with product
+        return view('siswa.edit', compact('siswa'), [ 'title' => 'Edit Data']);
     }
 
     /**
@@ -63,7 +66,20 @@ class datasiswaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama_siswa' => 'required|min:2',
+            'nis' => 'required|min:2',
+        ]);
+
+        //get product by ID
+        $s = DataSiswa::findOrFail($id);
+        $s->update([
+            'nama_siswa'=> $request->nama_siswa,
+            'nis'=> $request->nis,
+        ]);
+
+        return redirect()->route('siswa.index')->with(['success' => 'Data Berhasil Diubah!']);
+
     }
 
     /**

@@ -136,7 +136,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-slate-900 dark-pattern">
+<body class="min-h-screen py-10 bg-slate-900 dark-pattern">
 
     <!-- Back to Home Button -->
     <div class="absolute top-4 left-4 z-10">
