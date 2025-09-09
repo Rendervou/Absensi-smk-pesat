@@ -25,12 +25,9 @@
                 </x-nav-link>
 
             </li>
-
-            @auth
-            @if (Auth::user()->role === 'admin')
             <li x-data="{ open: false }">
                 <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"
-                    :active="request()->routeIs('admin.perKelas') || request()->routeIs('admin.perBulan')">
+                    :active="request()->routeIs('admin.perKelas') || request()->routeIs('admin.perBulan') || request()->routeIs('user.perKelas') || request()->routeIs('user.perBulan')">
                     <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
                     <span class="hidden lg:block text-gray-700 dark:text-gray-300">Laporan</span>
                     <svg :class="{'rotate-180': open}"
@@ -45,26 +42,43 @@
                     x-transition:enter-end="translate-y-0 opacity-100"
                     x-transition:leave="transition ease-in duration-200 transform"
                     x-transition:leave-start="translate-y-0 opacity-100"
-                    x-transition:leave-end="-translate-y-3 opacity-0" class="pl-6 space-y-2 hidden lg:block">
+                    x-transition:leave-end="-translate-y-3 opacity-0"
+                    class="pl-6 space-y-2 hidden lg:block">
 
-                    <li>
-                        <x-nav-link :href="route('admin.perKelas')" :active="request()->routeIs('admin.perKelas')">
-                            <i
-                                class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
-                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Laporan Perkelas')
-                                }}</span>
-                        </x-nav-link>
-                    </li>
-                    <li>
-                        <x-nav-link :href="route('admin.perBulan')" :active="request()->routeIs('admin.perBulan')">
-                            <i
-                                class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
-                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Laporan Perbulan')
-                                }}</span>
-                        </x-nav-link>
-                    </li>
+                    @if(Auth::user()->role === 'admin')
+                        <li>
+                            <x-nav-link :href="route('admin.perKelas')" :active="request()->routeIs('admin.perKelas')">
+                                <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                                <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Laporan Perkelas') }}</span>
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link :href="route('admin.perBulan')" :active="request()->routeIs('admin.perBulan')">
+                                <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                                <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Laporan Perbulan') }}</span>
+                            </x-nav-link>
+                        </li>
+                    @elseif(Auth::user()->role === 'user')
+                        <li>
+                            <x-nav-link :href="route('user.perKelas')" :active="request()->routeIs('user.perKelas')">
+                                <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                                <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Laporan Perkelas') }}</span>
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link :href="route('user.perBulan')" :active="request()->routeIs('user.perBulan')">
+                                <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                                <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Laporan Perbulan') }}</span>
+                            </x-nav-link>
+                        </li>
+                    @endif
                 </ul>
             </li>
+
+
+            @auth
+            @if (Auth::user()->role === 'admin')
+            
 
             <li x-data="{ open: false }">
                 <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"

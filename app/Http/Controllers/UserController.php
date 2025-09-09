@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataSiswa;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -12,14 +13,21 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('user.dashboard');
-        
+        $totalSiswa = DataSiswa::count();
+
+        return view('user.dashboard', compact('totalSiswa'));   
     }
     
     public function perKelas()
     {
         // $data = Absensi::orderBy('kelas')->get();
         return view('user.kelas');
+    }
+
+    public function perBulan()
+    {
+        // $data = Absensi::orderBy('kelas')->get();
+        return view('user.bulan');
     }
 
     /**

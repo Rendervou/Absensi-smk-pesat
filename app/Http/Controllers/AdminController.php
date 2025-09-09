@@ -16,15 +16,17 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact('totalSiswa'));
     }
-    // public function absensi()
-    // {
-    //     $siswa = DataSiswa::all();
-    //     return view('admin.absensi', compact('siswa'));
-    // }
+    
     public function perKelas()
     {
         // $data = Absensi::orderBy('kelas')->get();
         return view('admin.kelas');
+    }
+
+    public function perBulan()
+    {
+        // $data = Absensi::orderBy('kelas')->get();
+        return view('admin.bulan');
     }
 
     /**
