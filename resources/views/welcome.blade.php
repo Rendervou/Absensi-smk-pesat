@@ -80,6 +80,31 @@
             50% { transform: scale(1.02) translateY(-270px); }
         }
 
+        /* Animasi fade out */
+        .fade-out {
+            animation: fadeOut 0.8s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* Logo hero animasi masuk */
+        .hero-logo {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: heroFadeIn 1s ease forwards;
+            animation-delay: 0.3s; /* supaya agak telat dikit setelah splash */
+        }
+
+        @keyframes heroFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         
     </style>
 </head>
@@ -97,10 +122,15 @@
         <!-- Hero Section -->
         <main class="min-h-screen flex items-center justify-center px-4 py-20 relative">
             <div class="max-w-4xl mx-auto text-center space-y-12">
+                <div class="flex items-center justify-center mt-10">
+                    <div class="w-44 h-44 dark:bg-white/30 dark:backdrop-blur-sm rounded-3xl flex items-center justify-center dark:border border-white/20 hero-logo">
+                        <img src="{{ asset('logopesat.png') }}" alt="Logo SMK PESAT" class="w-32 h-28 object-contain">
+                    </div>
+                </div>
                 
                 <!-- Title -->
                 <div class="fade-in" id="title">
-                    <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight mt-40">
+                    <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-tight mt-20">
                         <span class="block text-gray-900 dark:text-white mb-4">Selamat Datang di</span>
                         <span class="block text-gray-900 dark:text-white mb-4">Sistem Absensi</span>
                         <span class="block text-gray-900 gradient-text">SMK Informatika Pesat</span>
@@ -148,7 +178,19 @@
         document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
             const mainContent = document.getElementById('main-content');
+            const splash = document.getElementById('splash-logo-container');
+
+            // Tampilkan konten utama
             mainContent.classList.remove('hidden');
+
+            // Tambahkan fade-out ke splash
+            splash.classList.add('fade-out');
+
+            // Hapus splash setelah animasi selesai
+            setTimeout(() => {
+                splash.remove();
+            }, 800); // waktu sama dengan durasi animasi fadeOut
+            
 
             // Fade-in teks & tombol
             const elements = [
@@ -162,7 +204,7 @@
                 }, delay);
             });
 
-        }, 2500);
+        }, 3500);
     });
     </script>
 
