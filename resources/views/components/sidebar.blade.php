@@ -17,12 +17,23 @@
             </li>
 
             <li>
-                <x-nav-link
-                    :href="auth()->user()->role === 'admin' ? route('presensi.index') : route('user.presensi.index')"
-                    :active="request()->routeIs('presensi.index')">
-                    <i class="fi fi-rr-rectangle-list text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
-                    <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Presensi') }}</span>
-                </x-nav-link>
+                @if (Auth::user()->role === 'admin')
+                    <x-nav-link
+                        :href="route('admin.presensi.index')"
+                        :active="request()->routeIs('admin.presensi.*')">
+                        <i class="fi fi-rr-rectangle-list text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                        <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Presensi') }}</span>
+                    </x-nav-link>
+                @elseif(Auth::user()->role === 'user')
+                    <x-nav-link
+                        :href="route('user.presensi.index')"
+                        :active="request()->routeIs('user.presensi.*')">
+                        <i class="fi fi-rr-rectangle-list text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                        <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Presensi') }}</span>
+                    </x-nav-link>
+                @endif
+
+
 
             </li>
             <li x-data="{ open: false }">

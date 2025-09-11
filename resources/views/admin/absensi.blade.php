@@ -7,7 +7,7 @@
 
     <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 min-h-screen">
         <!-- Filter Form - Responsive -->
-        <form action="{{route('presensi.index')}}" method="get" class="flex flex-col sm:flex-row mb-6 sm:mb-10 items-stretch sm:items-center gap-3 sm:gap-5">
+        <form action="{{route('admin.presensi.index')}}" method="get" class="flex flex-col sm:flex-row mb-6 sm:mb-10 items-stretch sm:items-center gap-3 sm:gap-5">
             <select id="kelas" name="kelas"
                 class="w-full sm:w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <option value="">Semua Kelas</option>
