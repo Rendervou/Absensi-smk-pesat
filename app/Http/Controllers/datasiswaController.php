@@ -12,7 +12,7 @@ class datasiswaController extends Controller
      */
     public function index()
     {
-        $siswa = DataSiswa::paginate(10);
+        $siswa = DataSiswa::orderBy('nama_siswa', 'asc')->paginate(10);
         return view('admin.siswa', compact('siswa'));
     }
 

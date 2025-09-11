@@ -2,32 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataSiswa;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
-class UserController extends Controller
+class dataguruController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $totalSiswa = DataSiswa::count();
-
-        return view('user.dashboard', compact('totalSiswa'));   
-    }
-    
-    public function perKelas()
-    {
-        // $data = Absensi::orderBy('kelas')->get();
-        return view('user.kelas');
-    }
-
-    public function perBulan()
-    {
-        // $data = Absensi::orderBy('kelas')->get();
-        return view('user.bulan');
+        $guru = User::orderBy('name', 'asc')->paginate(10);
+        return view('admin.guru', compact('guru'));
     }
 
     /**

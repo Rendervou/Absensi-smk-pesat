@@ -133,6 +133,14 @@
                         </x-nav-link>
                     </li>
                     <li>
+                        <x-nav-link :href="route('guru.index')" :active="request()->routeIs('guru.index')">
+                            <i
+                                class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Guru')
+                                }}</span>
+                        </x-nav-link>
+                    </li>
+                    <li>
                         <x-nav-link :href="route('rombel.index')" :active="request()->routeIs('rombel.index')">
                             <i
                                 class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>

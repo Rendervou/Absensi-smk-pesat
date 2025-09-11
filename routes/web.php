@@ -1,7 +1,8 @@
     <?php
 
     use App\Http\Controllers\AdminController;
-    use App\Http\Controllers\dataJurusanController;
+use App\Http\Controllers\dataguruController;
+use App\Http\Controllers\dataJurusanController;
     use App\Http\Controllers\datakelasController;
     use App\Http\Controllers\datasiswaController;
     use App\Http\Controllers\PresensiController;
@@ -38,6 +39,7 @@ use Illuminate\Support\Facades\Route;
         Route::resource('admin/jurusan', dataJurusanController::class);
         Route::resource('admin/rombel', RombelController::class);
         Route::resource('admin/kelas', datakelasController::class);
+        Route::resource('admin/guru', dataguruController::class);
 
     });
 
