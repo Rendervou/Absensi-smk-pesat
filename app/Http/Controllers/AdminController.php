@@ -16,15 +16,17 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact('totalSiswa'));
     }
-    // public function absensi()
-    // {
-    //     $siswa = DataSiswa::all();
-    //     return view('admin.absensi', compact('siswa'));
-    // }
+    
     public function perKelas()
     {
         // $data = Absensi::orderBy('kelas')->get();
         return view('admin.kelas');
+    }
+
+    public function perBulan()
+    {
+        // $data = Absensi::orderBy('kelas')->get();
+        return view('admin.bulan');
     }
 
     /**
@@ -41,21 +43,6 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         //
-    }
-
-    public function storeSiswaBaru(Request $request)
-    {
-        $request->validate([
-            'nama_siswa' => 'required|string|max:255',
-            'nis' => 'required|numeric|max:225',
-            'no_tlp' => 'required|numeric|max:225',
-            'alamat' => 'required|string',
-        ]);
-
-        // Logic to store the new student data
-        // DataSiswa::create($request->all());
-
-        return redirect()->route('admin.dashboard')->with('success', 'Siswa baru berhasil ditambahkan.');
     }
 
     /**

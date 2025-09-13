@@ -33,10 +33,10 @@ class PresensiController extends Controller
         $rombels = $rombels->orderBy('data_siswas.nama_siswa','asc')->paginate(50);
         
         if (Auth::user()->role == 'admin') {
-        return view('admin.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
-    } else {
-        return view('user.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
-    }   
+            return view('admin.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
+        } elseif (Auth::user()->role == 'user') {
+            return view('user.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
+        }   
 
     }
 
