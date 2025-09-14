@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="flex items-center mb-4">
-                        <input id="kehadiran-opsi-4" type="radio" name="kehadiran" value="alpha" class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
+                        <input id="kehadiran-opsi-4" type="radio" name="kehadiran" value="alfa" class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
                         <label for="kehadiran-opsi-4" class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                         Tanpa keterangan
                         </label>

@@ -93,9 +93,9 @@
                                     </div>
 
                                     <div class="flex items-center">
-                                        <input id="alpha_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alpha"
+                                        <input id="alfa_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa"
                                             class="w-4 h-4 text-red-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-red-500 dark:focus:ring-red-600 dark:bg-gray-700">
-                                        <label for="alpha_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alpa</label>
+                                        <label for="alfa_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alfa</label>
                                     </div>
                                 </fieldset>
                             </td>
@@ -148,9 +148,9 @@
                             </div>
 
                             <div class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <input id="alpha_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alpha"
+                                <input id="alfa_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa"
                                     class="w-4 h-4 text-red-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-red-500 dark:bg-gray-700">
-                                <label for="alpha_mobile_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alpa</label>
+                                <label for="alfa_mobile_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alfa</label>
                             </div>
                         </fieldset>
                     </div>
