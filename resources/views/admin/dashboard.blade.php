@@ -59,11 +59,11 @@
 
             <!-- Statistik Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 text-white group">
+                <div class="stat-card bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 text-white group p-5 rounded-2xl">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Total Siswa</p>
-                            <h2 class="number">308</h2>
+                            <h2 class="number">{{ number_format($totalSiswa) }}</h2>
                         </div>
                         <div class="p-3 bg-white/10 rounded-lg group-hover:bg-white/20 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -74,11 +74,11 @@
                     <div class="mt-2 text-xs opacity-60">100% dari target</div>
                 </div>
 
-                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 text-white group">
+                <div class="stat-card bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 text-white group p-5 rounded-2xl">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Hadir Hari Ini</p>
-                            <h2 class="number">240</h2>
+                            <h2 class="number">{{ number_format($hadir) }}</h2>
                         </div>
                         <div class="p-3 bg-white/10 rounded-lg group-hover:bg-white/20 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -89,11 +89,11 @@
                     <div class="mt-2 text-xs opacity-60">77.9% kehadiran</div>
                 </div>
 
-                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white group">
+                <div class="stat-card bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white group p-5 rounded-2xl">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Izin</p>
-                            <h2 class="number">2</h2>
+                            <h2 class="number">{{ number_format($izin) }}</h2>
                         </div>
                         <div class="p-3 bg-white/10 rounded-lg group-hover:bg-white/20 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -104,11 +104,11 @@
                     <div class="mt-2 text-xs opacity-60">0.6% dari total</div>
                 </div>
 
-                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 text-white group">
+                <div class="stat-card bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 text-white group p-5 rounded-2xl">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Sakit</p>
-                            <h2 class="number">11</h2>
+                            <h2 class="number">{{ number_format($sakit) }}</h2>
                         </div>
                         <div class="p-3 bg-white/10 rounded-lg group-hover:bg-white/20 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -119,11 +119,11 @@
                     <div class="mt-2 text-xs opacity-60">3.6% dari total</div>
                 </div>
 
-                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white group">
+                <div class="stat-card bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white group p-5 rounded-2xl">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm opacity-75 mb-1">Alpa</p>
-                            <h2 class="number">55</h2>
+                            <p class="text-sm opacity-75 mb-1">Tanpa Keterangan</p>
+                            <h2 class="number">{{ number_format($alfa) }}</h2>
                         </div>
                         <div class="p-3 bg-white/10 rounded-lg group-hover:bg-white/20 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -177,56 +177,69 @@
                                         <th scope="col" class="px-6 py-4 font-medium">NIS</th>
                                         <th scope="col" class="px-6 py-4 font-medium">Kehadiran</th>
                                         <th scope="col" class="px-6 py-4 font-medium">Waktu</th>
+                                        <th scope="col" class="px-6 py-4 font-medium">Guru</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                    @foreach([
-                                        ['Daffa Rafif Ramadhan','018535455','Hadir','07:15'],
-                                        ['Aisyah Putri Nabila','018535456','Hadir','07:20'],
-                                        ['Muhammad Rizky Pratama','018535457','Sakit','--'],
-                                        ['Siti Nurhaliza Rahman','018535458','Hadir','07:10'],
-                                        ['Ahmad Fajar Sidiq','018535459','Izin','--']
-                                    ] as $index => $row)
-                                    <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                                    <span class="text-white text-xs font-semibold">{{ substr($row[0], 0, 1) }}</span>
+                                <tbody>
+                                    @forelse($latestPresensi as $row)
+                                        <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                                        <span class="text-white text-xs font-semibold">
+                                                            {{ strtoupper(substr($row->nama_siswa, 0, 1)) }}
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-medium text-gray-900 dark:text-white">{{ $row->nama_siswa }}</div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                            Kelas {{ $row->kelas->nama_kelas ?? '-' }}, Jurusan {{ $row->nama_jurusan }}
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div class="font-medium text-gray-900 dark:text-white">{{ $row[0] }}</div>
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400">Kelas XI IPA 1</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-900 dark:text-gray-300 font-mono">{{ $row[1] }}</td>
-                                        <td class="px-6 py-4">
-                                            @if($row[2] == 'Hadir')
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span>
-                                                    {{ $row[2] }}
-                                                </span>
-                                            @elseif($row[2] == 'Sakit')
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                                                    <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-1.5"></span>
-                                                    {{ $row[2] }}
-                                                </span>
-                                            @elseif($row[2] == 'Izin')
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                                    <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5"></span>
-                                                    {{ $row[2] }}
-                                                </span>
-                                            @else
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5"></span>
-                                                    Alpha
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-mono">{{ $row[3] }}</td>
-                                    </tr>
-                                    @endforeach
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-900 dark:text-gray-300 font-mono">
+                                                {{ $row->siswa->nis ?? '-' }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                @if($row->status == 'hadir')
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span>
+                                                        Hadir
+                                                    </span>
+                                                @elseif($row->status == 'sakit')
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                                        <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-1.5"></span>
+                                                        Sakit
+                                                    </span>
+                                                @elseif($row->status == 'izin')
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5"></span>
+                                                        Izin
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5"></span>
+                                                        Alfa
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-mono">
+                                                {{ $row->created_at->format('H:i') }}
+                                            </td>
+                                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-mono">
+                                                {{ $row->user }}
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                                Belum ada data absensi hari ini
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
+
                             </table>
                         </div>
                         
