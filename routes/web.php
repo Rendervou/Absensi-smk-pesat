@@ -32,7 +32,6 @@ use Illuminate\Support\Facades\Route;
     // Hapus resource presensi dari group yang pertama
     Route::middleware(['auth', 'role:admin'])->group(function(){
         Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        Route::get('/admin/rombel', [RombelController::class, 'index'])->name('admin.rombel');
         Route::get('/admin/perkelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
         Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
         Route::resource('admin/siswa', datasiswaController::class);

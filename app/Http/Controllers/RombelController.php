@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PresensiCreated;
 use App\Models\DataJurusan;
 use App\Models\DataKelas;
 use App\Models\DataSiswa;
+use App\Models\Presensi;
 use App\Models\Rombel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class RombelController extends Controller
@@ -13,7 +16,7 @@ class RombelController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $siswa = DataSiswa::all();
         $kelas = DataKelas::all();
@@ -21,8 +24,13 @@ class RombelController extends Controller
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
         ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
         ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
-            ->select('data_siswas.*', 'data_kelas.*', 'data_jurusans.*')
-        ->paginate(10);
+            ->select('data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
+
+                if ($request->filled('kelas')) {
+            $rombels->where('data_kelas.id_kelas', $request->kelas);
+        };
+
+            $rombels = $rombels->paginate(10);
 
         return view('admin.rombel', compact('jurusan','kelas','siswa','rombels'));
         

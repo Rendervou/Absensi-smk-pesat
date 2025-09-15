@@ -16,6 +16,7 @@ class datasiswaController extends Controller
         return view('admin.siswa', compact('siswa'));
     }
 
+
     /**
      * Show the form for creating a new resource.
      */
