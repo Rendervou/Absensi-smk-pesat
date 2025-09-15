@@ -7,15 +7,19 @@
 
     <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
         <div class="justify-between flex items-center mb-5">
-            <select id="Kelas" class="w-40 rounded bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-900 text-gray-900 dark:text-gray-200">
-
-                <option selected>Pilih Kelas</option>
-                @foreach ($kelas as $item)
-
-                <option value="{{$item->id_kelas}}">{{$item->nama_kelas}}</option>
+            <form action="{{route('rombel.index')}}" method="get" class="flex flex-col sm:flex-row mb-6 sm:mb-10 items-stretch sm:items-center gap-3 sm:gap-5">
+            <select id="kelas" name="kelas"
+                class="w-full sm:w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option value="">Semua Kelas</option>
+                @foreach ($kelas as $k)
+                <option value="{{$k->id_kelas}}">{{$k->nama_kelas}}</option>
+                {{$k->nama_kelas}}
                 @endforeach
-
             </select>
+            <button type="submit" class="bg-orange-500 w-full sm:w-36 py-2.5 sm:py-2 rounded-lg text-white font-medium hover:bg-orange-600 transition-colors">
+                Cari
+            </button>
+        </form>
             <div x-data="{ openRombel: false }">
 
                 <!-- Tombol buka modal -->

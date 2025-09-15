@@ -13,12 +13,14 @@
                 <option value="">Semua Kelas</option>
                 @foreach ($kelas as $k)
                 <option value="{{$k->id_kelas}}">{{$k->nama_kelas}}</option>
+                {{$k->nama_kelas}}
                 @endforeach
             </select>
             <button type="submit" class="bg-orange-500 w-full sm:w-36 py-2.5 sm:py-2 rounded-lg text-white font-medium hover:bg-orange-600 transition-colors">
                 Cari
             </button>
         </form>
+        <h2></h2>
 
         <!-- FORM ABSENSI -->
         <form action="{{ route('admin.presensi.store') }}" method="POST">
