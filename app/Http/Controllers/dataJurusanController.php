@@ -51,17 +51,31 @@ class dataJurusanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DataJurusan $DataJurusan)
+    public function edit(string $id)
     {
-        //
+                $j = DataJurusan::findOrFail($id);
+
+        //render view with product
+        return view('jurusan.edit', compact('jurusan'), [ 'title' => 'Edit Data']);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DataJurusan $DataJurusan)
+    public function update(Request $request, string $id)
     {
-        //
+                $request->validate([
+            'nama_jurusan' => 'required|min:2',
+        ]);
+
+        //get product by ID
+        $j = DataJurusan::findOrFail($id);
+        $j->update([
+            'nama_jurusan'=> $request->nama_jurusan,
+
+        ]);
+
+        return redirect()->route('jurusan.index')->with(['success' => 'Data Berhasil Diubah!']);
     }
 
     /**

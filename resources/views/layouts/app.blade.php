@@ -35,7 +35,7 @@ https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css
             @endisset
 
             <!-- Page Content -->
-            <main class="ml-20 lg:ml-72">
+            <main class="ml-20 lg:ml-72 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
                 {{ $slot }}
             </main>
         </div>

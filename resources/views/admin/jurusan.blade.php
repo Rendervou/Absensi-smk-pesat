@@ -117,7 +117,8 @@
 
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                                <div class="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+                                <div
+                                    class="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
                                     {{ substr($k->nama_jurusan, 0, 2) }}
                                 </div>
                                 <span
@@ -129,15 +130,52 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex items-center justify-center gap-2">
-                                <button
-                                    class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors shadow-sm"
-                                    title="Edit jurusan">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                        </path>
-                                    </svg>
-                                </button>
+                                <div x-data="{
+    openEdit: false,
+    editId: null,
+    editJurusan: '',
+    setEditData(id_jurusan, nama_jurusan) {
+        this.editId = id_jurusan;
+        this.editJurusan = nama_jurusan;
+        this.openEdit = true;
+    }
+}">
+    <!-- Tombol Edit -->
+    <button
+        @click="setEditData({{ $k->id_jurusan }}, '{{ $k->nama_jurusan }}')"
+        class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors shadow-sm"
+        title="Edit Jurusan">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+    </button>
+
+    <!-- Modal -->
+    <div x-show="openEdit" x-cloak
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        x-transition>
+        <div @click.away="openEdit = false"
+            class="bg-white dark:bg-slate-900 rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Edit Data Jurusan</h2>
+            <form :action="`{{ url('admin/jurusan') }}/${editId}`" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="mb-4">
+                    <label class="block text-gray-700 dark:text-gray-300">Nama Jurusan</label>
+                    <input type="text" name="nama_jurusan" x-model="editJurusan"
+                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" @click="openEdit = false"
+                        class="px-4 py-2 border rounded-lg text-gray-600 dark:text-gray-300">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
                                 <form action="{{ route('jurusan.destroy', $k->id_jurusan) }}" method="POST"
                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus jurusan ini?');">
                                     @csrf

@@ -36,9 +36,9 @@
                             <p class="text-sm text-gray-600 dark:text-gray-400">Kelola absensi siswa dengan mudah</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                            <a href="presensi" class="group">
+                            <a href="{{ route('presensi.index') }}" class="group">
                                 <button type="button" 
-                                    class="flex items-center justify-center w-full sm:w-auto gap-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-6 py-3 text-center dark:focus:ring-blue-800 transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-xl">
+                                    class="flex items-center justify-center w-full sm:w-auto gap-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-6 py-3 text-center dark:focus:ring-blue-800 transition-all duration-300 transform  shadow-lg hover:shadow-xl">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
