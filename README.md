@@ -147,7 +147,7 @@ Jika ingin berkontribusi pada project ini:
 1. Fork repository ini
 2. Buat branch baru (git checkout -b feature/nama-fitur)
 3. Lakukan perubahan & commit (git commit -m "Tambah fitur X")
-4. Push ke branch (git push origin feature/nama-fitur
+4. Push ke branch (git push origin feature/nama-fitur)
 5. Buat Pull Request ke branch main
 
 ---
