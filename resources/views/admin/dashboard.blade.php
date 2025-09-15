@@ -36,9 +36,9 @@
                             <p class="text-sm text-gray-600 dark:text-gray-400">Kelola absensi siswa dengan mudah</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                            <a href="presensi" class="group">
+                            <a href="{{ route('presensi.index') }}" class="group">
                                 <button type="button" 
-                                    class="flex items-center justify-center w-full sm:w-auto gap-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-6 py-3 text-center dark:focus:ring-blue-800 transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-xl">
+                                    class="flex items-center justify-center w-full sm:w-auto gap-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-6 py-3 text-center dark:focus:ring-blue-800 transition-all duration-300 transform  shadow-lg hover:shadow-xl">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
@@ -59,7 +59,7 @@
 
             <!-- Statistik Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-                <div class="stat-card bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 text-white group">
+                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 text-white group">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Total Siswa</p>
@@ -74,7 +74,7 @@
                     <div class="mt-2 text-xs opacity-60">100% dari target</div>
                 </div>
 
-                <div class="stat-card bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 text-white group">
+                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 text-white group">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Hadir Hari Ini</p>
@@ -89,7 +89,7 @@
                     <div class="mt-2 text-xs opacity-60">77.9% kehadiran</div>
                 </div>
 
-                <div class="stat-card bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white group">
+                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white group">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Izin</p>
@@ -104,7 +104,7 @@
                     <div class="mt-2 text-xs opacity-60">0.6% dari total</div>
                 </div>
 
-                <div class="stat-card bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 text-white group">
+                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 text-white group">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm opacity-75 mb-1">Sakit</p>
@@ -119,10 +119,10 @@
                     <div class="mt-2 text-xs opacity-60">3.6% dari total</div>
                 </div>
 
-                <div class="stat-card bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white group">
+                <div class="rounded-lg p-5 stat-card bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white group">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm opacity-75 mb-1">Tanpa Keterangan</p>
+                            <p class="text-sm opacity-75 mb-1">Alpa</p>
                             <h2 class="number">55</h2>
                         </div>
                         <div class="p-3 bg-white/10 rounded-lg group-hover:bg-white/20 transition-all duration-300">
