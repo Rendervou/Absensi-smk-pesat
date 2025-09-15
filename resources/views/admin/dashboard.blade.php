@@ -226,9 +226,6 @@
                                             <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-mono">
                                                 {{ $row->nama_guru ?? '-' }}
                                             </td>
-                                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-mono">
-                                                {{ $row->nama_guru}}
-                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
