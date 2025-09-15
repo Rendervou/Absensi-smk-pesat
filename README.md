@@ -1,8 +1,13 @@
-<p align="center">
+<div align="center" style="display:flex; align-items:center; justify-content:center; gap:40px;">
   <a href="https://laravel.com" target="_blank">
-    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
+    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" 
+         width="500" alt="Laravel Logo">
   </a>
-</p>
+  <a href="https://smkpesat.sch.id" target="_blank">
+    <img src="https://smkpesat.sch.id/wp-content/uploads/2025/07/Logo-SMKPesatITXPRO-scaled.png" 
+         width="400" alt="SMK Pesat Logo">
+  </a>
+</div>
 
 <p align="center">
   <a href="https://github.com/Rendervou/Absensi-smk-pesat/actions">
