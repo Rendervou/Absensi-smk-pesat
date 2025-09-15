@@ -40,7 +40,15 @@
 
                         @php
                             $semester = request('semester', 1);
+<<<<<<< HEAD
+<<<<<<< HEAD
                             $monthNums = $semester == 1 ? [7,8,9,10,11,12] : [1,2,3,4,5,6];
+=======
+                            $monthNums = $semester == 1 ?  [7,8,9,10,11,12] : [1,2,3,4,5,6];
+>>>>>>> main
+=======
+                            $monthNums = $semester == 1 ? [7,8,9,10,11,12] : [1,2,3,4,5,6];
+>>>>>>> 721cb9ef74e6bf07efd72317ad26f8dd756fc771
                         @endphp
 
                         @foreach ($monthNums as $m)
