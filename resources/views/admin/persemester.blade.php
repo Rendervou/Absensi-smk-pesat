@@ -228,7 +228,7 @@
                                 <th scope="col" class="px-6 py-4 text-center font-semibold text-slate-700">Hadir (%)</th>
                                 <th scope="col" class="px-6 py-4 text-center font-semibold text-slate-700">Izin (%)</th>
                                 <th scope="col" class="px-6 py-4 text-center font-semibold text-slate-700">Sakit (%)</th>
-                                <th scope="col" class="px-6 py-4 text-center font-semibold text-slate-700">Alpha (%)</th>
+                                <th scope="col" class="px-6 py-4 text-center font-semibold text-slate-700">Alfa (%)</th>
                                 <th scope="col" class="px-6 py-4 text-center font-semibold text-slate-700">Status</th>
                             </tr>
                         </thead>
