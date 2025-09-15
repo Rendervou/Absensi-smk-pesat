@@ -1,134 +1,46 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Rombel') }}
-        </h2>
-    </x-slot>
-
-    <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-        <div class="justify-between flex items-center mb-5">
-            <select id="Kelas" class="w-40 rounded bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-900 text-gray-900 dark:text-gray-200">
-
-                <option selected>Pilih Kelas</option>
-                @foreach ($kelas as $item)
-
-                <option value="{{$item->id_kelas}}">{{$item->nama_kelas}}</option>
-                @endforeach
-
-            </select>
-            <div x-data="{ openRombel: false }">
-
-                <!-- Tombol buka modal -->
-                <button @click="openRombel = true"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
-                    + Tambah Rombel
-                </button>
-
-                <!-- Modal -->
-                <div x-show="openRombel" x-cloak
-                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" x-transition>
-
-                    <div @click.away="openRombel = false"
-                        class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6">
-
-                        <!-- Header -->
-                        <div class="flex justify-between items-center border-b pb-3 mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Tambah Rombel
-                            </h3>
-                            <button @click="openRombel = false"
-                                class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                                ✕
-                            </button>
-                        </div>
-
-                        <!-- Form -->
-                        <form action="{{route('rombel.store')}}" method="POST" class="space-y-4">
-                            @csrf
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama
-                                    Siswa</label>
-                                <select name="id_siswa" required
-                                    class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                    <option value="">-- Nama Siswa --</option>
-                                    @foreach ($siswa as $item)
-
-                                    <option value="{{$item->id_siswa}}">{{$item->nama_siswa}}</option>
-                                    @endforeach
-
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Kelas</label>
-                                <select name="id_kelas" required
-                                    class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                    <option value="">-- Pilih Kelas --</option>
-                                    @foreach ($kelas as $item)
-                                    <option value="{{$item->id_kelas}}">{{$item->nama_kelas}}</option>
-                                    @endforeach
-
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Jurusan</label>
-                                <select name="id_jurusan" required
-                                    class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                    <option value="">-- Pilih Jurusan --</option>
-                                    @foreach ($jurusan as $item)
-                                    <option value="{{$item->id_jurusan}}">{{$item->nama_jurusan}}</option>
-                                    @endforeach
-
-                                </select>
-                            </div>
-
-                            {{-- <div>
-                                <label
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">Jurusan</label>
-                                <input type="text" name="jurusan"
-                                    class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div> --}}
-
-                            <!-- Footer -->
-                            <div class="flex justify-end gap-3 pt-4 border-t">
-                                <button type="button" @click="openRombel = false"
-                                    class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                    Batal
-                                </button>
-                                <button type="submit"
-                                    class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="font-bold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+                    {{ __('Dashboard Absensi') }}
+                </h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {{ date('l, d F Y') }} • Selamat datang kembali
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-right">
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ Auth::user()->name ?? 'Admin' }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Administrator</p>
+                </div>
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-semibold text-sm">{{ substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
                 </div>
             </div>
         </div>
+    </x-slot>
 
-        {{-- table --}}
+    <!-- Import Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        <div class="p-2">
-            <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-900 shadow-sm">
-                <table class="w-full">
-                    <!-- Table Header -->
-                    <thead class="bg-white dark:bg-gray-800">
-                        <tr>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-200 uppercase tracking-wider border-b">
-                                <div class="flex items-center gap-2">
-                                    <span
-                                        class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold">#</span>
-                                    No.
-                                </div>
-                            </th>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-200 uppercase tracking-wider border-b">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-                                        </path>
+    <div class="py-6 sm:py-8 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-screen">
+        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Quick Actions Header -->
+            <div class="mb-8">
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/50 p-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-1">Aksi Cepat</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Kelola absensi siswa dengan mudah</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                            <a href="presensi" class="group">
+                                <button type="button" 
+                                    class="flex items-center justify-center w-full sm:w-auto gap-3 text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-xl text-sm px-6 py-3 text-center dark:focus:ring-blue-800 transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     Nama Siswa
                                 </div>

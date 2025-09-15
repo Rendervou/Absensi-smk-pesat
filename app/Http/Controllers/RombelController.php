@@ -10,91 +10,71 @@ use Illuminate\Http\Request;
 
 class RombelController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $siswa = DataSiswa::all();
         $kelas = DataKelas::all();
         $jurusan = DataJurusan::all();
+
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
-        ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
-        ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
-            ->select('data_siswas.*', 'data_kelas.*', 'data_jurusans.*')
-        ->paginate(10);
+            ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
+            ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
+            ->select('rombels.*', 'data_siswas.nama_siswa', 'data_kelas.nama_kelas', 'data_jurusans.nama_jurusan')
+            ->paginate(10);
 
-        return view('admin.rombel', compact('jurusan','kelas','siswa','rombels'));
-        
+        return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'rombels'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        
         $request->validate([
             'id_siswa' => 'required|exists:data_siswas,id_siswa',
             'id_kelas' => 'required|exists:data_kelas,id_kelas',
             'id_jurusan' => 'required|exists:data_jurusans,id_jurusan',
-
         ]);
 
         Rombel::create([
-            'id_siswa'=> $request->id_siswa,
-            'id_kelas'=> $request->id_kelas,
-            'id_jurusan'=> $request->id_jurusan,
+            'id_siswa' => $request->id_siswa,
+            'id_kelas' => $request->id_kelas,
+            'id_jurusan' => $request->id_jurusan,
         ]);
 
-         return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Disimpan!']);
-
+        return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Disimpan!']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $rombel = Rombel::findOrFail($id);
+        $siswa = DataSiswa::all();
+        $kelas = DataKelas::all();
+        $jurusan = DataJurusan::all();
+
+        return view('rombel.edit', compact('rombel', 'siswa', 'kelas', 'jurusan'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'id_siswa' => 'required|exists:data_siswas,id_siswa',
+            'id_kelas' => 'required|exists:data_kelas,id_kelas',
+            'id_jurusan' => 'required|exists:data_jurusans,id_jurusan',
+        ]);
+
+        $rombel = Rombel::findOrFail($id);
+        $rombel->update([
+            'id_siswa' => $request->id_siswa,
+            'id_kelas' => $request->id_kelas,
+            'id_jurusan' => $request->id_jurusan,
+        ]);
+
+        return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Diubah!']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
-    {   
-        
-        $rombels = Rombel::findOrFail($id);
+    {
+        $rombel = Rombel::findOrFail($id);
+        $rombel->delete();
 
-
-        //delete product
-        $rombels->delete();
-
-        //redirect to index
-        return redirect()->route('admin.rombel')->with(['success' => 'Data Berhasil Dihapus!']);
+        return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
