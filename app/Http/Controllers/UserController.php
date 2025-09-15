@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataJurusan;
+use App\Models\DataKelas;
 use App\Models\DataSiswa;
+use App\Models\Presensi;
+use App\Models\Rombel;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -13,9 +17,42 @@ class UserController extends Controller
      */
     public function index()
     {
+        // Total siswa
         $totalSiswa = DataSiswa::count();
 
-        return view('user.dashboard', compact('totalSiswa'));   
+        // Hitung absensi hari ini
+        $today = now()->toDateString();
+
+        $hadir = Presensi::where('tanggal', $today)
+                    ->where('status', 'hadir')
+                    ->count();
+
+        $izin = Presensi::where('tanggal', $today)
+                    ->where('status', 'izin')
+                    ->count();
+
+        $sakit = Presensi::where('tanggal', $today)
+                    ->where('status', 'sakit')
+                    ->count();
+
+        $alfa = Presensi::where('tanggal', $today)
+                    ->where('status', 'alfa')
+                    ->count();
+
+        // Ambil 5 data terbaru
+        $latestPresensi = Presensi::with('siswa')
+                            ->orderBy('created_at', 'desc')
+                            ->take(5)
+                            ->get();
+
+        return view('user.dashboard', compact(
+            'totalSiswa',
+            'hadir',
+            'izin',
+            'sakit',
+            'alfa',
+            'latestPresensi'
+        ));
     }
     
     public function perKelas()
