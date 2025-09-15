@@ -20,7 +20,10 @@
             </button>
         </form>
 
-        <form class="">
+        <!-- FORM ABSENSI -->
+        <form action="{{ route('user.presensi.store') }}" method="POST">
+            @csrf
+
             <!-- Desktop Table View -->
             <div class="hidden lg:block overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                 <table class="w-full">
@@ -34,20 +37,10 @@
                                 </div>
                             </th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider border-b dark:border-gray-700">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                    Nama Siswa
-                                </div>
+                                Nama Siswa
                             </th>
                             <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider border-b dark:border-gray-700">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    Kehadiran
-                                </div>
+                                Kehadiran
                             </th>
                         </tr>
                     </thead>
@@ -64,38 +57,35 @@
                                 <div>
                                     <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">{{$s->nama_siswa}}</h3>
                                     <div class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
-                                        </svg>
                                         {{$s->nama_kelas}}
                                     </div>
                                 </div>
                             </td>
 
                             <td class="px-6 py-4 whitespace-nowrap">
+                                <!-- hidden input -->
+                                <input type="hidden" name="id_siswa[]" value="{{ $s->id_siswa }}">
+                                <input type="hidden" name="id_kelas[]" value="{{ $s->id_kelas }}">
+
                                 <fieldset class="flex justify-around items-center gap-6">
                                     <div class="flex items-center">
-                                        <input id="hadir_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="hadir"
-                                            class="w-4 h-4 text-green-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-green-500 dark:focus:ring-green-600 dark:bg-gray-700" checked>
-                                        <label for="hadir_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Hadir</label>
+                                        <input id="hadir_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="hadir" checked>
+                                        <label for="hadir_{{ $s->id_siswa }}" class="ml-2">Hadir</label>
                                     </div>
 
                                     <div class="flex items-center">
-                                        <input id="sakit_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="sakit"
-                                            class="w-4 h-4 text-yellow-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-600 dark:bg-gray-700">
-                                        <label for="sakit_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sakit</label>
+                                        <input id="sakit_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="sakit">
+                                        <label for="sakit_{{ $s->id_siswa }}" class="ml-2">Sakit</label>
                                     </div>
 
                                     <div class="flex items-center">
-                                        <input id="izin_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="izin"
-                                            class="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 dark:bg-gray-700">
-                                        <label for="izin_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Izin</label>
+                                        <input id="izin_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="izin">
+                                        <label for="izin_{{ $s->id_siswa }}" class="ml-2">Izin</label>
                                     </div>
 
                                     <div class="flex items-center">
-                                        <input id="alfa_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa"
-                                            class="w-4 h-4 text-red-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-red-500 dark:focus:ring-red-600 dark:bg-gray-700">
-                                        <label for="alfa_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alfa</label>
+                                        <input id="alfa_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa">
+                                        <label for="alfa_{{ $s->id_siswa }}" class="ml-2">Alfa</label>
                                     </div>
                                 </fieldset>
                             </td>
@@ -108,60 +98,45 @@
             <!-- Mobile Card View -->
             <div class="lg:hidden space-y-4">
                 @foreach ($rombels as $s)
-                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-                    <!-- Student Info -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl border p-4">
                     <div class="flex items-center gap-3 mb-4">
-                        <span class="w-10 h-10 bg-blue-500 dark:bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        <span class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                             {{$loop->iteration}}
                         </span>
                         <div class="min-w-0 flex-1">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 uppercase truncate">{{$s->nama_siswa}}</h3>
-                            <div class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 flex-shrink-0">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
-                                </svg>
-                                <span class="truncate">{{$s->nama_kelas}}</span>
-                            </div>
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 uppercase">{{$s->nama_siswa}}</h3>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">{{$s->nama_kelas}}</div>
                         </div>
                     </div>
 
-                    <!-- Attendance Options -->
-                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Pilih Kehadiran:</p>
-                        <fieldset class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                            <div class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <input id="hadir_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="hadir"
-                                    class="w-4 h-4 text-green-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-green-500 dark:bg-gray-700" checked>
-                                <label for="hadir_mobile_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Hadir</label>
-                            </div>
+                    <input type="hidden" name="id_siswa[]" value="{{ $s->id_siswa }}">
+                    <input type="hidden" name="id_kelas[]" value="{{ $s->id_kelas }}">
 
-                            <div class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <input id="sakit_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="sakit"
-                                    class="w-4 h-4 text-yellow-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700">
-                                <label for="sakit_mobile_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sakit</label>
-                            </div>
-
-                            <div class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <input id="izin_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="izin"
-                                    class="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700">
-                                <label for="izin_mobile_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Izin</label>
-                            </div>
-
-                            <div class="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <input id="alfa_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa"
-                                    class="w-4 h-4 text-red-600 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-red-500 dark:bg-gray-700">
-                                <label for="alfa_mobile_{{ $s->id_siswa }}" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Alfa</label>
-                            </div>
-                        </fieldset>
-                    </div>
+                    <fieldset class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <div>
+                            <input id="hadir_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="hadir" checked>
+                            <label for="hadir_mobile_{{ $s->id_siswa }}">Hadir</label>
+                        </div>
+                        <div>
+                            <input id="sakit_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="sakit">
+                            <label for="sakit_mobile_{{ $s->id_siswa }}">Sakit</label>
+                        </div>
+                        <div>
+                            <input id="izin_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="izin">
+                            <label for="izin_mobile_{{ $s->id_siswa }}">Izin</label>
+                        </div>
+                        <div>
+                            <input id="alfa_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa">
+                            <label for="alfa_mobile_{{ $s->id_siswa }}">Alfa</label>
+                        </div>
+                    </fieldset>
                 </div>
                 @endforeach
             </div>
 
             <!-- Submit Button -->
             <div class="flex justify-end mt-6">
-                <button type="submit"
-                    class="w-full sm:w-auto min-w-[200px] rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors text-sm px-6 py-3">
+                <button type="submit" class="w-full sm:w-auto min-w-[200px] rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-6 py-3">
                     Simpan Absensi
                 </button>
             </div>

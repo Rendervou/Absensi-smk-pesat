@@ -176,7 +176,6 @@
                                         </th>
                                         <th scope="col" class="px-6 py-4 font-medium">NIS</th>
                                         <th scope="col" class="px-6 py-4 font-medium">Kehadiran</th>
-                                        <th scope="col" class="px-6 py-4 font-medium">Waktu</th>
                                         <th scope="col" class="px-6 py-4 font-medium">Guru</th>
                                     </tr>
                                 </thead>
@@ -225,10 +224,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-mono">
-                                                {{ $row->created_at->timezone('Asia/Jakarta')->format('H:i') }}
-                                            </td>
-                                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 font-mono">
-                                                {{ $row->nama_guru ?? '-' }}
+                                                {{ $row->nama_guru }}
                                             </td>
                                         </tr>
                                     @empty

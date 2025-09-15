@@ -48,7 +48,39 @@
          */
         public function store(Request $request)
         {
-            //
+            $id_siswa = $request->input('id_siswa', []);
+            $id_kelas = $request->input('id_kelas', []);
+            $tanggal  = now()->toDateString();
+            $guru     = auth()->user();
+
+            foreach ($id_siswa as $index => $siswaId) {
+                $kelasId = $id_kelas[$index];
+                $siswa   = DataSiswa::find($siswaId);
+                $kelas   = DataKelas::find($kelasId);
+
+                $status = $request->input("kehadiran_{$siswaId}", 'hadir');
+
+                Presensi::updateOrCreate(
+                    [
+                        'id_siswa' => $siswa->id_siswa,
+                        'tanggal'  => $tanggal,
+                    ],
+                    [
+                        'id_siswa'    => $siswa->id_siswa,
+                        'id_kelas'    => $kelasId, // ← langsung pakai $kelasId biar pasti masuk
+                        'id_user'     => $guru->id,
+                        'nama_siswa'  => $siswa->nama_siswa,
+                        'nama_kelas'  => $kelas ? $kelas->nama_kelas : null,
+                        'nama_jurusan'=> $kelas && $kelas->jurusan ? $kelas->jurusan->nama_jurusan : null,
+                        'nama_guru'   => $guru->name,
+                        'status'      => $status,
+                        'tanggal'     => $tanggal,
+                    ]
+                );
+            }
+
+            return redirect()->route('user.presensi.index')
+                ->with('success', 'Presensi berhasil disimpan / diperbarui.');
         }
 
         /**
