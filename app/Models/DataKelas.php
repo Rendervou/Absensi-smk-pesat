@@ -11,4 +11,9 @@ class DataKelas extends Model
     protected $fillable = [
         'nama_kelas'
     ];
+
+    public function siswa()
+    {
+        return $this->hasMany(DataSiswa::class, 'id_kelas', 'id_kelas');
+    }
 }
