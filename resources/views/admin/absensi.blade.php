@@ -40,7 +40,7 @@
             </button>
         </form>
 
-        <h2 class="font-semibold text-xl my-4">Absensi Kelas {{$kelasNama ?? '...'}}</h2>
+        <h2 class="font-semibold text-xl my-4 dark:text-gray-100 text-gray-900">Absensi Kelas {{$kelasNama ?? 'Semua Kelas'}}</h2>
 
 
         <!-- FORM ABSENSI -->
