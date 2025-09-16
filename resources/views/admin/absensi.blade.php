@@ -1,114 +1,99 @@
 <x-app-layout>
-    
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="font-bold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
-                    {{ __('Absensi Kehadiran Siswa') }}
-                </h2>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    {{ date('l, d F Y') }} • Silahkan Absen
-                </p>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="text-right">
-                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ Auth::user()->name ?? 'Admin' }}
-                    </p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Administrator</p>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            <div class="flex items-center space-x-5">
+                <div class="w-14 h-14 bg-gradient-to-br from-indigo-600 to-pink-500 rounded-2xl flex items-center justify-center shadow-xl transform transition-transform duration-300 hover:scale-110">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 4h2m0 0H6m10 5h2m0 0H6m-2 4h4m-4 0v-4m-2 2h-4m2 2h2"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3h8v4M4 17h16M4 21h16a2 2 0 002-2v-8a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
                 </div>
-                <div
-                    class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <span class="text-white font-semibold text-sm">{{ substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
+                <div>
+                    <h2 class="font-extrabold text-3xl text-gray-900 dark:text-gray-100 leading-tight tracking-wide">{{ __('Absensi Kehadiran Siswa') }}</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
+                        <i class="far fa-calendar-alt text-indigo-500"></i> {{ date('l, d F Y') }} • Silakan Absen
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 bg-gradient-to-r from-indigo-600 to-pink-500 rounded-full px-4 py-2 shadow-lg">
+                <div class="text-right text-white">
+                    <p class="text-sm font-semibold">{{ Auth::user()->name ?? 'Admin' }}</p>
+                    <p class="text-xs opacity-80">Administrator</p>
+                </div>
+                <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center shadow-md">
+                    <span class="text-white font-bold text-lg select-none">{{ substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
                 </div>
             </div>
         </div>
     </x-slot>
 
-    <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 min-h-screen">
-        <!-- Filter Form - Responsive -->
-        <form action="{{route('admin.presensi.index')}}" method="get" class="flex flex-col sm:flex-row mb-5 items-stretch sm:items-center gap-3 sm:gap-5">
-            <select id="kelas" name="kelas"
-                class="w-full sm:w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <option value="">Semua Kelas</option>
-                @foreach ($kelas as $k)
-                <option value="{{$k->id_kelas}}">{{$k->nama_kelas}}</option>
-                {{$k->nama_kelas}}
-                @endforeach
-            </select>
-            <button type="submit" class="bg-orange-500 w-full sm:w-36 py-2.5 sm:py-2 rounded-lg text-white font-medium hover:bg-orange-600 transition-colors">
-                Cari
-            </button>
-        </form>
+    <section class="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 p-6 sm:p-10 min-h-screen">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg mb-8 border border-gray-200 dark:border-gray-700">
+            <form action="{{ route('admin.presensi.index') }}" method="get" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-5">
+                <div class="flex-grow">
+                    <select id="kelas" name="kelas"
+                        class="w-full bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 text-sm rounded-xl focus:ring-indigo-500 focus:border-indigo-500 block p-3 transition-shadow duration-300 shadow-sm hover:shadow-md">
+                        <option value="">{{ $kelasNama ?? 'Semua Kelas' }}</option>
+                        @foreach ($kelas as $k)
+                            <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="bg-indigo-600 w-full sm:w-auto px-7 py-3 rounded-xl text-white font-semibold hover:bg-indigo-700 transition-colors duration-300 flex items-center justify-center gap-3 shadow-md hover:shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    Cari Kelas
+                </button>
+            </form>
+        </div>
 
-        <h2 class="font-semibold text-xl my-4 dark:text-gray-100 text-gray-900">Absensi Kelas {{$kelasNama ?? 'Semua Kelas'}}</h2>
+        <h2 class="font-extrabold text-2xl mb-6 dark:text-gray-100 text-gray-900 tracking-wide">
+            Daftar Absensi Kelas <span class="text-indigo-600 dark:text-indigo-400">{{ $kelasNama ?? 'Semua Kelas' }}</span>
+        </h2>
 
-
-        <!-- FORM ABSENSI -->
-        <form action="{{ route('admin.presensi.store') }}" method="POST">
+        <form action="{{ route('admin.presensi.store') }}" method="POST" class="space-y-8">
             @csrf
 
-            <!-- Desktop Table View -->
-            <div class="hidden lg:block overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                <table class="w-full">
-                    <!-- Table Header -->
-                    <thead class="bg-white dark:bg-gray-800">
+            <div class="hidden lg:block overflow-x-auto rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl">
+                <table class="w-full table-auto border-collapse">
+                    <thead class="bg-indigo-100 dark:bg-indigo-900">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider border-b dark:border-gray-700">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-8 h-8 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-sm font-bold">#</span>
-                                    No.
-                                </div>
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider border-b dark:border-gray-700">
-                                Nama Siswa
-                            </th>
-                            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider border-b dark:border-gray-700">
-                                Kehadiran
-                            </th>
+                            <th class="px-8 py-5 text-left text-sm font-extrabold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider border-b border-indigo-300 dark:border-indigo-700 rounded-tl-3xl">No.</th>
+                            <th class="px-8 py-5 text-left text-sm font-extrabold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider border-b border-indigo-300 dark:border-indigo-700">Nama Siswa</th>
+                            <th class="px-8 py-5 text-left text-sm font-extrabold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider border-b border-indigo-300 dark:border-indigo-700 rounded-tr-3xl">Kehadiran</th>
                         </tr>
                     </thead>
-
-                    <!-- Table Body -->
-                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody class="bg-white dark:bg-gray-900 divide-y divide-indigo-200 dark:divide-indigo-700">
                         @foreach ($rombels as $s)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="w-8 h-8 bg-blue-500 dark:bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">{{$loop->iteration}}</span>
-                            </td>
-
-                            <td class="px-6 py-4 whitespace-nowrap">
+                        <tr class="transition-colors hover:bg-indigo-50 dark:hover:bg-indigo-800 cursor-pointer">
+                            <td class="px-8 py-5 whitespace-nowrap text-sm text-indigo-600 dark:text-indigo-400 font-semibold">{{ $loop->iteration }}</td>
+                            <td class="px-8 py-5 whitespace-nowrap">
                                 <div>
-                                    <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase">{{$s->nama_siswa}}</h3>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1">
-                                        {{$s->nama_kelas}}
-                                    </div>
+                                    <h3 class="text-base font-semibold text-indigo-900 dark:text-indigo-100 uppercase tracking-wide">{{ $s->nama_siswa }}</h3>
+                                    <div class="text-sm text-indigo-600 dark:text-indigo-400 mt-1">{{ $s->nama_kelas }}</div>
                                 </div>
                             </td>
-
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <!-- hidden input -->
+                            <td class="px-8 py-5 whitespace-nowrap">
                                 <input type="hidden" name="id_siswa[]" value="{{ $s->id_siswa }}">
                                 <input type="hidden" name="id_kelas[]" value="{{ $s->id_kelas }}">
-
-                                <fieldset class="flex justify-around items-center gap-6">
+                                <fieldset class="flex items-center gap-6 sm:gap-8">
                                     <div class="flex items-center">
-                                        <input id="hadir_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="hadir" checked>
-                                        <label for="hadir_{{ $s->id_siswa }}" class="ml-2">Hadir</label>
+                                        <input id="hadir_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="hadir" checked class="h-5 w-5 text-indigo-600 bg-indigo-100 border-indigo-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-900 focus:ring-2 dark:bg-gray-800 dark:border-indigo-700 cursor-pointer transition duration-200">
+                                        <label for="hadir_{{ $s->id_siswa }}" class="ml-2 text-sm font-semibold text-indigo-900 dark:text-indigo-200 cursor-pointer select-none">Hadir</label>
                                     </div>
-
                                     <div class="flex items-center">
-                                        <input id="sakit_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="sakit">
-                                        <label for="sakit_{{ $s->id_siswa }}" class="ml-2">Sakit</label>
+                                        <input id="sakit_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="sakit" class="h-5 w-5 text-yellow-500 bg-yellow-100 border-yellow-300 focus:ring-yellow-500 dark:focus:ring-yellow-600 dark:ring-offset-gray-900 focus:ring-2 dark:bg-gray-800 dark:border-yellow-700 cursor-pointer transition duration-200">
+                                        <label for="sakit_{{ $s->id_siswa }}" class="ml-2 text-sm font-semibold text-indigo-900 dark:text-indigo-200 cursor-pointer select-none">Sakit</label>
                                     </div>
-
                                     <div class="flex items-center">
-                                        <input id="izin_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="izin">
-                                        <label for="izin_{{ $s->id_siswa }}" class="ml-2">Izin</label>
+                                        <input id="izin_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="izin" class="h-5 w-5 text-green-600 bg-green-100 border-green-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-900 focus:ring-2 dark:bg-gray-800 dark:border-green-700 cursor-pointer transition duration-200">
+                                        <label for="izin_{{ $s->id_siswa }}" class="ml-2 text-sm font-semibold text-indigo-900 dark:text-indigo-200 cursor-pointer select-none">Izin</label>
                                     </div>
-
                                     <div class="flex items-center">
-                                        <input id="alfa_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa">
-                                        <label for="alfa_{{ $s->id_siswa }}" class="ml-2">Alfa</label>
+                                        <input id="alfa_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa" class="h-5 w-5 text-red-600 bg-red-100 border-red-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-900 focus:ring-2 dark:bg-gray-800 dark:border-red-700 cursor-pointer transition duration-200">
+                                        <label for="alfa_{{ $s->id_siswa }}" class="ml-2 text-sm font-semibold text-indigo-900 dark:text-indigo-200 cursor-pointer select-none">Alfa</label>
                                     </div>
                                 </fieldset>
                             </td>
@@ -118,48 +103,44 @@
                 </table>
             </div>
 
-            <!-- Mobile Card View -->
-            <div class="lg:hidden space-y-4">
+            <div class="lg:hidden space-y-6">
                 @foreach ($rombels as $s)
-                <div class="bg-white dark:bg-gray-800 rounded-xl border p-4">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                            {{$loop->iteration}}
-                        </span>
+                <div class="bg-white dark:bg-gray-800 rounded-3xl border border-indigo-200 dark:border-indigo-700 p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                    <div class="flex items-center gap-4 mb-5 border-b border-indigo-200 dark:border-indigo-700 pb-5">
+                        <span class="w-12 h-12 bg-indigo-600 dark:bg-indigo-700 text-white rounded-full flex items-center justify-center text-lg font-extrabold shadow-md select-none">{{ $loop->iteration }}</span>
                         <div class="min-w-0 flex-1">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 uppercase">{{$s->nama_siswa}}</h3>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">{{$s->nama_kelas}}</div>
+                            <h3 class="text-lg font-extrabold text-indigo-900 dark:text-indigo-100 uppercase tracking-wide">{{ $s->nama_siswa }}</h3>
+                            <div class="text-sm text-indigo-600 dark:text-indigo-400">{{ $s->nama_kelas }}</div>
                         </div>
                     </div>
 
                     <input type="hidden" name="id_siswa[]" value="{{ $s->id_siswa }}">
                     <input type="hidden" name="id_kelas[]" value="{{ $s->id_kelas }}">
 
-                    <fieldset class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                        <div>
-                            <input id="hadir_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="hadir" checked>
-                            <label for="hadir_mobile_{{ $s->id_siswa }}">Hadir</label>
+                    <fieldset class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                        <div class="flex items-center gap-3">
+                            <input id="hadir_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="hadir" checked class="h-5 w-5 text-indigo-600 bg-indigo-100 border-indigo-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-900 focus:ring-2 dark:bg-gray-800 dark:border-indigo-700 cursor-pointer transition duration-200">
+                            <label for="hadir_mobile_{{ $s->id_siswa }}" class="text-sm font-semibold text-indigo-900 dark:text-indigo-100 cursor-pointer select-none">Hadir</label>
                         </div>
-                        <div>
-                            <input id="sakit_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="sakit">
-                            <label for="sakit_mobile_{{ $s->id_siswa }}">Sakit</label>
+                        <div class="flex items-center gap-3">
+                            <input id="sakit_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="sakit" class="h-5 w-5 text-yellow-500 bg-yellow-100 border-yellow-300 focus:ring-yellow-500 dark:focus:ring-yellow-600 dark:ring-offset-gray-900 focus:ring-2 dark:bg-gray-800 dark:border-yellow-700 cursor-pointer transition duration-200">
+                            <label for="sakit_mobile_{{ $s->id_siswa }}" class="text-sm font-semibold text-indigo-900 dark:text-indigo-100 cursor-pointer select-none">Sakit</label>
                         </div>
-                        <div>
-                            <input id="izin_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="izin">
-                            <label for="izin_mobile_{{ $s->id_siswa }}">Izin</label>
+                        <div class="flex items-center gap-3">
+                            <input id="izin_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="izin" class="h-5 w-5 text-green-600 bg-green-100 border-green-300 focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-900 focus:ring-2 dark:bg-gray-800 dark:border-green-700 cursor-pointer transition duration-200">
+                            <label for="izin_mobile_{{ $s->id_siswa }}" class="text-sm font-semibold text-indigo-900 dark:text-indigo-100 cursor-pointer select-none">Izin</label>
                         </div>
-                        <div>
-                            <input id="alfa_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa">
-                            <label for="alfa_mobile_{{ $s->id_siswa }}">Alfa</label>
+                        <div class="flex items-center gap-3">
+                            <input id="alfa_mobile_{{ $s->id_siswa }}" type="radio" name="kehadiran_{{ $s->id_siswa }}" value="alfa" class="h-5 w-5 text-red-600 bg-red-100 border-red-300 focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-900 focus:ring-2 dark:bg-gray-800 dark:border-red-700 cursor-pointer transition duration-200">
+                            <label for="alfa_mobile_{{ $s->id_siswa }}" class="text-sm font-semibold text-indigo-900 dark:text-indigo-100 cursor-pointer select-none">Alfa</label>
                         </div>
                     </fieldset>
                 </div>
                 @endforeach
             </div>
 
-            <!-- Submit Button -->
-            <div class="flex justify-end mt-6">
-                <button type="submit" class="w-full sm:w-auto min-w-[200px] rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-6 py-3">
+            <div class="flex justify-end mt-10">
+                <button type="submit" class="w-full sm:w-auto min-w-[220px] rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base px-10 py-4 shadow-lg transition-colors duration-300 hover:shadow-xl">
                     Simpan Absensi
                 </button>
             </div>

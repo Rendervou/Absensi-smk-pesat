@@ -10,6 +10,7 @@ use App\Models\Rombel;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -58,114 +59,120 @@ class UserController extends Controller
     
     public function perKelas(Request $request)
     {
-        // Ambil semua data kelas
+        // Ambil semua kelas (pastikan model DataKelas punya primaryKey id_kelas)
         $kelas = DataKelas::orderBy('nama_kelas')->get();
-        
-        // Tentukan semester berdasarkan request atau default semester 1
-        $semester = $request->get('semester', 1);
-        $monthNums = $semester == 1 ? [7, 8, 9, 10, 11, 12] : [1, 2, 3, 4, 5, 6];
-        
-        // Inisialisasi array untuk data bulanan dan total tahunan
-        $dataBulan = [];
-        $totalTahunan = [];
-        
-        // Loop untuk setiap kelas
-        foreach ($kelas as $kls) {
-            // Inisialisasi data per bulan untuk setiap kelas
-            foreach ($monthNums as $month) {
-                // Hitung data presensi per bulan per kelas
-                $startDate = Carbon::create(null, $month, 1)->startOfMonth();
-                $endDate = Carbon::create(null, $month, 1)->endOfMonth();
-                
-                // Jika bulan semester 1 (Juli-Desember), gunakan tahun sekarang
-                // Jika bulan semester 2 (Januari-Juni), gunakan tahun sekarang
-                if ($semester == 1 && $month >= 7) {
-                    $year = now()->year;
-                } elseif ($semester == 2 && $month <= 6) {
-                    $year = now()->year;
-                } else {
-                    $year = now()->year;
-                }
-                
-                $startDate = Carbon::create($year, $month, 1)->startOfMonth();
-                $endDate = Carbon::create($year, $month, 1)->endOfMonth();
-                
-                // Ambil siswa yang ada di kelas ini
-                $siswaIds = DataSiswa::where('id_kelas', $kls->id_kelas)->pluck('id_siswa');
-                
-                $hadir = Presensi::whereIn('id_siswa', $siswaIds)
-                    ->whereBetween('tanggal', [$startDate, $endDate])
-                    ->where('status', 'hadir')
-                    ->count();
-                    
-                $izin = Presensi::whereIn('id_siswa', $siswaIds)
-                    ->whereBetween('tanggal', [$startDate, $endDate])
-                    ->where('status', 'izin')
-                    ->count();
-                    
-                $sakit = Presensi::whereIn('id_siswa', $siswaIds)
-                    ->whereBetween('tanggal', [$startDate, $endDate])
-                    ->where('status', 'sakit')
-                    ->count();
-                    
-                $alfa = Presensi::whereIn('id_siswa', $siswaIds)
-                    ->whereBetween('tanggal', [$startDate, $endDate])
-                    ->where('status', 'alfa')
-                    ->count();
-                
-                $dataBulan[$kls->id_kelas][$month] = [
-                    'hadir' => $hadir,
-                    'izin' => $izin,
-                    'sakit' => $sakit,
-                    'alfa' => $alfa
+
+        // Inisialisasi struktur data
+        $dataBulan = [];       // [id_kelas][bulan_number] => ['hadir'=>..,'izin'=>..,'sakit'=>..,'alfa'=>..]
+        $totalTahunan = [];    // [id_kelas] => totals
+
+        // Loop tiap kelas dan tiap bulan 1..12
+        foreach ($kelas as $k) {
+            $totalTahunan[$k->id_kelas] = ['hadir' => 0, 'izin' => 0, 'sakit' => 0, 'alfa' => 0];
+
+            for ($m = 1; $m <= 12; $m++) {
+                // Ambil agregasi per status untuk bulan m dan kelas ini
+                $counts = Presensi::where('id_kelas', $k->id_kelas)
+                    ->whereMonth('tanggal', $m)
+                    ->selectRaw("
+                        SUM(CASE WHEN status = 'hadir' THEN 1 ELSE 0 END) as hadir,
+                        SUM(CASE WHEN status = 'izin' THEN 1 ELSE 0 END) as izin,
+                        SUM(CASE WHEN status = 'sakit' THEN 1 ELSE 0 END) as sakit,
+                        SUM(CASE WHEN status = 'alfa' THEN 1 ELSE 0 END) as alfa
+                    ")->first();
+
+                // Pastikan integer
+                $h = (int) ($counts->hadir ?? 0);
+                $i = (int) ($counts->izin ?? 0);
+                $s = (int) ($counts->sakit ?? 0);
+                $a = (int) ($counts->alfa ?? 0);
+
+                // Simpan per bulan
+                $dataBulan[$k->id_kelas][$m] = [
+                    'hadir' => $h,
+                    'izin'  => $i,
+                    'sakit' => $s,
+                    'alfa'  => $a,
                 ];
+
+                // Tambah ke total tahunan
+                $totalTahunan[$k->id_kelas]['hadir'] += $h;
+                $totalTahunan[$k->id_kelas]['izin']  += $i;
+                $totalTahunan[$k->id_kelas]['sakit'] += $s;
+                $totalTahunan[$k->id_kelas]['alfa']  += $a;
             }
-            
-            // Hitung total tahunan (semua bulan)
-            $siswaIds = DataSiswa::where('id_kelas', $kls->id_kelas)->pluck('id_siswa');
-            
-            // Untuk total tahunan, ambil data dari Juli tahun lalu sampai Juni tahun ini
-            $startYear = $semester == 1 ? now()->year : now()->year - 1;
-            $endYear = $semester == 1 ? now()->year : now()->year;
-            
-            $yearStartDate = Carbon::create($startYear, 7, 1)->startOfMonth();
-            $yearEndDate = Carbon::create($endYear, 6, 30)->endOfMonth();
-            
-            $totalHadir = Presensi::whereIn('id_siswa', $siswaIds)
-                ->whereBetween('tanggal', [$yearStartDate, $yearEndDate])
-                ->where('status', 'hadir')
-                ->count();
-                
-            $totalIzin = Presensi::whereIn('id_siswa', $siswaIds)
-                ->whereBetween('tanggal', [$yearStartDate, $yearEndDate])
-                ->where('status', 'izin')
-                ->count();
-                
-            $totalSakit = Presensi::whereIn('id_siswa', $siswaIds)
-                ->whereBetween('tanggal', [$yearStartDate, $yearEndDate])
-                ->where('status', 'sakit')
-                ->count();
-                
-            $totalAlfa = Presensi::whereIn('id_siswa', $siswaIds)
-                ->whereBetween('tanggal', [$yearStartDate, $yearEndDate])
-                ->where('status', 'alfa')
-                ->count();
-            
-            $totalTahunan[$kls->id_kelas] = [
-                'hadir' => $totalHadir,
-                'izin' => $totalIzin,
-                'sakit' => $totalSakit,
-                'alfa' => $totalAlfa
-            ];
         }
-        
-        return view('user.kelas', compact('kelas', 'dataBulan', 'totalTahunan'));
+
+        // Kirim ke view: pastikan view kamu (admin.kelas) memakai variabel ini
+        return view('user.kelas', compact('kelas','dataBulan','totalTahunan'));
     }
 
-    public function perBulan()
+    public function perBulan(Request $request)
     {
-        // $data = Absensi::orderBy('kelas')->get();
-        return view('user.bulan');
+        $bulan = $request->get('bulan', now()->month);
+        $id_kelas = $request->get('kelas');
+        $selected_jurusan = $request->get('jurusan');
+        $search = $request->get('search');
+
+        $kelas = DataKelas::all();
+        $jurusan = DataJurusan::all();
+
+        // Query siswa lewat Rombel supaya bisa filter kelas & jurusan
+        $siswaQuery = DataSiswa::join('rombels', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
+            ->join('data_kelas', 'rombels.id_kelas', '=', 'data_kelas.id_kelas')
+            ->join('data_jurusans', 'rombels.id_jurusan', '=', 'data_jurusans.id_jurusan')
+            ->select('data_siswas.*', 'data_kelas.nama_kelas', 'data_jurusans.nama_jurusan');
+
+        // Filter kelas
+        if ($id_kelas) {
+            $siswaQuery->where('data_kelas.id_kelas', $id_kelas);
+        }
+
+        // Filter jurusan
+        if ($selected_jurusan) {
+            $siswaQuery->where('data_jurusans.id_jurusan', $selected_jurusan);
+        }
+
+        // Search (by nama or nis)
+        if ($search) {
+            $siswaQuery->where(function ($q) use ($search) {
+                $q->where('data_siswas.nama_siswa', 'like', "%{$search}%")
+                ->orWhere('data_siswas.nis', 'like', "%{$search}%");
+            });
+        }
+
+        // Ambil daftar siswa sesuai filter
+        $siswaList = $siswaQuery->get();
+
+        // Ambil rekap presensi per siswa
+        $rekapPresensi = Presensi::select(
+                'id_siswa',
+                DB::raw("SUM(CASE WHEN status = 'sakit' THEN 1 ELSE 0 END) as S"),
+                DB::raw("SUM(CASE WHEN status = 'izin' THEN 1 ELSE 0 END) as I"),
+                DB::raw("SUM(CASE WHEN status = 'alfa' THEN 1 ELSE 0 END) as A")
+            )
+            ->whereMonth('tanggal', $bulan)
+            ->groupBy('id_siswa')
+            ->get()
+            ->keyBy('id_siswa');
+
+        $rekap = [];
+        foreach ($siswaList as $siswa) {
+            $rekapData = $rekapPresensi[$siswa->id_siswa] ?? null;
+
+            $rekap[$siswa->nis] = [
+                'nama_siswa' => $siswa->nama_siswa,
+                'kelas'      => $siswa->nama_kelas ?? '-',
+                'kompetensi' => $siswa->nama_jurusan ?? '-',
+                'S'          => $rekapData->S ?? 0,
+                'I'          => $rekapData->I ?? 0,
+                'A'          => $rekapData->A ?? 0,
+            ];
+        }
+
+        return view('user.bulan', compact(
+            'rekap', 'bulan', 'kelas', 'jurusan', 'id_kelas', 'selected_jurusan', 'search'
+        ));
     }
 
     /**
