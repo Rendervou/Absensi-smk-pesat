@@ -137,7 +137,7 @@ php artisan test
 
 ```bash
 Guru (id, nama, nip, ...)
-   │──< Absensi (id, id_guru, id_siswa, tanggal, status)
+   │── (Absensi (id, id_guru, id_siswa, tanggal, status)
 Siswa (id, nama, nis, id_kelas, id_jurusan, ...)
    │
    └── Kelas (id, nama_kelas, id_jurusan)
