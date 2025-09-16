@@ -27,13 +27,16 @@ class PresensiController extends Controller
         ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
             ->select('data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
 
+
+            $kelasNama = null;
         if ($request->filled('kelas')) {
             $rombels->where('data_kelas.id_kelas', $request->kelas);
+            $kelasNama = DataKelas::where('id_kelas', $request->kelas)->value('nama_kelas');
         };
 
         $rombels = $rombels->orderBy('data_siswas.nama_siswa','asc')->paginate(50);
         
-        return view('admin.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan'));
+        return view('admin.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan', 'kelasNama'));
     }
 
     /**

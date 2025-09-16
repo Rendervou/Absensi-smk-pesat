@@ -39,8 +39,7 @@ class AdminController extends Controller
         // Ambil 5 data terbaru
         $latestPresensi = Presensi::with('siswa')
                             ->orderBy('created_at', 'desc')
-                            ->take(5)
-                            ->get();
+                            ->paginate(10);
 
         return view('admin.dashboard', compact(
             'totalSiswa',

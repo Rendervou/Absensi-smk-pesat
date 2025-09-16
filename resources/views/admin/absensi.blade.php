@@ -1,13 +1,32 @@
 <x-app-layout>
+    
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Absensi') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="font-bold text-2xl text-gray-800 dark:text-gray-200 leading-tight">
+                    {{ __('Absensi Kehadiran Siswa') }}
+                </h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {{ date('l, d F Y') }} • Silahkan Absen
+                </p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-right">
+                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ Auth::user()->name ?? 'Admin' }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Administrator</p>
+                </div>
+                <div
+                    class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span class="text-white font-semibold text-sm">{{ substr(Auth::user()->name ?? 'A', 0, 1) }}</span>
+                </div>
+            </div>
+        </div>
     </x-slot>
 
     <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 min-h-screen">
         <!-- Filter Form - Responsive -->
-        <form action="{{route('admin.presensi.index')}}" method="get" class="flex flex-col sm:flex-row mb-6 sm:mb-10 items-stretch sm:items-center gap-3 sm:gap-5">
+        <form action="{{route('admin.presensi.index')}}" method="get" class="flex flex-col sm:flex-row mb-5 items-stretch sm:items-center gap-3 sm:gap-5">
             <select id="kelas" name="kelas"
                 class="w-full sm:w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <option value="">Semua Kelas</option>
@@ -20,7 +39,9 @@
                 Cari
             </button>
         </form>
-        <h2></h2>
+
+        <h2 class="font-semibold text-xl my-4">Absensi Kelas {{$kelasNama ?? '...'}}</h2>
+
 
         <!-- FORM ABSENSI -->
         <form action="{{ route('admin.presensi.store') }}" method="POST">
