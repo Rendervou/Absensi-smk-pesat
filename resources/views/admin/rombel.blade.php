@@ -6,8 +6,10 @@
     </x-slot>
 
     <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
-        <div class="justify-between flex items-center mb-5">
-            <form action="{{route('rombel.index')}}" method="get" class="flex flex-col sm:flex-row mb-6 sm:mb-10 items-stretch sm:items-center gap-3 sm:gap-5">
+        <div class="justify-between flex items-center mb-4  gap-5 ">
+            
+            <form action="{{route('rombel.index')}}" method="get" class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                <input id="searchInput" name="search" class="w- bg-gray-50 border border-gray-300 text-gray-900 rounded-lg" type="text" placeholder="Cari Nama Siswa"">
             <select id="kelas" name="kelas"
                 class="w-full sm:w-40 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <option value="">Semua Kelas</option>
@@ -24,7 +26,7 @@
 
                 <!-- Tombol buka modal -->
                 <button @click="openRombel = true"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+                    class="px-4 py-2 bg-blue-600  text-white rounded-lg shadow hover:bg-blue-700 transition">
                     + Tambah Rombel
                 </button>
 
@@ -113,7 +115,7 @@
 
         <div class="p-2">
             <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-900 shadow-sm">
-                <table class="w-full">
+                <table id="Table" class="w-full">
                     <!-- Table Header -->
                     <thead class="bg-white dark:bg-gray-800">
                         <tr>
@@ -246,4 +248,26 @@
                 {{ $rombels->links('pagination::tailwind') }}
             </div>
     </section>
+    
 </x-app-layout>
+<script>
+document.getElementById('searchInput').addEventListener('keyup', function () {
+    const searchValue = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#Table tbody tr');
+
+    rows.forEach((row) => {
+        const cells = row.querySelectorAll('td');
+        let found = false;
+
+        for (let i = 1; i < cells.length - 1; i++) {
+            if (cells[i].textContent.toLowerCase().includes(searchValue)) {
+                found = true;
+                break;
+            }
+        }
+
+        row.style.display = found ? '' : 'none';
+    });
+});
+
+</script>

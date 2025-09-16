@@ -167,8 +167,8 @@
                 <div class="flex items-center justify-center space-x-3 mb-4">                   
                     <span class="font-bold text-xl text-white">SMK PESAT</span>
                 </div>
-                <p class="text-slate-400 mb-4">© 2024 SMK Informatika Pesat. Semua hak cipta dilindungi.</p>
-                <p class="text-slate-500 text-sm">Sistem Absensi Digital - Teknologi untuk Pendidikan</p>
+                <p class="text-slate-300 mb-4">© 2024 SMK Informatika Pesat. Semua hak cipta dilindungi.</p>
+                <p class="text-slate-200 text-sm">Sistem Absensi Digital - Teknologi untuk Pendidikan</p>
             </div>
         </footer>
     </div>
@@ -194,8 +194,8 @@
 
             // Fade-in teks & tombol
             const elements = [
-                { id: 'title', delay: 500 },
-                { id: 'buttons', delay: 1000 }
+                { id: 'title', delay: 300 },
+                { id: 'buttons', delay: 100 }
             ];
             elements.forEach(({ id, delay }) => {
                 setTimeout(() => {

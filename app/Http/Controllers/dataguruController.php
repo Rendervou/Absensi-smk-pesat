@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataGuru;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -61,6 +62,13 @@ class dataguruController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+                $g = DataGuru::findOrFail($id);
+
+
+        //delete product
+        $g->delete();
+
+        //redirect to index
+        return redirect()->route('admin.guru')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
