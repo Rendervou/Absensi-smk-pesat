@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataJurusan;
 use App\Models\DataKelas;
 use App\Models\DataSiswa;
 use App\Models\Presensi;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class AdminController extends Controller
 {
@@ -104,41 +107,72 @@ class AdminController extends Controller
 
     public function perBulan(Request $request)
     {
-        $kelas = DataKelas::all();
-
-        // Ambil dari query string ?kelas=...&bulan=...
-        $bulan = $request->get('bulan', now()->month); 
+        $bulan = $request->get('bulan', now()->month);
         $id_kelas = $request->get('kelas');
+        $selected_jurusan = $request->get('jurusan');
+        $search = $request->get('search');
 
-        $siswaQuery = DataSiswa::with(['kelas','jurusan']);
+        $kelas = DataKelas::all();
+        $jurusan = DataJurusan::all();
 
+        // Query siswa lewat Rombel supaya bisa filter kelas & jurusan
+        $siswaQuery = DataSiswa::join('rombels', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
+            ->join('data_kelas', 'rombels.id_kelas', '=', 'data_kelas.id_kelas')
+            ->join('data_jurusans', 'rombels.id_jurusan', '=', 'data_jurusans.id_jurusan')
+            ->select('data_siswas.*', 'data_kelas.nama_kelas', 'data_jurusans.nama_jurusan');
+
+        // Filter kelas
         if ($id_kelas) {
-            $siswaQuery->where('id_kelas', $id_kelas);
+            $siswaQuery->where('data_kelas.id_kelas', $id_kelas);
         }
 
-        $siswaList = $siswaQuery->orderBy('nama_siswa', 'asc')->get();
+        // Filter jurusan
+        if ($selected_jurusan) {
+            $siswaQuery->where('data_jurusans.id_jurusan', $selected_jurusan);
+        }
+
+        // Search (by nama or nis)
+        if ($search) {
+            $siswaQuery->where(function ($q) use ($search) {
+                $q->where('data_siswas.nama_siswa', 'like', "%{$search}%")
+                ->orWhere('data_siswas.nis', 'like', "%{$search}%");
+            });
+        }
+
+        // Ambil daftar siswa sesuai filter
+        $siswaList = $siswaQuery->get();
+
+        // Ambil rekap presensi per siswa
+        $rekapPresensi = Presensi::select(
+                'id_siswa',
+                FacadesDB::raw("SUM(CASE WHEN status = 'sakit' THEN 1 ELSE 0 END) as S"),
+                FacadesDB::raw("SUM(CASE WHEN status = 'izin' THEN 1 ELSE 0 END) as I"),
+                FacadesDB::raw("SUM(CASE WHEN status = 'alfa' THEN 1 ELSE 0 END) as A")
+            )
+            ->whereMonth('tanggal', $bulan)
+            ->groupBy('id_siswa')
+            ->get()
+            ->keyBy('id_siswa');
 
         $rekap = [];
-
         foreach ($siswaList as $siswa) {
-            $rekap[$siswa->id_siswa] = [
+            $rekapData = $rekapPresensi[$siswa->id_siswa] ?? null;
+
+            $rekap[$siswa->nis] = [
                 'nama_siswa' => $siswa->nama_siswa,
-                'kelas' => $siswa->kelas->nama_kelas ?? '-',
-                'kompetensi' => $siswa->jurusan->nama_jurusan ?? '-',
-                'S' => Presensi::where('id_siswa', $siswa->id_siswa)
-                            ->whereMonth('tanggal', $bulan)
-                            ->where('status','sakit')->count(),
-                'I' => Presensi::where('id_siswa', $siswa->id_siswa)
-                            ->whereMonth('tanggal', $bulan)
-                            ->where('status','izin')->count(),
-                'A' => Presensi::where('id_siswa', $siswa->id_siswa)
-                            ->whereMonth('tanggal', $bulan)
-                            ->where('status','alfa')->count(),
+                'kelas'      => $siswa->nama_kelas ?? '-',
+                'kompetensi' => $siswa->nama_jurusan ?? '-',
+                'S'          => $rekapData->S ?? 0,
+                'I'          => $rekapData->I ?? 0,
+                'A'          => $rekapData->A ?? 0,
             ];
         }
 
-        return view('admin.bulan', compact('rekap','kelas','bulan','id_kelas'));
+        return view('admin.bulan', compact(
+            'rekap', 'bulan', 'kelas', 'jurusan', 'id_kelas', 'selected_jurusan', 'search'
+        ));
     }
+
 
 
     /**

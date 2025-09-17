@@ -176,7 +176,6 @@
                                     </div>
                                     <div>
                                         <h3 class="text-2xl font-bold text-white">{{ $kls->nama_kelas }}</h3>
-                                        <p class="{{ $colorSet[2] }} text-base">ID: {{ $kls->id_kelas }}</p>
                                     </div>
                                 </div>
                                 

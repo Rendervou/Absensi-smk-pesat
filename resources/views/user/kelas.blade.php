@@ -50,12 +50,12 @@
                         </div>
                         
                         @if(request('kelas_filter'))
-                            <button onclick="resetFilter()" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition-all duration-200">
+                            <a href="{{ route('user.perKelas', ['semester' => request('semester', 1)]) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition-all duration-200">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
                                 Reset Filter
-                            </button>
+                            </a>
                         @endif
                     </div>
                     
@@ -176,7 +176,6 @@
                                     </div>
                                     <div>
                                         <h3 class="text-2xl font-bold text-white">{{ $kls->nama_kelas }}</h3>
-                                        <p class="{{ $colorSet[2] }} text-base">ID: {{ $kls->id_kelas }}</p>
                                     </div>
                                 </div>
                                 
@@ -268,12 +267,12 @@
                         @endif
                     </p>
                     @if(request('kelas_filter'))
-                        <button onclick="resetFilter()" class="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-all duration-200">
+                        <a href="{{ route('user.perKelas', ['semester' => request('semester', 1)]) }}" class="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-all duration-200">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>
                             Tampilkan Semua Kelas
-                        </button>
+                        </a>
                     @endif
                 </div>
             @endif
@@ -293,12 +292,6 @@
                 currentUrl.searchParams.delete('kelas_filter');
             }
             
-            window.location.href = currentUrl.toString();
-        }
-
-        function resetFilter() {
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.delete('kelas_filter');
             window.location.href = currentUrl.toString();
         }
     </script>
