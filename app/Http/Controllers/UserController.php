@@ -43,7 +43,6 @@ class UserController extends Controller
 
         // Ambil 5 data terbaru
         $latestPresensi = Presensi::with('siswa')
-                            ->whereDate('created_at', Carbon::today())
                             ->orderBy('created_at', 'desc')
                             ->paginate(10);
 

@@ -6,7 +6,6 @@ use App\Models\DataJurusan;
 use App\Models\DataKelas;
 use App\Models\DataSiswa;
 use App\Models\Presensi;
-use Carbon\Carbon;
 use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB as FacadesDB;
@@ -42,7 +41,6 @@ class AdminController extends Controller
 
         // Ambil 5 data terbaru
         $latestPresensi = Presensi::with('siswa')
-                            ->whereDate('created_at', Carbon::today())
                             ->orderBy('created_at', 'desc')
                             ->paginate(10);
 
