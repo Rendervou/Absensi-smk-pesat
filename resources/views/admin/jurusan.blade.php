@@ -67,8 +67,10 @@
                             </svg>
                             Tambah Jurusan
                         </button>
+
+                        {{-- modal --}}
                         <div x-show="openJurusan" x-cloak
-                            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" x-transition.opacity.duration.500>
+                            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]" x-transition.opacity.duration.500>
                             <div @click.away="openJurusan = false"
                                 class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 animate-zoom-in">
                                 <h3 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 border-b pb-3">Tambah Jurusan Baru</h3>

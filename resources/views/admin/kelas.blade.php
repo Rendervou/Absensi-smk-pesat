@@ -3,296 +3,352 @@
         <div class="flex items-center justify-between">
             <h2 class="font-bold text-3xl text-gray-800 dark:text-gray-200 leading-tight flex items-center gap-3">
                 <span class="text-4xl">📊</span>
-                Laporan Data Perkelas
+                Data Kelas
             </h2>
         </div>
     </x-slot>
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Controls -->
-            <div class="flex flex-col gap-6 mb-8">
-                <!-- Semester Selection -->
-                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <span class="text-lg font-medium text-gray-700 dark:text-gray-300">Pilih Semester:</span>
-                    <div class="flex gap-3">
-                        <a href="{{ route('admin.perKelas', ['semester' => 1, 'kelas_filter' => request('kelas_filter')]) }}">
-                            <button class="px-6 py-3 rounded-xl text-base font-semibold transition-all duration-200 {{ request('semester', 1) == 1 ? 'bg-blue-600 text-white shadow-lg' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
-                                Semester 1
-                            </button>
-                        </a>
-                        <a href="{{ route('admin.perKelas', ['semester' => 2, 'kelas_filter' => request('kelas_filter')]) }}">
-                            <button class="px-6 py-3 rounded-xl text-base font-semibold transition-all duration-200 {{ request('semester') == 2 ? 'bg-blue-600 text-white shadow-lg' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
-                                Semester 2
-                            </button>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Class Filter and Export -->
+            <!-- Header Section -->
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 mb-8 text-white">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <span class="text-lg font-medium text-gray-700 dark:text-gray-300">Filter Kelas:</span>
-                        <div class="relative">
-                            <select id="kelasFilter" onchange="filterKelas()" class="appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-3 px-4 pr-8 rounded-xl text-base font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 min-w-[200px]">
-                                <option value="">Semua Kelas</option>
-                                @foreach ($kelas as $kls)
-                                    <option value="{{ $kls->id_kelas }}" {{ request('kelas_filter') == $kls->id_kelas ? 'selected' : '' }}>
-                                        {{ $kls->nama_kelas }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-200">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                                </svg>
-                            </div>
-                        </div>
-                        
-                        @if(request('kelas_filter'))
-                            <a href="{{ route('admin.perKelas', ['semester' => request('semester', 1)]) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm font-medium transition-all duration-200">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                                Reset Filter
-                            </a>
-                        @endif
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Data Kelas</h3>
+                        <p class="text-blue-100">Kelola data kelas dengan mudah</p>
                     </div>
-                    
-                    <button class="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-base font-semibold transition-all duration-200 shadow-lg">
+                    <button onclick="openModal('add')" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200 shadow-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
-                        Export CSV
+                        Tambah Kelas
                     </button>
                 </div>
             </div>
 
-            @php
-                $semester = request('semester', 1);
-                $monthNums = $semester == 1 ? [7,8,9,10,11,12] : [1,2,3,4,5,6];
-                $monthNames = [
-                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 
-                    4 => 'April', 5 => 'Mei', 6 => 'Juni',
-                    7 => 'Juli', 8 => 'Agustus', 9 => 'September',
-                    10 => 'Oktober', 11 => 'November', 12 => 'Desember'
-                ];
-            @endphp
-
-            <!-- Summary Cards -->
-            @php
-                $totalSemester = ['hadir' => 0, 'izin' => 0, 'sakit' => 0, 'alfa' => 0];
-                $filteredKelas = $kelas;
-                
-                // Filter kelas jika ada filter yang dipilih
-                if(request('kelas_filter')) {
-                    $filteredKelas = $kelas->where('id_kelas', request('kelas_filter'));
-                }
-                
-                // Hitung total berdasarkan kelas yang difilter
-                foreach($filteredKelas as $kls) {
-                    if(isset($totalTahunan[$kls->id_kelas])) {
-                        $data = $totalTahunan[$kls->id_kelas];
-                        $totalSemester['hadir'] += $data['hadir'] ?? 0;
-                        $totalSemester['izin'] += $data['izin'] ?? 0;
-                        $totalSemester['sakit'] += $data['sakit'] ?? 0;
-                        $totalSemester['alfa'] += $data['alfa'] ?? 0;
-                    }
-                }
-            @endphp
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-emerald-100 text-base mb-1">Total Hadir</p>
-                            <p class="text-3xl font-bold">{{ number_format($totalSemester['hadir']) }}</p>
-                        </div>
-                        <div class="bg-white/20 p-3 rounded-xl">
-                            <span class="text-2xl">✅</span>
-                        </div>
+            <!-- Search Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1">
+                        <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Nama Kelas
+                        </label>
+                        <input type="text" 
+                               id="search" 
+                               placeholder="Cth: X-1" 
+                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200">
                     </div>
-                </div>
-                
-                <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-6 text-white shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-amber-100 text-base mb-1">Total Izin</p>
-                            <p class="text-3xl font-bold">{{ number_format($totalSemester['izin']) }}</p>
-                        </div>
-                        <div class="bg-white/20 p-3 rounded-xl">
-                            <span class="text-2xl">📝</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-gradient-to-br from-sky-500 to-sky-600 rounded-2xl p-6 text-white shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sky-100 text-base mb-1">Total Sakit</p>
-                            <p class="text-3xl font-bold">{{ number_format($totalSemester['sakit']) }}</p>
-                        </div>
-                        <div class="bg-white/20 p-3 rounded-xl">
-                            <span class="text-2xl">🏥</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-red-100 text-base mb-1">Total Alfa</p>
-                            <p class="text-3xl font-bold">{{ number_format($totalSemester['alfa']) }}</p>
-                        </div>
-                        <div class="bg-white/20 p-3 rounded-xl">
-                            <span class="text-2xl">❌</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Class Cards -->
-            <div class="space-y-8">
-                @php $displayedKelas = request('kelas_filter') ? $kelas->where('id_kelas', request('kelas_filter')) : $kelas; @endphp
-                @foreach ($displayedKelas as $index => $kls)
-                    @php
-                        $colors = [
-                            ['from-blue-600', 'to-indigo-600', 'text-blue-100'],
-                            ['from-purple-600', 'to-pink-600', 'text-purple-100'],
-                            ['from-emerald-600', 'to-teal-600', 'text-emerald-100'],
-                            ['from-orange-600', 'to-red-600', 'text-orange-100'],
-                            ['from-cyan-600', 'to-blue-600', 'text-cyan-100'],
-                        ];
-                        $colorSet = $colors[$index % count($colors)];
-                    @endphp
-
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                        <!-- Header -->
-                        <div class="bg-gradient-to-r {{ $colorSet[0] }} {{ $colorSet[1] }} px-8 py-6">
-                            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center bg-white/20 text-white font-bold text-xl">
-                                        {{ Str::limit($kls->nama_kelas, 2, '') }}
-                                    </div>
-                                    <div>
-                                        <h3 class="text-2xl font-bold text-white">{{ $kls->nama_kelas }}</h3>
-                                    </div>
-                                </div>
-                                
-                                <!-- Year Total -->
-                                @php $total = $totalTahunan[$kls->id_kelas] ?? ['hadir'=>0,'izin'=>0,'sakit'=>0,'alfa'=>0]; @endphp
-                                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                    <p class="{{ $colorSet[2] }} text-sm mb-3">Total Semester {{ $semester }}</p>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="text-center">
-                                            <p class="text-emerald-300 font-bold text-lg">H: {{ $total['hadir'] }}</p>
-                                            <p class="text-amber-300 font-bold text-lg">I: {{ $total['izin'] }}</p>
-                                        </div>
-                                        <div class="text-center">
-                                            <p class="text-sky-300 font-bold text-lg">S: {{ $total['sakit'] }}</p>
-                                            <p class="text-red-300 font-bold text-lg">A: {{ $total['alfa'] }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Content -->
-                        <div class="p-8">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                                @foreach ($monthNums as $m)
-                                    @php
-                                        $data = $dataBulan[$kls->id_kelas][$m] ?? ['hadir'=>0,'izin'=>0,'sakit'=>0,'alfa'=>0];
-                                    @endphp
-                                    <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
-                                        <h4 class="text-xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-                                            {{ $monthNames[$m] }}
-                                        </h4>
-                                        <div class="space-y-4">
-                                            <div class="flex items-center justify-between bg-white dark:bg-gray-800 px-4 py-3 rounded-lg shadow-sm border border-emerald-200 dark:border-emerald-800">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                                                    <span class="text-emerald-700 dark:text-emerald-300 font-medium text-lg">Hadir</span>
-                                                </div>
-                                                <span class="font-bold text-emerald-800 dark:text-emerald-200 text-xl">{{ $data['hadir'] }}</span>
-                                            </div>
-                                            
-                                            <div class="flex items-center justify-between bg-white dark:bg-gray-800 px-4 py-3 rounded-lg shadow-sm border border-amber-200 dark:border-amber-800">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
-                                                    <span class="text-amber-700 dark:text-amber-300 font-medium text-lg">Izin</span>
-                                                </div>
-                                                <span class="font-bold text-amber-800 dark:text-amber-200 text-xl">{{ $data['izin'] }}</span>
-                                            </div>
-                                            
-                                            <div class="flex items-center justify-between bg-white dark:bg-gray-800 px-4 py-3 rounded-lg shadow-sm border border-sky-200 dark:border-sky-800">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-3 h-3 bg-sky-500 rounded-full"></div>
-                                                    <span class="text-sky-700 dark:text-sky-300 font-medium text-lg">Sakit</span>
-                                                </div>
-                                                <span class="font-bold text-sky-800 dark:text-sky-200 text-xl">{{ $data['sakit'] }}</span>
-                                            </div>
-                                            
-                                            <div class="flex items-center justify-between bg-white dark:bg-gray-800 px-4 py-3 rounded-lg shadow-sm border border-red-200 dark:border-red-800">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                                                    <span class="text-red-700 dark:text-red-300 font-medium text-lg">Alfa</span>
-                                                </div>
-                                                <span class="font-bold text-red-800 dark:text-red-200 text-xl">{{ $data['alfa'] }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            @if($displayedKelas->isEmpty())
-                <div class="text-center py-16">
-                    <div class="text-6xl mb-4">📊</div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                        @if(request('kelas_filter'))
-                            Kelas Tidak Ditemukan
-                        @else
-                            Tidak Ada Data
-                        @endif
-                    </h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-lg">
-                        @if(request('kelas_filter'))
-                            Kelas yang dipilih tidak memiliki data untuk semester ini.
-                        @else
-                            Belum ada data kelas untuk semester ini.
-                        @endif
-                    </p>
-                    @if(request('kelas_filter'))
-                        <a href="{{ route('admin.perKelas', ['semester' => request('semester', 1)]) }}" class="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-all duration-200">
+                    <div class="flex items-end gap-2">
+                        <button class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all duration-200 flex items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
-                            Tampilkan Semua Kelas
-                        </a>
-                    @endif
+                            Cari
+                        </button>
+                        <button class="px-4 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-xl font-medium transition-all duration-200">
+                            Reset
+                        </button>
+                    </div>
                 </div>
-            @endif
+            </div>
+
+            <!-- Data Table -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <!-- Table Header -->
+                <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-7l-5 5-5-5"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Data Kelas</h3>
+                            <p class="text-purple-100">Daftar semua kelas yang terdaftar</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Content -->
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 dark:bg-gray-900">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                                            #
+                                        </span>
+                                        No.
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400">
+                                            📚
+                                        </span>
+                                        Kelas
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center text-green-600 dark:text-green-400">
+                                            ⚙️
+                                        </span>
+                                        Aksi
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            @php
+                                $sampleKelas = [
+                                    ['id' => 1, 'nama' => 'X-1'],
+                                    ['id' => 2, 'nama' => 'X-2'],
+                                    ['id' => 3, 'nama' => 'X-3'],
+                                    ['id' => 4, 'nama' => 'XI-1'],
+                                    ['id' => 5, 'nama' => 'XI-2'],
+                                    ['id' => 6, 'nama' => 'XI-3'],
+                                ];
+                            @endphp
+                            
+                            @foreach($sampleKelas as $index => $kelas)
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                                            {{ $index + 1 }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold">
+                                            {{ substr($kelas['nama'], 0, 2) }}
+                                        </div>
+                                        <div>
+                                            <div class="text-lg font-semibold text-gray-900 dark:text-white">
+                                                {{ $kelas['nama'] }}
+                                            </div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                Kelas {{ $kelas['nama'] }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <button onclick="openModal('edit', {{ $kelas['id'] }}, '{{ $kelas['nama'] }}')" 
+                                                class="inline-flex items-center gap-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            Edit
+                                        </button>
+                                        <button onclick="deleteKelas({{ $kelas['id'] }}, '{{ $kelas['nama'] }}')" 
+                                                class="inline-flex items-center gap-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1-1 0-00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-700 dark:text-gray-300">
+                            Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">6</span> dari <span class="font-medium">6</span> hasil
+                        </div>
+                        <div class="flex gap-1">
+                            <button class="px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-500 dark:text-gray-400">
+                                Sebelumnya
+                            </button>
+                            <button class="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg font-medium">
+                                1
+                            </button>
+                            <button class="px-3 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-500 dark:text-gray-400">
+                                Selanjutnya
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- JavaScript for Class Filter -->
-    <script>
-        function filterKelas() {
-            const select = document.getElementById('kelasFilter');
-            const selectedValue = select.value;
-            const currentUrl = new URL(window.location);
+</x-app-layout>
+
+<!-- Modal DIPINDAH KE LUAR layout supaya tidak ketimpa -->
+<div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden transition-opacity duration-300 z-[999999]">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div id="modal-container" class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-95 opacity-0 z-[1000000]">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-t-2xl px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <h3 id="modal-title" class="text-xl font-bold text-white">Tambah Kelas</h3>
+                    <button onclick="closeModal()" class="text-white hover:text-gray-200 transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <form id="kelas-form" class="p-6">
+                <input type="hidden" id="kelas-id" name="id">
+                <div class="mb-6">
+                    <label for="nama-kelas" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Nama Kelas <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="nama-kelas" name="nama_kelas" placeholder="Contoh: X-1, XI-IPA-1, XII-IPS-2"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200" required>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        Masukkan nama kelas yang unik dan mudah diidentifikasi
+                    </p>
+                </div>
+                <div class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" onclick="closeModal()" class="flex-1 px-4 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-xl font-medium transition-all duration-200">
+                        Batal
+                    </button>
+                    <button type="submit" id="submit-btn" class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span id="submit-text">Simpan</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+        let currentMode = 'add';
+        let currentId = null;
+
+        // Fungsi untuk membuka modal
+        function openModal(mode, id = null, nama = '') {
+            currentMode = mode;
+            currentId = id;
             
-            if (selectedValue) {
-                currentUrl.searchParams.set('kelas_filter', selectedValue);
+            const modal = document.getElementById('modal-overlay');
+            const container = document.getElementById('modal-container');
+            const title = document.getElementById('modal-title');
+            const namaInput = document.getElementById('nama-kelas');
+            const idInput = document.getElementById('kelas-id');
+            const submitText = document.getElementById('submit-text');
+            
+            // Pastikan modal berada di atas semua elemen
+            modal.style.zIndex = '999999';
+            modal.style.position = 'fixed';
+            container.style.zIndex = '1000000';
+            container.style.position = 'relative';
+            
+            // Disable body scroll
+            document.body.style.overflow = 'hidden';
+            
+            // Set modal content based on mode
+            if (mode === 'add') {
+                title.textContent = 'Tambah Kelas Baru';
+                submitText.textContent = 'Tambah Kelas';
+                namaInput.value = '';
+                idInput.value = '';
             } else {
-                currentUrl.searchParams.delete('kelas_filter');
+                title.textContent = 'Edit Kelas';
+                submitText.textContent = 'Update Kelas';
+                namaInput.value = nama;
+                idInput.value = id;
             }
             
-            window.location.href = currentUrl.toString();
+            // Show modal with animation
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                container.classList.remove('scale-95', 'opacity-0');
+                container.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            
+            // Focus input
+            setTimeout(() => namaInput.focus(), 100);
         }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            const modal = document.getElementById('modal-overlay');
+            const container = document.getElementById('modal-container');
+            
+            // Enable body scroll
+            document.body.style.overflow = 'auto';
+            
+            container.classList.remove('scale-100', 'opacity-100');
+            container.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Fungsi untuk delete kelas
+        function deleteKelas(id, nama) {
+            if (confirm(`Apakah Anda yakin ingin menghapus kelas "${nama}"?`)) {
+                // Di sini Anda bisa menambahkan logic untuk menghapus data
+                alert(`Kelas "${nama}" berhasil dihapus!`);
+                // Reload atau update table
+                location.reload();
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('kelas-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const namaKelas = document.getElementById('nama-kelas').value.trim();
+            
+            if (!namaKelas) {
+                alert('Nama kelas tidak boleh kosong!');
+                return;
+            }
+            
+            // Disable submit button
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = document.getElementById('submit-text');
+            const originalText = submitText.textContent;
+            
+            submitBtn.disabled = true;
+            submitText.textContent = 'Menyimpan...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                if (currentMode === 'add') {
+                    alert(`Kelas "${namaKelas}" berhasil ditambahkan!`);
+                } else {
+                    alert(`Kelas "${namaKelas}" berhasil diupdate!`);
+                }
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitText.textContent = originalText;
+                
+                closeModal();
+                // Reload page or update table
+                location.reload();
+            }, 1000);
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
     </script>
-</x-app-layout>
