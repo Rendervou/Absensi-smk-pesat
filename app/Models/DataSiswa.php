@@ -12,8 +12,6 @@ class DataSiswa extends Model
         'nama_siswa',
         'nis',
         'no_tlp',
-        'alamat',
-        'id_kelas',   // tambahkan ini
     ];
 
     public function kelas()
