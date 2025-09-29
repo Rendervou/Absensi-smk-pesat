@@ -44,7 +44,7 @@
                     </div>
 
                     <!-- Filter Row -->
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Kelas Filter -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -58,24 +58,6 @@
                                         {{ $k->nama_kelas }}
                                     </option>
                                 @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Jurusan Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Jurusan
-                            </label>
-                            <select name="jurusan"
-                                class="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3 transition duration-150 ease-in-out">
-                                <option value="">Semua Jurusan</option>
-                                @if(isset($jurusan) && $jurusan->count() > 0)
-                                    @foreach ($jurusan as $j)
-                                        <option value="{{ $j->jurusan }}" {{ ($selected_jurusan ?? '') == $j->jurusan ? 'selected' : '' }}>
-                                            {{ $j->jurusan }}
-                                        </option>
-                                    @endforeach
-                                @endif
                             </select>
                         </div>
 
@@ -95,7 +77,7 @@
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="flex flex-col justify-end space-y-2">
+                        <div class="flex items-end justify-end gap-4">
                             <button type="submit"
                                 class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-200 ease-in-out">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +86,7 @@
                                 Cari Data
                             </button>
                             <a href="{{ route('admin.perBulan') }}" 
-                                class="flex items-center justify-center px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition duration-200 ease-in-out text-sm">
+                                class="flex items-center justify-center px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition duration-200 ease-in-out ">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                                 </svg>

@@ -24,7 +24,7 @@ class RombelController extends Controller
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
         ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
         ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
-            ->select('data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
+            ->select('rombels.*' ,'data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
 
                 if ($request->filled('kelas')) {
             $rombels->where('data_kelas.id_kelas', $request->kelas);
@@ -103,6 +103,6 @@ class RombelController extends Controller
         $rombels->delete();
 
         //redirect to index
-        return redirect()->route('admin.rombel')->with(['success' => 'Data Berhasil Dihapus!']);
+        return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
