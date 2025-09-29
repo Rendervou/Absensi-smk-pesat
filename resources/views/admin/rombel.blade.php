@@ -223,7 +223,7 @@
                                         <td class="px-6 py-6 whitespace-nowrap">
                                             <span
                                                 class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                                {{$item->nama_kelas}}
+                                                {{$item->id}}
                                             </span>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap">
@@ -238,7 +238,7 @@
                                                     class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110">
                                                     <i class="fas fa-edit text-sm"></i>
                                                 </button>
-                                                <form action="#" method="POST"
+                                                <form action="{{ route('rombel.destroy', $item->id) }}" method="POST"
                                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus rombel ini?');">
                                                     @csrf
                                                     @method('DELETE')

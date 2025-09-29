@@ -76,6 +76,6 @@ class datakelasController extends Controller
         $kelas->delete();
 
         //redirect to index
-        return redirect()->route('admin.kelasbaru')->with(['success' => 'Data Berhasil Dihapus!']);
+        return redirect()->route('kelas.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
