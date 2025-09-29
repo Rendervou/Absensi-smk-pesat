@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\SiswaImport;
 use App\Models\DataSiswa;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class datasiswaController extends Controller
 {
@@ -16,6 +18,21 @@ class datasiswaController extends Controller
         return view('admin.siswa', compact('siswa'));
     }
 
+    public function showImportFrom()
+    {
+        return view('siswa.import');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        Excel::import(new SiswaImport(6), $request->file('file'));
+
+        return redirect()->back()->with('success', 'data siswa berhasil ditambahkan');
+    }
 
     /**
      * Show the form for creating a new resource.

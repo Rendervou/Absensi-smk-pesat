@@ -72,6 +72,16 @@
                     </div>
                 </div>
 
+                <form action="{{ route('admin.siswa.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <input type="file" name="file" class="block w-full border border-gray-300 rounded p-2" required>
+
+                    <button type="submit" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition">
+                        📥 Import Excel
+                    </button>
+                </form>
+
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
                     <div class="bg-white/80 dark:bg-gray-800/80 rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 relative">
                         <div class="px-8 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
