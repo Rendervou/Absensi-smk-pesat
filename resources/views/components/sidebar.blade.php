@@ -19,7 +19,7 @@
             @if (Auth::user()->role === 'admin')
             
 
-            <li x-data="{ open: false }">
+            <li x-data="{ open: false }" class="relative">
                 <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"
                     :active="request()->routeIs('siswa.index') || request()->routeIs('kelas.index') || request()->routeIs('rombel.index') || request()->routeIs('jurusan.index')">
                     <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
@@ -31,57 +31,88 @@
                     </svg>
                 </x-nav-link>
 
+                <!-- Desktop Dropdown -->
                 <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
                     x-transition:enter-start="-translate-y-3 opacity-0"
                     x-transition:enter-end="translate-y-0 opacity-100"
                     x-transition:leave="transition ease-in duration-200 transform"
                     x-transition:leave-start="translate-y-0 opacity-100"
-                    x-transition:leave-end="-translate-y-3 opacity-0" class="pl-6 space-y-2 hidden lg:block">
+                    x-transition:leave-end="-translate-y-3 opacity-0" 
+                    class="pl-6 space-y-2 hidden lg:block">
 
                     <li>
                         <x-nav-link :href="route('siswa.index')" :active="request()->routeIs('siswa.index')">
-                            <i
-                                class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
                             <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Siswa') }}</span>
                         </x-nav-link>
                     </li>
                     <li>
                         <x-nav-link :href="route('kelas.index')" :active="request()->routeIs('kelas.index')">
-                            <i
-                                class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
                             <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Kelas') }}</span>
                         </x-nav-link>
                     </li>
                     <li>
                         <x-nav-link :href="route('jurusan.index')" :active="request()->routeIs('jurusan.index')">
-                            <i
-                                class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
-                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Jurusan')
-                                }}</span>
+                            <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Jurusan') }}</span>
                         </x-nav-link>
                     </li>
                     <li>
                         <x-nav-link :href="route('guru.index')" :active="request()->routeIs('guru.index')">
-                            <i
-                                class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
-                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Guru')
-                                }}</span>
+                            <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Guru') }}</span>
                         </x-nav-link>
                     </li>
                     <li>
                         <x-nav-link :href="route('rombel.index')" :active="request()->routeIs('rombel.index')">
-                            <i
-                                class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
-                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Rombel')
-                                }}</span>
+                            <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Data Rombel') }}</span>
                         </x-nav-link>
                     </li>
                 </ul>
+
+                <!-- Mobile Dropdown (Absolute positioned) -->
+                <div x-show="open" 
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     @click.away="open = false"
+                     class="lg:hidden absolute left-full top-0 ml-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                    <a href="{{ route('siswa.index') }}" 
+                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <i class="fi fi-rr-folder-open"></i>
+                        <span>Data Siswa</span>
+                    </a>
+                    <a href="{{ route('kelas.index') }}" 
+                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <i class="fi fi-rr-folder-open"></i>
+                        <span>Data Kelas</span>
+                    </a>
+                    <a href="{{ route('jurusan.index') }}" 
+                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <i class="fi fi-rr-folder-open"></i>
+                        <span>Data Jurusan</span>
+                    </a>
+                    <a href="{{ route('guru.index') }}" 
+                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <i class="fi fi-rr-folder-open"></i>
+                        <span>Data Guru</span>
+                    </a>
+                    <a href="{{ route('rombel.index') }}" 
+                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <i class="fi fi-rr-folder-open"></i>
+                        <span>Data Rombel</span>
+                    </a>
+                </div>
             </li>
             @endif
             @endauth
 
-            <li x-data="{ open: false }">
+            <li x-data="{ open: false }" class="relative">
                 <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"
                     :active="request()->routeIs('admin.perKelas') || request()->routeIs('admin.perBulan') || request()->routeIs('user.perKelas') || request()->routeIs('user.perBulan')">
                     <i class="fi fi-rr-folder-open text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
@@ -93,6 +124,7 @@
                     </svg>
                 </x-nav-link>
 
+                <!-- Desktop Dropdown -->
                 <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
                     x-transition:enter-start="-translate-y-3 opacity-0"
                     x-transition:enter-end="translate-y-0 opacity-100"
@@ -129,9 +161,44 @@
                         </li>
                     @endif
                 </ul>
+
+                <!-- Mobile Dropdown (Absolute positioned) -->
+                <div x-show="open" 
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     @click.away="open = false"
+                     class="lg:hidden absolute left-full top-0 ml-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                    @if(Auth::user()->role === 'admin')
+                        <a href="{{ route('admin.perKelas') }}" 
+                           class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                            <i class="fi fi-rr-folder-open"></i>
+                            <span>Laporan Perkelas</span>
+                        </a>
+                        <a href="{{ route('admin.perBulan') }}" 
+                           class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                            <i class="fi fi-rr-folder-open"></i>
+                            <span>Laporan Perbulan</span>
+                        </a>
+                    @elseif(Auth::user()->role === 'user')
+                        <a href="{{ route('user.perKelas') }}" 
+                           class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                            <i class="fi fi-rr-folder-open"></i>
+                            <span>Laporan Perkelas</span>
+                        </a>
+                        <a href="{{ route('user.perBulan') }}" 
+                           class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                            <i class="fi fi-rr-folder-open"></i>
+                            <span>Laporan Perbulan</span>
+                        </a>
+                    @endif
+                </div>
             </li>
 
-                        <li>
+            <li>
                 @if (Auth::user()->role === 'admin')
                     <x-nav-link
                         :href="route('admin.presensi.index')"
@@ -147,22 +214,7 @@
                         <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Presensi') }}</span>
                     </x-nav-link>
                 @endif
-
-
-
             </li>
-
-
-           
-
-            {{-- <li>
-                <a href="#" class="flex items-center justify-center lg:justify-start gap-4 
-                           text-gray-700 dark:text-gray-200 
-                           p-3 rounded hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fi fi-rr-user-pen text-lg"></i>
-                    <span class="hidden lg:block">Manage Account</span>
-                </a>
-            </li> --}}
         </ul>
 
         <hr class="my-4 w-full border-gray-200 dark:border-gray-700">
