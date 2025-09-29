@@ -48,30 +48,144 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen relative">
-        <div class="absolute inset-0 pointer-events-none">
+    <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen relative overflow-x-hidden">
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
             <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-400/10 to-cyan-400/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
         </div>
 
-        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <section x-data="siswaData()">
                 <div class="flex justify-between items-center mb-5 animate-fade-in-up">
                     <button @click="openAddModal = true"
-                        class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
+                        class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
                         <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-4 h-4 group-hover:rotate-12 transition-transform duration-300">
+                            stroke="currentColor" class="w-4 h-4 group-hover:rotate-12 transition-transform duration-300 relative z-10">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
-                        Tambah Siswa
+                        <span class="relative z-10">Tambah Siswa</span>
                     </button>
                 </div>
 
+                <div class="mb-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    @if(session('success'))
+                    <div class="bg-emerald-50 border-l-4 border-emerald-400 p-4 rounded-2xl shadow-lg mb-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check-circle text-emerald-400 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-emerald-800 font-semibold">{{ session('success') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(session('error'))
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-2xl shadow-lg mb-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-400 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-red-800 font-semibold">{{ session('error') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(session('warning'))
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-2xl shadow-lg mb-4">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-yellow-400 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-yellow-800 font-semibold">{{ session('warning') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($errors->any())
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-2xl shadow-lg mb-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-400 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-red-800 font-semibold mb-2">Terdapat kesalahan:</h3>
+                                <ul class="list-disc list-inside text-red-700 space-y-1">
+                                    @foreach($errors->all() as $error)
+                                    <li class="text-sm">{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    <div class="bg-gradient-to-r from-blue-50 via-white to-indigo-50 dark:from-gray-800 dark:via-gray-700 dark:to-blue-900 rounded-3xl shadow-xl border border-blue-200/50 dark:border-gray-600/50 p-6 mb-6">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-file-excel text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-gray-800 dark:text-gray-100">Import Data Siswa</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">Upload file Excel untuk menambahkan data siswa secara massal</p>
+                            </div>
+                        </div>
+
+                        <form action="{{ route('admin.siswa.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                            @csrf
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                        <i class="fas fa-upload mr-2"></i>Pilih File Excel
+                                    </label>
+                                    <input 
+                                        type="file" 
+                                        name="file" 
+                                        accept=".xlsx,.xls,.csv"
+                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-4 file:rounded-2xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 dark:border-gray-600 rounded-2xl bg-white dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                                        required>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Format yang didukung: .xlsx, .xls, .csv (Maksimal 2MB)
+                                    </p>
+                                </div>
+                                
+                                <div class="flex items-end">
+                                    <button 
+                                        type="submit" 
+                                        class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 text-white py-3 px-6 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2 group">
+                                        <i class="fas fa-file-import group-hover:animate-bounce"></i>
+                                        Import Data Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="mt-4 p-4 bg-blue-50/50 dark:bg-gray-700/50 rounded-2xl border-l-4 border-blue-500">
+                            <h4 class="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
+                                <i class="fas fa-lightbulb"></i>
+                                Format Excel yang Diperlukan:
+                            </h4>
+                            <ul class="text-sm text-blue-700 dark:text-blue-200 space-y-1 ml-4">
+                                <li>• Kolom A: <strong>NIS</strong> atau <strong>No Induk</strong> (angka)</li>
+                                <li>• Kolom B: <strong>Nama Siswa</strong> (teks)</li>
+                                <li>• Baris pertama harus berisi header kolom</li>
+                                <li>• Tidak boleh ada data yang kosong</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="bg-white/80 dark:bg-gray-800/80 rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 relative">
-                        <div class="px-8 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
+                    <div class="bg-white/80 dark:bg-gray-800/80 rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 overflow-hidden">
+                        <div class="px-6 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
                             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
@@ -94,7 +208,7 @@
                             <table class="w-full text-sm text-left">
                                 <thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
                                     <tr>
-                                        <th scope="col" class="px-8 py-6 font-bold">
+                                        <th scope="col" class="px-6 py-6 font-bold">
                                             <div class="flex items-center gap-2">
                                                 No.
                                             </div>
@@ -116,7 +230,7 @@
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                     @foreach ($siswa as $s)
                                     <tr class="hover:bg-gradient-to-r hover:from-indigo-50/50 hover:to-purple-50/50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 transition-all duration-300 group">
-                                        <td class="px-8 py-6">
+                                        <td class="px-6 py-6">
                                             <div class="flex items-center">
                                                 <span class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-black shadow-md">{{ $siswa->firstItem() + $loop->index }}</span>
                                             </div>
@@ -156,7 +270,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="px-8 py-6 bg-gradient-to-r from-gray-50/50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-700/50 border-t border-gray-200/50 dark:border-gray-600/50">
+                        <div class="px-6 py-6 bg-gradient-to-r from-gray-50/50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-700/50 border-t border-gray-200/50 dark:border-gray-600/50">
                             {{ $siswa->links() }}
                         </div>
                     </div>
@@ -269,6 +383,15 @@
         
         [x-cloak] { 
             display: none !important; 
+        }
+
+        /* Prevent horizontal overflow */
+        body {
+            overflow-x: hidden;
+        }
+
+        html {
+            overflow-x: hidden;
         }
         
         .wave {

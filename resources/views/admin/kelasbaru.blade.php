@@ -47,27 +47,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen relative">
-        <div class="absolute inset-0 pointer-events-none">
+    <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen relative overflow-x-hidden">
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
             <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-400/10 to-cyan-400/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
         </div>
         
-        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <section x-data="kelasData()">
                 <div class="flex justify-between items-center mb-5 animate-fade-in-up">
                     <button @click="openAddModal = true"
-                        class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
+                        class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
                         <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                        <i class="fas fa-plus text-sm group-hover:rotate-12 transition-transform duration-300"></i>
-                        Tambah Kelas
+                        <i class="fas fa-plus text-sm group-hover:rotate-12 transition-transform duration-300 relative z-10"></i>
+                        <span class="relative z-10">Tambah Kelas</span>
                     </button>
                 </div>
 
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 relative">
-                        <div class="px-8 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
+                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 overflow-hidden">
+                        <div class="px-6 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
                             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
@@ -84,7 +84,7 @@
                             <table class="w-full text-sm text-left">
                                 <thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
                                     <tr>
-                                        <th scope="col" class="px-8 py-6 font-bold">
+                                        <th scope="col" class="px-6 py-6 font-bold">
                                             <div class="flex items-center gap-2">
                                                 No.
                                             </div>
@@ -106,14 +106,19 @@
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                     @foreach ($kelas as $k)
                                     <tr class="hover:bg-gradient-to-r hover:from-indigo-50/50 hover:to-purple-50/50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 transition-all duration-300 group">
-                                        <td class="px-8 py-6">
+                                        <td class="px-6 py-6">
                                             <div class="flex items-center">
                                                 <span class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-black shadow-md">{{$loop->iteration}}</span>
                                             </div>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap">
                                             <div class="flex items-center gap-4">
-                                                <h3 class="text-lg font-black text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{{$k->nama_kelas}}</h3>
+                                                <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                                                    {{ substr($k->nama_kelas, 0, 2) }}
+                                                </div>
+                                                <div>
+                                                    <h3 class="text-lg font-black text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">{{$k->nama_kelas}}</h3>
+                                                </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-sm font-medium">
@@ -235,6 +240,15 @@
     <style>
         * {
             font-family: 'Inter', 'Poppins', sans-serif;
+        }
+
+        /* Prevent horizontal overflow */
+        body {
+            overflow-x: hidden;
+        }
+
+        html {
+            overflow-x: hidden;
         }
 
         [x-cloak] { 

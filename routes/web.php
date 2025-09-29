@@ -39,6 +39,8 @@ use Illuminate\Support\Facades\Route;
         Route::resource('admin/rombel', RombelController::class);
         Route::resource('admin/kelas', datakelasController::class);
         Route::resource('admin/guru', dataguruController::class);
+        Route::get('/siswa/import', [datasiswaController::class, 'showImportFrom'])->name('siswa.import.from');
+        Route::post('/siswa/import', [datasiswaController::class, 'import'])->name('admin.siswa.import'); 
     });
 
     // Biarkan yang ini saja
