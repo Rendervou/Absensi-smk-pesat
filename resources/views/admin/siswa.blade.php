@@ -48,7 +48,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Kontainer utama tanpa overflow hidden untuk mencegah masalah z-index -->
     <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen relative">
         <div class="absolute inset-0 pointer-events-none">
             <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
@@ -57,19 +56,17 @@
         </div>
 
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <section x-data="siswaModal()">
+            <section x-data="siswaData()">
                 <div class="flex justify-between items-center mb-5 animate-fade-in-up">
-                    <div x-data="{ openAdd: false }">
-                        <button @click="openAdd = true"
-                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-4 h-4 group-hover:rotate-12 transition-transform duration-300">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            Tambah Siswa
-                        </button>
-                    </div>
+                    <button @click="openAddModal = true"
+                        class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-4 h-4 group-hover:rotate-12 transition-transform duration-300">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Tambah Siswa
+                    </button>
                 </div>
 
                 <form action="{{ route('admin.siswa.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
@@ -147,24 +144,11 @@
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-center gap-2">
-                                                <div x-data="{
-                                                    openEdit: false,
-                                                    editId: null,
-                                                    editNama: '',
-                                                    editNis: '',
-                                                    setEditData(id, nama, nis) {
-                                                        this.editId = id;
-                                                        this.editNama = nama;
-                                                        this.editNis = nis;
-                                                        this.openEdit = true;
-                                                    }
-                                                }">
-                                                    <button
-                                                        @click="setEditData({{ $s->id_siswa }}, '{{ $s->nama_siswa }}', '{{ $s->nis }}')"
-                                                        class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110">
-                                                        <i class="fas fa-edit text-sm"></i>
-                                                    </button>
-                                                </div>
+                                                <button
+                                                    @click="openEdit({{ $s->id_siswa }}, '{{ $s->nama_siswa }}', '{{ $s->nis }}')"
+                                                    class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110">
+                                                    <i class="fas fa-edit text-sm"></i>
+                                                </button>
                                                 <form action="{{ route('siswa.destroy', $s->id_siswa) }}" method="POST"
                                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus siswa ini?');">
                                                     @csrf
@@ -187,90 +171,104 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal Tambah Siswa -->
+                <div x-show="openAddModal" 
+                     x-cloak
+                     class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                     style="background-color: rgba(0, 0, 0, 0.5);"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <div @click.away="openAddModal = false"
+                         class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 relative"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-90"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-90">
+                        <h3 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 border-b pb-3">Tambah Siswa Baru</h3>
+                        <form action="{{ route('siswa.store') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Siswa</label>
+                                <input type="text" name="nama_siswa" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Masukkan nama siswa">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">NIS</label>
+                                <input type="number" name="nis" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Masukkan NIS">
+                            </div>
+                            <div class="flex justify-end gap-3 pt-4">
+                                <button type="button" @click="openAddModal = false"
+                                    class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit" 
+                                    class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg">
+                                    Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Edit Siswa -->
+                <div x-show="openEditModal" 
+                     x-cloak
+                     class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                     style="background-color: rgba(0, 0, 0, 0.5);"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <div @click.away="openEditModal = false"
+                         class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 relative"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-90"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-90">
+                        <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-white border-b pb-3">Edit Data Siswa</h2>
+                        <form :action="`{{ url('admin/siswa') }}/${editId}`" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Siswa</label>
+                                <input type="text" name="nama_siswa" x-model="editNama" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Masukkan nama siswa">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">NIS</label>
+                                <input type="number" name="nis" x-model="editNis" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Masukkan NIS">
+                            </div>
+                            <div class="flex justify-end gap-3 pt-4">
+                                <button type="button" @click="openEditModal = false"
+                                    class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                    class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg">
+                                    Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </section>
-        </div>
-    </div>
-
-    <!-- MODAL AREA - Letakkan di luar container utama -->
-    <!-- Modal Tambah Siswa -->
-    <div x-data="{ openAdd: false }" 
-         @open-add-modal.window="openAdd = true">
-        <div x-show="openAdd" x-cloak
-             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
-             style="z-index: 99999 !important;"
-             x-transition.opacity>
-            <div @click.away="openAdd = false"
-                 class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 relative"
-                 style="z-index: 100000 !important;"
-                 x-transition.scale.origin.center>
-                <h3 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 border-b pb-3">Tambah Siswa Baru</h3>
-                <form action="{{ route('siswa.store') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Siswa</label>
-                        <input type="text" name="nama_siswa" required
-                            class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">NIS</label>
-                        <input type="number" name="nis" required
-                            class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div class="flex justify-end gap-3 pt-4">
-                        <button type="button" @click="openAdd = false"
-                            class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Batal</button>
-                        <button type="submit" 
-                            class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit Global -->
-    <div x-data="{
-        openEdit: false,
-        editId: null,
-        editNama: '',
-        editNis: '',
-        setEditData(id, nama, nis) {
-            this.editId = id;
-            this.editNama = nama;
-            this.editNis = nis;
-            this.openEdit = true;
-        }
-    }" 
-    @open-edit-modal.window="setEditData($event.detail.id, $event.detail.nama, $event.detail.nis)">
-        <div x-show="openEdit" x-cloak
-             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
-             style="z-index: 99999 !important;"
-             x-transition.opacity>
-            <div @click.away="openEdit = false"
-                 class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md p-6 relative"
-                 style="z-index: 100000 !important;"
-                 x-transition.scale.origin.center>
-                <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-white border-b pb-3">Edit Data Siswa</h2>
-                <form :action="`{{ url('admin/siswa') }}/${editId}`" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama</label>
-                        <input type="text" name="nama_siswa" x-model="editNama"
-                            class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">NIS</label>
-                        <input type="text" name="nis" x-model="editNis"
-                            class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div class="flex justify-end gap-3 pt-4">
-                        <button type="button" @click="openEdit = false"
-                            class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Batal</button>
-                        <button type="submit"
-                            class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg">Simpan</button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
     
@@ -279,7 +277,6 @@
             font-family: 'Inter', 'Poppins', sans-serif;
         }
         
-        /* Alpine.js cloak */
         [x-cloak] { 
             display: none !important; 
         }
@@ -373,36 +370,20 @@
     </style>
 
     <script>
-        function siswaModal() {
+        function siswaData() {
             return {
-                // Global modal functions if needed
+                openAddModal: false,
+                openEditModal: false,
+                editId: null,
+                editNama: '',
+                editNis: '',
+                openEdit(id, nama, nis) {
+                    this.editId = id;
+                    this.editNama = nama;
+                    this.editNis = nis;
+                    this.openEditModal = true;
+                }
             }
         }
-
-        // Trigger modal from button clicks
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update button click handler
-            const tambahBtn = document.querySelector('button[\\@click="openAdd = true"]');
-            if (tambahBtn) {
-                tambahBtn.addEventListener('click', function() {
-                    window.dispatchEvent(new CustomEvent('open-add-modal'));
-                });
-            }
-
-            // Update edit button handlers
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.fas.fa-edit')) {
-                    e.preventDefault();
-                    const button = e.target.closest('button');
-                    const id = button.getAttribute('data-id') || button.closest('tr').querySelector('[data-id]')?.getAttribute('data-id');
-                    const nama = button.getAttribute('data-nama') || button.closest('tr').querySelector('[data-nama]')?.getAttribute('data-nama');  
-                    const nis = button.getAttribute('data-nis') || button.closest('tr').querySelector('[data-nis]')?.getAttribute('data-nis');
-                    
-                    window.dispatchEvent(new CustomEvent('open-edit-modal', {
-                        detail: { id, nama, nis }
-                    }));
-                }
-            });
-        });
     </script>
 </x-app-layout>
