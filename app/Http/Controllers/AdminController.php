@@ -147,6 +147,7 @@ class AdminController extends Controller
         // Ambil rekap presensi per siswa
         $rekapPresensi = Presensi::select(
                 'id_siswa',
+                FacadesDB::raw("SUM(CASE WHEN status = 'hadir' THEN 1 ELSE 0 END) as H"),
                 FacadesDB::raw("SUM(CASE WHEN status = 'sakit' THEN 1 ELSE 0 END) as S"),
                 FacadesDB::raw("SUM(CASE WHEN status = 'izin' THEN 1 ELSE 0 END) as I"),
                 FacadesDB::raw("SUM(CASE WHEN status = 'alfa' THEN 1 ELSE 0 END) as A")
@@ -164,6 +165,7 @@ class AdminController extends Controller
                 'nama_siswa' => $siswa->nama_siswa,
                 'kelas'      => $siswa->nama_kelas ?? '-',
                 'kompetensi' => $siswa->nama_jurusan ?? '-',
+                'H'          => $rekapData->H ?? 0,
                 'S'          => $rekapData->S ?? 0,
                 'I'          => $rekapData->I ?? 0,
                 'A'          => $rekapData->A ?? 0,

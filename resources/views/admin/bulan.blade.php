@@ -170,7 +170,7 @@
                         <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        Data Presensi Siswa
+                        Data Presensi Siswa Bulan {{ DateTime::createFromFormat('!m', $bulan ?? now()->month)->format('F') }}
                     </h3>
                     @if(isset($rekap) && count($rekap) > 0)
                     <button onclick="exportData()" class="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-md transition duration-200">
@@ -215,6 +215,14 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                     </svg>
                                     <span>Kompetensi</span>
+                                </div>
+                            </th>
+                            <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center justify-center space-x-1">
+                                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-bold text-xs">H</span>
+                                    </div>
+                                    <span>Hadir</span>
                                 </div>
                             </th>
                             <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider border-b border-gray-200 dark:border-gray-600">
@@ -281,6 +289,11 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-5 whitespace-nowrap text-center">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium {{ $r['H'] > 0 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400' }}">
+                                        {{ $r['H'] }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-5 whitespace-nowrap text-center">
                                     <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium {{ $r['S'] > 0 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400' }}">
                                         {{ $r['S'] }}
                                     </span>
@@ -321,9 +334,6 @@
                 <div class="flex items-center justify-between">
                     <div class="text-sm text-gray-600 dark:text-gray-400">
                         Menampilkan <span class="font-semibold">{{ count($rekap) }}</span> data siswa
-                    </div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                        Bulan: <span class="font-semibold">{{ DateTime::createFromFormat('!m', $bulan ?? now()->month)->format('F Y') }}</span>
                     </div>
                 </div>
             </div>

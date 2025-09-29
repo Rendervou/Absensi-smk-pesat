@@ -10,6 +10,7 @@ use App\Models\Rombel;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -19,6 +20,8 @@ class UserController extends Controller
      */
     public function index()
     {
+
+        $user = AuthUser::all();
         // Total siswa
         $totalSiswa = DataSiswa::count();
 
@@ -53,7 +56,8 @@ class UserController extends Controller
             'izin',
             'sakit',
             'alfa',
-            'latestPresensi'
+            'latestPresensi',
+            'user'
         ));
     }
     
@@ -147,6 +151,7 @@ class UserController extends Controller
         // Ambil rekap presensi per siswa
         $rekapPresensi = Presensi::select(
                 'id_siswa',
+                DB::raw("SUM(CASE WHEN status = 'hadir' THEN 1 ELSE 0 END) as H"),
                 DB::raw("SUM(CASE WHEN status = 'sakit' THEN 1 ELSE 0 END) as S"),
                 DB::raw("SUM(CASE WHEN status = 'izin' THEN 1 ELSE 0 END) as I"),
                 DB::raw("SUM(CASE WHEN status = 'alfa' THEN 1 ELSE 0 END) as A")
@@ -164,6 +169,7 @@ class UserController extends Controller
                 'nama_siswa' => $siswa->nama_siswa,
                 'kelas'      => $siswa->nama_kelas ?? '-',
                 'kompetensi' => $siswa->nama_jurusan ?? '-',
+                'H'          => $rekapData->H ?? 0,
                 'S'          => $rekapData->S ?? 0,
                 'I'          => $rekapData->I ?? 0,
                 'A'          => $rekapData->A ?? 0,

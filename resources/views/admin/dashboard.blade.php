@@ -64,7 +64,10 @@
                     <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6 relative z-10">
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-4">
-                                <div class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
+                                <span class="relative flex size-3">
+                                    <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75"></span>
+                                    <span class="relative inline-flex size-3 rounded-full bg-emerald-400"></span>
+                                </span>
                                 <span class="text-emerald-600 dark:text-emerald-400 font-semibold text-sm uppercase tracking-wider">Live Dashboard</span>
                             </div>
                             <h3 class="text-3xl font-black text-gray-800 dark:text-gray-100 mb-2">
@@ -85,12 +88,6 @@
                                     Absen Kehadiran
                                 </button>
                             </a>
-                            <button type="button" class="group flex items-center justify-center w-full sm:w-auto gap-3 text-gray-800 dark:text-gray-200 bg-white/80 dark:bg-gray-700/80 hover:bg-white dark:hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-600 font-bold rounded-2xl text-sm px-8 py-4 border border-gray-200/50 dark:border-gray-600/50 transition-all duration-500 shadow-xl hover:shadow-2xl transform group-hover:scale-105 backdrop-blur-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 group-hover:-translate-y-1 transition-transform duration-300">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                                Export Data
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -135,7 +132,7 @@
 
                 <div class="stat-card-premium bg-gradient-to-br from-emerald-600 via-emerald-500 to-green-600 text-white group animate-fade-in-up p-5" style="animation-delay: 0.2s;">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-emerald-400 rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300 animate-ping"></div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-emerald-400 rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
                     <div class="absolute -bottom-2 -left-2 w-8 h-8 bg-emerald-300 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
                     <div class="relative z-10">
                         <div class="flex items-start justify-between mb-6">
@@ -191,7 +188,7 @@
 
                 <div class="stat-card-premium bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 text-white group animate-fade-in-up p-5" style="animation-delay: 0.4s;">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-orange-300 rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300 animate-ping"></div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-orange-300 rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
                     <div class="absolute -bottom-2 -left-2 w-8 h-8 bg-red-300 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
                     <div class="relative z-10">
                         <div class="flex items-start justify-between mb-6">
@@ -219,7 +216,7 @@
 
                 <div class="stat-card-premium bg-gradient-to-br from-red-600 via-red-500 to-pink-600 text-white group animate-fade-in-up p-5" style="animation-delay: 0.5s;">
                     <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
-                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-red-400 rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300 animate-bounce"></div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-red-400 rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
                     <div class="absolute -bottom-2 -left-2 w-8 h-8 bg-pink-300 rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
                     <div class="relative z-10">
                         <div class="flex items-start justify-between mb-6">
@@ -231,7 +228,7 @@
                                 <h2 class="text-5xl font-black mb-1 counter-number leading-none" data-target="{{ $alfa }}">0</h2>
                             </div>
                             <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-xl">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8 animate-bounce">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                                 </svg>
                             </div>
