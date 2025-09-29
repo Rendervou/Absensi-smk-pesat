@@ -47,59 +47,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen relative overflow-hidden">
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen relative">
+        <div class="absolute inset-0 pointer-events-none">
             <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-400/10 to-cyan-400/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
         </div>
         
-        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <section>
+        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <section x-data="jurusanData()">
                 <div class="flex justify-between items-center mb-5 animate-fade-in-up">
-                    <div x-data="{ openJurusan: false }">
-                        <button @click="openJurusan = true"
-                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-700 hover:via-emerald-800 hover:to-teal-800 focus:outline-none focus:ring-4 focus:ring-emerald-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-emerald-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-emerald-500/25 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-4 group-hover:rotate-12 transition-transform duration-300">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            Tambah Jurusan
-                        </button>
-
-                        {{-- modal --}}
-                        <div x-show="openJurusan" x-cloak
-                            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]" x-transition.opacity.duration.500>
-                            <div @click.away="openJurusan = false"
-                                class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 animate-zoom-in">
-                                <h3 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 border-b pb-3">Tambah Jurusan Baru</h3>
-                                <form action="{{route('jurusan.store')}}" method="POST" class="space-y-4">
-                                    @csrf
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jurusan</label>
-                                        <input type="text" name="nama_jurusan" required
-                                            class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500"
-                                            placeholder="Masukkan nama jurusan">
-                                    </div>
-                                    <div class="flex justify-end gap-3 pt-4">
-                                        <button type="button" @click="openJurusan = false"
-                                            class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                            Batal
-                                        </button>
-                                        <button type="submit"
-                                            class="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-semibold hover:bg-emerald-700 transition-colors shadow-lg">
-                                            Simpan
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                    <button @click="openAddModal = true"
+                        class="group flex items-center gap-3 text-white bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-700 hover:via-emerald-800 hover:to-teal-800 focus:outline-none focus:ring-4 focus:ring-emerald-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-emerald-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-emerald-500/25 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-4 group-hover:rotate-12 transition-transform duration-300">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Tambah Jurusan
+                    </button>
                 </div>
 
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 overflow-hidden relative">
+                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 relative">
                         <div class="px-8 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
                             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                                 <div class="flex items-center gap-4">
@@ -157,6 +127,7 @@
                                         <td class="px-6 py-6 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-center gap-2">
                                                 <button
+                                                    @click="openEdit({{ $k->id_jurusan }}, '{{ $k->nama_jurusan }}')"
                                                     class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110"
                                                     title="Edit jurusan">
                                                     <i class="fas fa-edit text-sm"></i>
@@ -180,6 +151,91 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal Tambah Jurusan -->
+                <div x-show="openAddModal" 
+                     x-cloak
+                     class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                     style="background-color: rgba(0, 0, 0, 0.5);"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <div @click.away="openAddModal = false"
+                         class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 relative"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-90"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-90">
+                        <h3 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 border-b pb-3">Tambah Jurusan Baru</h3>
+                        <form action="{{route('jurusan.store')}}" method="POST" class="space-y-4">
+                            @csrf
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jurusan</label>
+                                <input type="text" name="nama_jurusan" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                    placeholder="Masukkan nama jurusan">
+                            </div>
+                            <div class="flex justify-end gap-3 pt-4">
+                                <button type="button" @click="openAddModal = false"
+                                    class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                    class="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-semibold hover:bg-emerald-700 transition-colors shadow-lg">
+                                    Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Edit Jurusan -->
+                <div x-show="openEditModal" 
+                     x-cloak
+                     class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+                     style="background-color: rgba(0, 0, 0, 0.5);"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <div @click.away="openEditModal = false"
+                         class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 relative"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-90"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-90">
+                        <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-white border-b pb-3">Edit Data Jurusan</h2>
+                        <form :action="`{{ url('admin/jurusan') }}/${editId}`" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jurusan</label>
+                                <input type="text" name="nama_jurusan" x-model="editNama" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-emerald-500 focus:border-emerald-500"
+                                    placeholder="Masukkan nama jurusan">
+                            </div>
+                            <div class="flex justify-end gap-3 pt-4">
+                                <button type="button" @click="openEditModal = false"
+                                    class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                    class="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-semibold hover:bg-emerald-700 transition-colors shadow-lg">
+                                    Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </section>
         </div>
     </div>
@@ -187,6 +243,10 @@
     <style>
         * {
             font-family: 'Inter', 'Poppins', sans-serif;
+        }
+
+        [x-cloak] { 
+            display: none !important; 
         }
         
         .wave {
@@ -227,25 +287,10 @@
                 background-position: right center;
             }
         }
-
-        @keyframes zoom-in {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
         
         .animate-fade-in-up {
             animation: fade-in-up 0.8s ease-out forwards;
             opacity: 0;
-        }
-        
-        .animate-zoom-in {
-            animation: zoom-in 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
         
         .animate-gradient-x {
@@ -291,4 +336,20 @@
             background: linear-gradient(90deg, #4f46e5, #7c3aed, #db2777);
         }
     </style>
+
+    <script>
+        function jurusanData() {
+            return {
+                openAddModal: false,
+                openEditModal: false,
+                editId: null,
+                editNama: '',
+                openEdit(id, nama) {
+                    this.editId = id;
+                    this.editNama = nama;
+                    this.openEditModal = true;
+                }
+            }
+        }
+    </script>
 </x-app-layout>
