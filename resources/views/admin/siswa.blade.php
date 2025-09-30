@@ -168,17 +168,24 @@
                             </div>
                         </form>
 
-                        <div class="mt-4 p-4 bg-blue-50/50 dark:bg-gray-700/50 rounded-2xl border-l-4 border-blue-500">
-                            <h4 class="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
-                                <i class="fas fa-lightbulb"></i>
-                                Format Excel yang Diperlukan:
-                            </h4>
-                            <ul class="text-sm text-blue-700 dark:text-blue-200 space-y-1 ml-4">
-                                <li>• Kolom A: <strong>NIS</strong> atau <strong>No Induk</strong> (angka)</li>
-                                <li>• Kolom B: <strong>Nama Siswa</strong> (teks)</li>
-                                <li>• Baris pertama harus berisi header kolom</li>
-                                <li>• Tidak boleh ada data yang kosong</li>
-                            </ul>
+                        <div class="mt-4 p-4 bg-blue-50/50 dark:bg-gray-700/50 rounded-2xl border-l-4 border-blue-500 flex flex-row justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Format Excel yang Diperlukan:
+                                </h4>
+                                <ul class="text-sm text-blue-700 dark:text-blue-200 space-y-1 ml-4">
+                                    <li>• Kolom A: <strong>NIS</strong> atau <strong>No Induk</strong> (angka)</li>
+                                    <li>• Kolom B: <strong>Nama Siswa</strong> (teks)</li>
+                                    <li>• Tidak boleh ada data yang kosong</li>
+                                    <li>• Silahkan unduh template file excel yang sudah tersedia</li>
+                                </ul>
+                            </div>
+                            <a href="{{ asset('storage/templates/template-siswa.xlsx') }}"><button  
+                                class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm text-center dark:focus:ring-blue-800 transition-all duration-500 transform hover:scale-105 shadow-2xl hover:shadow-blue-500/25 h-14 px-4 mr-20">
+                                <i class="fas fa-file-import group-hover:animate-bounce"></i>
+                                Download Template
+                            </button></a>
                         </div>
                     </div>
                 </div>

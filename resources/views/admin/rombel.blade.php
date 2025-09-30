@@ -223,7 +223,7 @@
                                         <td class="px-6 py-6 whitespace-nowrap">
                                             <span
                                                 class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                                {{$item->id}}
+                                                {{$item->nama_kelas}}
                                             </span>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap">
