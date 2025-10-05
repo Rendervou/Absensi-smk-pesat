@@ -76,7 +76,10 @@ class UserController extends Controller
 
             for ($m = 1; $m <= 12; $m++) {
                 // Ambil agregasi per status untuk bulan m dan kelas ini
-                $counts = Presensi::where('id_kelas', $k->id_kelas)
+                $counts = Presensi::where(function($query) use ($k) {
+                    $query->where('id_kelas', $k->id_kelas)
+                        ->orWhere('nama_kelas', $k->nama_kelas);
+                })
                     ->whereMonth('tanggal', $m)
                     ->selectRaw("
                         SUM(CASE WHEN status = 'hadir' THEN 1 ELSE 0 END) as hadir,

@@ -367,19 +367,6 @@
             </div>
         </div>
 
-        <div class="fixed bottom-8 right-8 z-50">
-            <div class="relative group">
-                <button class="w-16 h-16 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 rounded-full shadow-2xl flex items-center justify-center text-white transform hover:scale-110 transition-all duration-300 animate-pulse">
-                    <i class="fas fa-plus text-xl group-hover:rotate-90 transition-transform duration-300"></i>
-                </button>
-                <div class="absolute bottom-full right-0 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                    Aksi Cepat
-                    <div class="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <style>
         * {
             font-family: 'Inter', 'Poppins', sans-serif;

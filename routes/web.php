@@ -5,7 +5,8 @@ use App\Http\Controllers\dataguruController;
 use App\Http\Controllers\dataJurusanController;
     use App\Http\Controllers\datakelasController;
     use App\Http\Controllers\datasiswaController;
-    use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\ExportExcelController;
+use App\Http\Controllers\PresensiController;
     use App\Http\Controllers\ProfileController;
     use App\Http\Controllers\RombelController;
     use App\Http\Controllers\UserController;
@@ -40,7 +41,9 @@ use Illuminate\Support\Facades\Route;
         Route::resource('admin/kelas', datakelasController::class);
         Route::resource('admin/guru', dataguruController::class);
         Route::get('/siswa/import', [datasiswaController::class, 'showImportFrom'])->name('siswa.import.from');
-        Route::post('/siswa/import', [datasiswaController::class, 'import'])->name('admin.siswa.import'); 
+        Route::post('/siswa/import', [datasiswaController::class, 'import'])->name('admin.siswa.import');
+        Route::get('/admin/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('admin.export.perBulan');
+        Route::get('/admin/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('admin.export.perKelas');
     });
 
     // Biarkan yang ini saja
@@ -61,6 +64,8 @@ use Illuminate\Support\Facades\Route;
         Route::get('/user/perkelas', [UserController::class, 'perKelas'])->name('user.perKelas');
         Route::get('/user/perbulan', [UserController::class, 'perBulan'])->name('user.perBulan');
         Route::resource('user/presensi', UserPresensiController::class);
+        Route::get('/user/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('user.export.perBulan');
+        Route::get('/user/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('user.export.perKelas');
     });
 
     // User
@@ -73,7 +78,79 @@ use Illuminate\Support\Facades\Route;
         'edit' => 'user.presensi.edit',
         'update' => 'user.presensi.update',
         'destroy' => 'user.presensi.destroy',
-    ]);
+        ]);
+    });
+
+    // Tambahkan route test ini di routes/web.php untuk debug:
+
+    Route::get('/test-query', function() {
+        // 1. Cek data kelas XI-1
+        $kelasXI1 = \App\Models\DataKelas::where('nama_kelas', 'XI-1')->first();
+        echo "Kelas XI-1:<br>";
+        echo "ID Kelas: " . ($kelasXI1 ? $kelasXI1->id_kelas : 'TIDAK ADA') . "<br>";
+        echo "Nama: " . ($kelasXI1 ? $kelasXI1->nama_kelas : 'TIDAK ADA') . "<br><br>";
+        
+        // 2. Cek semua presensi bulan Oktober (bulan 10)
+        echo "=== Presensi Bulan Oktober ===<br>";
+        $presensiOkt = \App\Models\Presensi::whereMonth('tanggal', 10)
+            ->select('id_presensi', 'id_kelas', 'nama_kelas', 'tanggal', 'status')
+            ->get();
+        
+        echo "Total presensi Oktober: " . $presensiOkt->count() . "<br>";
+        foreach($presensiOkt as $p) {
+            echo "ID: {$p->id_presensi}, id_kelas: {$p->id_kelas}, nama_kelas: {$p->nama_kelas}, tanggal: {$p->tanggal}, status: {$p->status}<br>";
+        }
+        echo "<br>";
+        
+        // 3. Cek presensi XI-1 di Oktober
+        echo "=== Presensi XI-1 di Oktober ===<br>";
+        if ($kelasXI1) {
+            $presensiXI1_byId = \App\Models\Presensi::where('id_kelas', $kelasXI1->id_kelas)
+                ->whereMonth('tanggal', 10)
+                ->count();
+            echo "Query by id_kelas ({$kelasXI1->id_kelas}): {$presensiXI1_byId} data<br>";
+        }
+        
+        $presensiXI1_byName = \App\Models\Presensi::where('nama_kelas', 'XI-1')
+            ->whereMonth('tanggal', 10)
+            ->count();
+        echo "Query by nama_kelas (XI-1): {$presensiXI1_byName} data<br><br>";
+        
+        // 4. Cek presensi XI-1 dengan query OR
+        if ($kelasXI1) {
+            $presensiXI1_or = \App\Models\Presensi::where(function($query) use ($kelasXI1) {
+                    $query->where('id_kelas', $kelasXI1->id_kelas)
+                        ->orWhere('nama_kelas', $kelasXI1->nama_kelas);
+                })
+                ->whereMonth('tanggal', 10)
+                ->get();
+            
+            echo "Query with OR (id_kelas OR nama_kelas): {$presensiXI1_or->count()} data<br>";
+            foreach($presensiXI1_or as $p) {
+                echo "- ID: {$p->id_presensi}, id_kelas: {$p->id_kelas}, nama_kelas: {$p->nama_kelas}, status: {$p->status}<br>";
+            }
+        }
+        
+        // 5. Test aggregation query
+        echo "<br>=== Test Aggregation Query ===<br>";
+        if ($kelasXI1) {
+            $counts = \App\Models\Presensi::where(function($query) use ($kelasXI1) {
+                    $query->where('id_kelas', $kelasXI1->id_kelas)
+                        ->orWhere('nama_kelas', $kelasXI1->nama_kelas);
+                })
+                ->whereMonth('tanggal', 10)
+                ->selectRaw("
+                    SUM(CASE WHEN status = 'hadir' THEN 1 ELSE 0 END) as hadir,
+                    SUM(CASE WHEN status = 'izin' THEN 1 ELSE 0 END) as izin,
+                    SUM(CASE WHEN status = 'sakit' THEN 1 ELSE 0 END) as sakit,
+                    SUM(CASE WHEN status = 'alfa' THEN 1 ELSE 0 END) as alfa
+                ")->first();
+            
+            echo "Hadir: {$counts->hadir}<br>";
+            echo "Izin: {$counts->izin}<br>";
+            echo "Sakit: {$counts->sakit}<br>";
+            echo "Alfa: {$counts->alfa}<br>";
+        }
     });
 
     require __DIR__ . '/auth.php';

@@ -70,8 +70,11 @@ class AdminController extends Controller
             $totalTahunan[$k->id_kelas] = ['hadir' => 0, 'izin' => 0, 'sakit' => 0, 'alfa' => 0];
 
             for ($m = 1; $m <= 12; $m++) {
-                // Ambil agregasi per status untuk bulan m dan kelas ini
-                $counts = Presensi::where('id_kelas', $k->id_kelas)
+                // PERBAIKAN: Query dengan id_kelas ATAU nama_kelas
+                $counts = Presensi::where(function($query) use ($k) {
+                        $query->where('id_kelas', $k->id_kelas)
+                            ->orWhere('nama_kelas', $k->nama_kelas);
+                    })
                     ->whereMonth('tanggal', $m)
                     ->selectRaw("
                         SUM(CASE WHEN status = 'hadir' THEN 1 ELSE 0 END) as hadir,
