@@ -79,12 +79,6 @@
                         </div>
                         
                         <div class="flex flex-col sm:flex-row gap-4 w-full xl:w-auto">
-                            <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-xl text-base font-semibold transition-all duration-200 shadow-lg">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                Export Excel
-                            </button>
                             <a href="presensi" class="group">
                                 <button type="button" class="flex items-center justify-center w-full sm:w-auto gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-8 py-4 text-center dark:focus:ring-blue-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
                                     <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>

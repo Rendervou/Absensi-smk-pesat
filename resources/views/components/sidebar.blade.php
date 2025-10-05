@@ -15,7 +15,7 @@
                     <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Dashboard') }}</span>
                 </x-nav-link>
             </li>
- @auth
+            @auth
             @if (Auth::user()->role === 'admin')
             
 
@@ -106,6 +106,83 @@
                        class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
                         <i class="fi fi-rr-folder-open"></i>
                         <span>Data Rombel</span>
+                    </a>
+                </div>
+            </li>
+            @endif
+            @endauth
+
+            <!-- TAMBAHKAN SETELAH MENU "DATA UMUM" DAN SEBELUM MENU "LAPORAN" -->
+            <!-- Letakkan di sekitar baris 96 (setelah </li> penutup Data Umum) -->
+
+            @auth
+            @if (Auth::user()->role === 'admin')
+            <!-- MENU AKADEMIK (BARU) -->
+            <li x-data="{ open: false }" class="relative">
+                <x-nav-link class="mb-2" href="#" @click.prevent="open = !open"
+                    :active="request()->routeIs('admin.naikkelas.*') || request()->routeIs('admin.kelulusan.*') || request()->routeIs('admin.alumni.*')">
+                    <i class="fi fi-rr-graduation-cap text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                    <span class="hidden lg:block text-gray-700 dark:text-gray-300">Akademik</span>
+                    <svg :class="{'rotate-180': open}"
+                        class="hidden lg:block w-4 h-4 ml-auto transform transition-transform duration-200 text-gray-600 dark:text-gray-300"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </x-nav-link>
+
+                <!-- Desktop Dropdown -->
+                <ul x-show="open" x-transition:enter="transition ease-out duration-300 transform"
+                    x-transition:enter-start="-translate-y-3 opacity-0"
+                    x-transition:enter-end="translate-y-0 opacity-100"
+                    x-transition:leave="transition ease-in duration-200 transform"
+                    x-transition:leave-start="translate-y-0 opacity-100"
+                    x-transition:leave-end="-translate-y-3 opacity-0" 
+                    class="pl-6 space-y-2 hidden lg:block">
+
+                    <li>
+                        <x-nav-link :href="route('admin.naikkelas.index')" :active="request()->routeIs('admin.naikkelas.*')">
+                            <i class="fi fi-rr-arrow-up text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Naik Kelas Massal') }}</span>
+                        </x-nav-link>
+                    </li>
+                    <li>
+                        <x-nav-link :href="route('admin.kelulusan.index')" :active="request()->routeIs('admin.kelulusan.*')">
+                            <i class="fi fi-rr-diploma text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Kelulusan') }}</span>
+                        </x-nav-link>
+                    </li>
+                    <li>
+                        <x-nav-link :href="route('admin.alumni.index')" :active="request()->routeIs('admin.alumni.*')">
+                            <i class="fi fi-rr-users text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Daftar Alumni') }}</span>
+                        </x-nav-link>
+                    </li>
+                </ul>
+
+                <!-- Mobile Dropdown (Absolute positioned) -->
+                <div x-show="open" 
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 scale-100"
+                    x-transition:leave-end="opacity-0 scale-95"
+                    @click.away="open = false"
+                    class="lg:hidden absolute left-full top-0 ml-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                    <a href="{{ route('admin.naikkelas.index') }}" 
+                    class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <i class="fi fi-rr-arrow-up"></i>
+                        <span>Naik Kelas Massal</span>
+                    </a>
+                    <a href="{{ route('admin.kelulusan.index') }}" 
+                    class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <i class="fi fi-rr-diploma"></i>
+                        <span>Kelulusan</span>
+                    </a>
+                    <a href="{{ route('admin.alumni.index') }}" 
+                    class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
+                        <i class="fi fi-rr-users"></i>
+                        <span>Daftar Alumni</span>
                     </a>
                 </div>
             </li>

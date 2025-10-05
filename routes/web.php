@@ -38,12 +38,26 @@ use Illuminate\Support\Facades\Route;
         Route::resource('admin/siswa', datasiswaController::class);
         Route::resource('admin/jurusan', dataJurusanController::class);
         Route::resource('admin/rombel', RombelController::class);
+        Route::post('/admin/rombel/bulk-store', [RombelController::class, 'bulkStore'])->name('rombel.bulkStore');
         Route::resource('admin/kelas', datakelasController::class);
         Route::resource('admin/guru', dataguruController::class);
         Route::get('/siswa/import', [datasiswaController::class, 'showImportFrom'])->name('siswa.import.from');
         Route::post('/siswa/import', [datasiswaController::class, 'import'])->name('admin.siswa.import');
         Route::get('/admin/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('admin.export.perBulan');
         Route::get('/admin/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('admin.export.perKelas');
+        
+        // ==================== ROUTES NAIK KELAS MASSAL ====================
+        Route::get('/admin/naik-kelas', [App\Http\Controllers\NaikKelasController::class, 'index'])->name('admin.naikkelas.index');
+        Route::post('/admin/naik-kelas/proses', [App\Http\Controllers\NaikKelasController::class, 'prosesNaikKelas'])->name('admin.naikkelas.proses');
+        Route::post('/admin/naik-kelas/tidak-naik', [App\Http\Controllers\NaikKelasController::class, 'prosesTidakNaikKelas'])->name('admin.naikkelas.tidaknaik');
+
+        // ==================== ROUTES KELULUSAN ====================
+        Route::get('/admin/kelulusan', [App\Http\Controllers\KelulusanController::class, 'index'])->name('admin.kelulusan.index');
+        Route::post('/admin/kelulusan/proses', [App\Http\Controllers\KelulusanController::class, 'prosesKelulusan'])->name('admin.kelulusan.proses');
+
+        // ==================== ROUTES ALUMNI ====================
+        Route::get('/admin/alumni', [App\Http\Controllers\KelulusanController::class, 'daftarAlumni'])->name('admin.alumni.index');
+        Route::delete('/admin/alumni/{id}', [App\Http\Controllers\KelulusanController::class, 'hapusAlumni'])->name('admin.alumni.hapus');
     });
 
     // Biarkan yang ini saja
