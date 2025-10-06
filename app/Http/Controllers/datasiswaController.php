@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class datasiswaController extends Controller
 {
@@ -68,7 +69,7 @@ class datasiswaController extends Controller
                 );
             }
 
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+        } catch (ValidationException $e) {
             // Handle validation errors
             $failures = $e->failures();
             $errorMessages = [];
