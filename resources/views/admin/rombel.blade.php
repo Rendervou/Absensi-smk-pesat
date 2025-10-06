@@ -334,6 +334,76 @@
                     </div>
                 </div>
 
+                <!-- Modal Edit Rombel (NEW) -->
+                <div x-show="openEditRombel" x-cloak
+                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[99] p-4" 
+                    x-transition:enter="transition ease-out duration-300" 
+                    x-transition:enter-start="opacity-0 scale-90" 
+                    x-transition:enter-end="opacity-100 scale-100" 
+                    x-transition:leave="transition ease-in duration-300" 
+                    x-transition:leave-start="opacity-100 scale-100" 
+                    x-transition:leave-end="opacity-0 scale-90">
+                    <div @click.away="openEditRombel = false"
+                        class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 animate-zoom-in">
+                        <div class="flex justify-between items-center pb-3 mb-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Edit Rombel</h3>
+                            <button @click="openEditRombel = false"
+                                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <form :action="'{{ route('rombel.index') }}/' + editData.id" method="POST" class="space-y-4">
+                            @csrf
+                            @method('PUT')
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Siswa</label>
+                                <select name="id_siswa" x-model="editData.id_siswa" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">-- Nama Siswa --</option>
+                                    @if(isset($allSiswa))
+                                        @foreach ($allSiswa as $item)
+                                        <option value="{{$item->id_siswa}}">{{$item->nama_siswa}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kelas</label>
+                                <select name="id_kelas" x-model="editData.id_kelas" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">-- Pilih Kelas --</option>
+                                    @foreach ($kelas as $item)
+                                    <option value="{{$item->id_kelas}}">{{$item->nama_kelas}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jurusan</label>
+                                <select name="id_jurusan" x-model="editData.id_jurusan" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">-- Pilih Jurusan --</option>
+                                    @foreach ($jurusan as $item)
+                                    <option value="{{$item->id_jurusan}}">{{$item->nama_jurusan}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <button type="button" @click="openEditRombel = false"
+                                    class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                    class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg">
+                                    Update
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Tabel Data Rombel -->
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
                     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 overflow-hidden relative">
@@ -417,11 +487,18 @@
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-center gap-2">
+                                                <button
+                                                    @click="editData = { id: '{{$item->id}}', id_siswa: '{{$item->id_siswa}}', id_kelas: '{{$item->id_kelas}}', id_jurusan: '{{$item->id_jurusan}}' }; openEditRombel = true"
+                                                    type="button"
+                                                    class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110"
+                                                    title="Edit Rombel">
+                                                    <i class="fas fa-edit text-sm"></i>
+                                                </button>
                                                 <form action="{{ route('rombel.destroy', $item->id) }}" method="POST"
                                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus rombel ini?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button
+                                                    <button type="submit"
                                                         class="p-3 bg-red-50/50 hover:bg-red-100/50 rounded-xl text-red-600 hover:text-red-800 transition-colors duration-300 shadow-md transform hover:scale-110"
                                                         title="Hapus Rombel">
                                                         <i class="fas fa-trash-alt text-sm"></i>

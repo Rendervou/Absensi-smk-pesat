@@ -18,10 +18,13 @@ class RombelController extends Controller
      */
     public function index(Request $request)
     {
-        // Siswa yang BELUM masuk rombel
+        // Siswa yang BELUM masuk rombel (untuk tambah baru)
         $siswa = DataSiswa::whereNotIn('id_siswa', function($query) {
             $query->select('id_siswa')->from('rombels');
         })->get();
+        
+        // TAMBAHKAN: Semua siswa (untuk edit)
+        $allSiswa = DataSiswa::all();
         
         $kelas = DataKelas::all();
         $jurusan = DataJurusan::all();
@@ -37,7 +40,7 @@ class RombelController extends Controller
 
         $rombels = $rombels->paginate(10);
 
-        return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'rombels'));
+        return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'allSiswa', 'rombels'));
     }
 
     /**
