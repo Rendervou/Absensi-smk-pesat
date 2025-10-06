@@ -45,6 +45,7 @@ class PresensiController extends Controller
     {
         $bulan = $request->get('bulan', now()->month);
         $tahun = $request->get('tahun', now()->year);
+        $status = $request->get('status'); // Tambahkan filter status
 
         // Ambil data siswa
         $siswa = DataSiswa::where('nis', $nis)->firstOrFail();
@@ -56,20 +57,30 @@ class PresensiController extends Controller
             ->select('data_kelas.nama_kelas', 'data_jurusans.nama_jurusan')
             ->first();
 
-        // Ambil detail presensi per tanggal
-        $detailPresensi = Presensi::where('id_siswa', $siswa->id_siswa)
+        // Query detail presensi dengan filter
+        $query = Presensi::where('id_siswa', $siswa->id_siswa)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun);
+        
+        // Terapkan filter status jika ada
+        if ($status && in_array($status, ['hadir', 'sakit', 'izin', 'alfa'])) {
+            $query->where('status', $status);
+        }
+        
+        $detailPresensi = $query->orderBy('tanggal', 'asc')->get();
+
+        // Hitung statistik (tetap dari semua data tanpa filter)
+        $allPresensi = Presensi::where('id_siswa', $siswa->id_siswa)
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
-            ->orderBy('tanggal', 'asc')
             ->get();
 
-        // Hitung statistik
         $statistik = [
-            'hadir' => $detailPresensi->where('status', 'hadir')->count(),
-            'sakit' => $detailPresensi->where('status', 'sakit')->count(),
-            'izin' => $detailPresensi->where('status', 'izin')->count(),
-            'alfa' => $detailPresensi->where('status', 'alfa')->count(),
-            'total' => $detailPresensi->count()
+            'hadir' => $allPresensi->where('status', 'hadir')->count(),
+            'sakit' => $allPresensi->where('status', 'sakit')->count(),
+            'izin' => $allPresensi->where('status', 'izin')->count(),
+            'alfa' => $allPresensi->where('status', 'alfa')->count(),
+            'total' => $allPresensi->count()
         ];
 
         // Nama bulan dalam bahasa Indonesia
@@ -86,7 +97,8 @@ class PresensiController extends Controller
             'statistik', 
             'bulan', 
             'tahun',
-            'namaBulan'
+            'namaBulan',
+            'status'
         ));
     }
 
