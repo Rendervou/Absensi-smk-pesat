@@ -142,7 +142,7 @@
                     <li>
                         <x-nav-link :href="route('admin.naikkelas.index')" :active="request()->routeIs('admin.naikkelas.*')">
                             <i class="fi fi-rr-arrow-up text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
-                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Naik Kelas Massal') }}</span>
+                            <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Naik Kelas') }}</span>
                         </x-nav-link>
                     </li>
                     <li>
@@ -172,7 +172,7 @@
                     <a href="{{ route('admin.naikkelas.index') }}" 
                     class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">
                         <i class="fi fi-rr-arrow-up"></i>
-                        <span>Naik Kelas Massal</span>
+                        <span>Naik Kelas</span>
                     </a>
                     <a href="{{ route('admin.kelulusan.index') }}" 
                     class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700">

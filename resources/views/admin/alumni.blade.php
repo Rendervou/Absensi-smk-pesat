@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <div class="py-8 bg-gradient-to-br from-amber-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-amber-900 min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-1 sm:px-6 lg:px-1">
             
             <!-- Alert Messages -->
             @if(session('success'))
@@ -92,14 +92,13 @@
                                 <th class="px-6 py-4">Jurusan</th>
                                 <th class="px-6 py-4">Tahun Lulus</th>
                                 <th class="px-6 py-4">Tanggal Kelulusan</th>
-                                <th class="px-6 py-4">No. Telp</th>
                                 <th class="px-6 py-4 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             @forelse($alumni as $index => $alum)
                             <tr class="hover:bg-amber-50/50 dark:hover:bg-gray-700/50 transition-colors">
-                                <td class="px-6 py-4">{{ $alumni->firstItem() + $index }}</td>
+                                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">{{ $alumni->firstItem() + $index }}</td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 bg-gradient-to-r from-amber-400 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold text-sm">
@@ -117,7 +116,6 @@
                                     <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">{{ $alum->tahun_lulus }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($alum->tanggal_kelulusan)->format('d M Y') }}</td>
-                                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">{{ $alum->no_tlp ?? '-' }}</td>
                                 <td class="px-6 py-4 text-center">
                                     <form action="{{ route('admin.alumni.hapus', $alum->id_alumni) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus alumni ini dan mengembalikan status siswa ke aktif?')">
                                         @csrf

@@ -143,9 +143,8 @@ class KelulusanController extends Controller
                         'tahun_lulus' => $tahunLulus,
                     ]);
 
-                    // Archive rombel (soft delete jika ada fitur)
-                    // Atau bisa dibiarkan untuk history
-                    // $rombel->delete();
+                    // Hapus data rombel siswa yang lulus
+                    $rombel->delete();
 
                     $lulus++;
 
