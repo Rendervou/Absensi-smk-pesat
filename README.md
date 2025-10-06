@@ -81,6 +81,8 @@ cd Absensi-smk-pesat
 ### 2. Install Dependencies
 ```bash
 composer install
+composer require maatwebsite/excel
+composer require phpoffice/phpspreadsheet
 npm install
 ```
 

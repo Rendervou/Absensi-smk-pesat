@@ -18,22 +18,26 @@ class RombelController extends Controller
      */
     public function index(Request $request)
     {
-        $siswa = DataSiswa::all();
+        // Siswa yang BELUM masuk rombel
+        $siswa = DataSiswa::whereNotIn('id_siswa', function($query) {
+            $query->select('id_siswa')->from('rombels');
+        })->get();
+        
         $kelas = DataKelas::all();
         $jurusan = DataJurusan::all();
-        $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
-        ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
-        ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
-            ->select('rombels.*' ,'data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
-
-                if ($request->filled('kelas')) {
-            $rombels->where('data_kelas.id_kelas', $request->kelas);
-        };
-
-            $rombels = $rombels->paginate(10);
-
-        return view('admin.rombel', compact('jurusan','kelas','siswa','rombels'));
         
+        $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
+            ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
+            ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
+            ->select('rombels.*', 'data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
+
+        if ($request->filled('kelas')) {
+            $rombels->where('data_kelas.id_kelas', $request->kelas);
+        }
+
+        $rombels = $rombels->paginate(10);
+
+        return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'rombels'));
     }
 
     /**
@@ -64,6 +68,45 @@ class RombelController extends Controller
 
          return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Disimpan!']);
 
+    }
+
+    /**
+     * Store multiple rombel at once
+     */
+    public function bulkStore(Request $request)
+    {
+        $request->validate([
+            'id_kelas' => 'required|exists:data_kelas,id_kelas',
+            'id_jurusan' => 'required|exists:data_jurusans,id_jurusan',
+            'siswa_ids' => 'required|array',
+            'siswa_ids.*' => 'exists:data_siswas,id_siswa',
+        ]);
+
+        $inserted = 0;
+        $skipped = 0;
+
+        foreach ($request->siswa_ids as $siswa_id) {
+            // Cek apakah siswa sudah ada di rombel
+            $exists = Rombel::where('id_siswa', $siswa_id)->exists();
+            
+            if (!$exists) {
+                Rombel::create([
+                    'id_siswa' => $siswa_id,
+                    'id_kelas' => $request->id_kelas,
+                    'id_jurusan' => $request->id_jurusan,
+                ]);
+                $inserted++;
+            } else {
+                $skipped++;
+            }
+        }
+
+        $message = "$inserted siswa berhasil ditambahkan ke rombel.";
+        if ($skipped > 0) {
+            $message .= " $skipped siswa dilewati (sudah ada di rombel).";
+        }
+
+        return redirect()->route('rombel.index')->with(['success' => $message]);
     }
 
     /**

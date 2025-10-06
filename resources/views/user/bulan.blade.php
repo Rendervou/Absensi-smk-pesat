@@ -172,13 +172,21 @@
                         </svg>
                         Data Presensi Siswa Bulan {{ DateTime::createFromFormat('!m', $bulan ?? now()->month)->format('F') }}
                     </h3>
+                    <!-- Ganti button export yang lama dengan form ini untuk user -->
                     @if(isset($rekap) && count($rekap) > 0)
-                    <button onclick="exportData()" class="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-md transition duration-200">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        Export Excel
-                    </button>
+                    <form method="GET" action="{{ route('user.export.perBulan') }}" id="exportForm">
+                        <input type="hidden" name="bulan" value="{{ $bulan ?? now()->month }}">
+                        <input type="hidden" name="kelas" value="{{ $id_kelas ?? '' }}">
+                        <input type="hidden" name="jurusan" value="{{ $selected_jurusan ?? '' }}">
+                        <input type="hidden" name="search" value="{{ $search ?? '' }}">
+                        
+                        <button type="submit" class="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-md transition duration-200">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Export Excel
+                        </button>
+                    </form>
                     @endif
                 </div>
             </div>

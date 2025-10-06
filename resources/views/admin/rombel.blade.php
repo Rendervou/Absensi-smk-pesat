@@ -55,7 +55,7 @@
         </div>
 
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <section x-data="{ openRombel: false }">
+            <section x-data="{ openRombel: false, openBulkRombel: false }">
                 <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4 animate-fade-in-up">
                     <form action="{{route('rombel.index')}}" method="get" class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                         <div class="relative w-full sm:w-auto">
@@ -78,26 +78,42 @@
                         </button>
                     </form>
 
-                    <div>
+                    <div class="flex gap-3">
+                        <!-- Tombol Tambah Satuan -->
                         <button @click="openRombel = true"
-                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden w-full sm:w-auto">
+                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-purple-600 via-purple-700 to-pink-700 hover:from-purple-700 hover:via-purple-800 hover:to-pink-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-purple-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-purple-500/25 relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 group-hover:rotate-12 transition-transform duration-300">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
-                            Tambah Rombel
+                            Tambah Satuan
+                        </button>
+
+                        <!-- Tombol Tambah Massal (BARU) -->
+                        <button @click="openBulkRombel = true"
+                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 group-hover:rotate-12 transition-transform duration-300">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                            </svg>
+                            Tambah Massal
                         </button>
                     </div>
                 </div>
 
+                <!-- Modal Tambah Satuan (EXISTING) -->
                 <div x-show="openRombel" x-cloak
-                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[99] p-4" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
-
+                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[99] p-4" 
+                    x-transition:enter="transition ease-out duration-300" 
+                    x-transition:enter-start="opacity-0 scale-90" 
+                    x-transition:enter-end="opacity-100 scale-100" 
+                    x-transition:leave="transition ease-in duration-300" 
+                    x-transition:leave-start="opacity-100 scale-100" 
+                    x-transition:leave-end="opacity-0 scale-90">
                     <div @click.away="openRombel = false"
                         class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 animate-zoom-in">
-
                         <div class="flex justify-between items-center pb-3 mb-4 border-b border-gray-200 dark:border-gray-700">
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Tambah Rombel</h3>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Tambah Rombel Satuan</h3>
                             <button @click="openRombel = false"
                                 class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
                                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -152,6 +168,124 @@
                     </div>
                 </div>
 
+                <!-- Modal Tambah Massal (NEW) -->
+                <div x-show="openBulkRombel" x-cloak
+                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[99] p-4" 
+                    x-transition:enter="transition ease-out duration-300" 
+                    x-transition:enter-start="opacity-0 scale-90" 
+                    x-transition:enter-end="opacity-100 scale-100" 
+                    x-transition:leave="transition ease-in duration-300" 
+                    x-transition:leave-start="opacity-100 scale-100" 
+                    x-transition:leave-end="opacity-0 scale-90">
+                    <div @click.away="openBulkRombel = false"
+                        class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-4xl p-6 animate-zoom-in max-h-[90vh] overflow-y-auto">
+                        <div class="flex justify-between items-center pb-3 mb-4 border-b border-gray-200 dark:border-gray-700">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Tambah Rombel Massal</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Pilih kelas & jurusan, lalu pilih siswa yang akan ditambahkan</p>
+                            </div>
+                            <button @click="openBulkRombel = false"
+                                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <form action="{{route('rombel.bulkStore')}}" method="POST" class="space-y-4" x-data="{
+                            selectedKelas: '',
+                            selectedJurusan: '',
+                            selectAll: false,
+                            selectedCount: 0,
+                            toggleAll() {
+                                const checkboxes = document.querySelectorAll('.siswa-checkbox');
+                                checkboxes.forEach(cb => cb.checked = this.selectAll);
+                                this.updateCount();
+                            },
+                            updateCount() {
+                                this.selectedCount = document.querySelectorAll('.siswa-checkbox:checked').length;
+                            }
+                        }">
+                            @csrf
+                            
+                            <!-- Filter Kelas & Jurusan -->
+                            <div class="grid grid-cols-2 gap-4 p-4 bg-blue-50 dark:bg-gray-700 rounded-2xl">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kelas <span class="text-red-500">*</span></label>
+                                    <select name="id_kelas" x-model="selectedKelas" required
+                                        class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                        <option value="">-- Pilih Kelas --</option>
+                                        @foreach ($kelas as $item)
+                                        <option value="{{$item->id_kelas}}">{{$item->nama_kelas}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jurusan <span class="text-red-500">*</span></label>
+                                    <select name="id_jurusan" x-model="selectedJurusan" required
+                                        class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                        <option value="">-- Pilih Jurusan --</option>
+                                        @foreach ($jurusan as $item)
+                                        <option value="{{$item->id_jurusan}}">{{$item->nama_jurusan}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Daftar Siswa dengan Checkbox -->
+                            <div x-show="selectedKelas && selectedJurusan" class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 rounded-xl">
+                                    <label class="flex items-center gap-3 cursor-pointer">
+                                        <input type="checkbox" x-model="selectAll" @change="toggleAll()"
+                                            class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="font-bold text-gray-800 dark:text-gray-200">Pilih Semua Siswa</span>
+                                    </label>
+                                    <span class="text-sm font-semibold text-blue-600 dark:text-blue-400" x-text="selectedCount + ' siswa dipilih'"></span>
+                                </div>
+
+                                <div class="max-h-96 overflow-y-auto space-y-2 p-2">
+                                    @foreach ($siswa as $item)
+                                    <label class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-gray-200 dark:border-gray-600">
+                                        <input type="checkbox" name="siswa_ids[]" value="{{$item->id_siswa}}" 
+                                            class="siswa-checkbox w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                            @change="updateCount()">
+                                        <div class="flex items-center gap-3 flex-1">
+                                            <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                                                {{ substr($item->nama_siswa, 0, 2) }}
+                                            </div>
+                                            <div>
+                                                <p class="font-semibold text-gray-800 dark:text-gray-200">{{$item->nama_siswa}}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">NIS: {{$item->nis}}</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <div x-show="!selectedKelas || !selectedJurusan" class="text-center py-12">
+                                <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                                <p class="mt-4 text-gray-500 dark:text-gray-400 font-medium">Silakan pilih Kelas dan Jurusan terlebih dahulu</p>
+                            </div>
+
+                            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <button type="button" @click="openBulkRombel = false"
+                                    class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit" :disabled="selectedCount === 0"
+                                    class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                    :class="{ 'opacity-50 cursor-not-allowed': selectedCount === 0 }">
+                                    <span x-text="'Simpan (' + selectedCount + ' siswa)'"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tabel Data Rombel -->
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
                     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 overflow-hidden relative">
                         <div class="px-8 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
