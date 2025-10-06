@@ -233,7 +233,7 @@
                             </div>
 
                             <!-- Daftar Siswa dengan Checkbox -->
-                            <div x-show="selectedKelas && selectedJurusan" class="space-y-3">
+                            <div x-show="selectedKelas && selectedJurusan" class="space-y-3" x-data="{ searchQuery: '' }">
                                 <div class="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 rounded-xl">
                                     <label class="flex items-center gap-3 cursor-pointer">
                                         <input type="checkbox" x-model="selectAll" @change="toggleAll()"
@@ -243,9 +243,36 @@
                                     <span class="text-sm font-semibold text-blue-600 dark:text-blue-400" x-text="selectedCount + ' siswa dipilih'"></span>
                                 </div>
 
+                                <!-- Search Box -->
+                                <div class="relative">
+                                    <input 
+                                        type="text" 
+                                        x-model="searchQuery"
+                                        placeholder="Cari nama siswa atau NIS..." 
+                                        class="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                                    >
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <button 
+                                        x-show="searchQuery" 
+                                        @click="searchQuery = ''"
+                                        class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                    >
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+
                                 <div class="max-h-96 overflow-y-auto space-y-2 p-2">
                                     @foreach ($siswa as $item)
-                                    <label class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-gray-200 dark:border-gray-600">
+                                    <label 
+                                        x-show="searchQuery === '' || '{{strtolower($item->nama_siswa)}} {{strtolower($item->nis)}}'.includes(searchQuery.toLowerCase())"
+                                        class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-gray-200 dark:border-gray-600"
+                                    >
                                         <input type="checkbox" name="siswa_ids[]" value="{{$item->id_siswa}}" 
                                             class="siswa-checkbox w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                             @change="updateCount()">
@@ -260,6 +287,18 @@
                                         </div>
                                     </label>
                                     @endforeach
+                                </div>
+
+                                <!-- Info jika tidak ada hasil -->
+                                <div 
+                                    x-show="searchQuery && !Array.from(document.querySelectorAll('.siswa-checkbox')).some(cb => cb.closest('label').style.display !== 'none')"
+                                    class="text-center py-8"
+                                >
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <p class="mt-2 text-gray-500 dark:text-gray-400 font-medium">Siswa tidak ditemukan</p>
+                                    <p class="text-sm text-gray-400 dark:text-gray-500">Coba kata kunci lain</p>
                                 </div>
                             </div>
 
