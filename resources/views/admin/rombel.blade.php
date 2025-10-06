@@ -55,11 +55,21 @@
         </div>
 
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <section x-data="{ openRombel: false, openBulkRombel: false }">
+            <section x-data="{ 
+                openRombel: false, 
+                openBulkRombel: false,
+                openEditRombel: false,
+                editData: {
+                    id: '',
+                    id_siswa: '',
+                    id_kelas: '',
+                    id_jurusan: ''
+                }
+            }">
                 <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4 animate-fade-in-up">
                     <form action="{{route('rombel.index')}}" method="get" class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                         <div class="relative w-full sm:w-auto">
-                            <input id="searchInput" name="search" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" type="text" placeholder="Cari Nama Siswa...">
+                            <input id="searchInput" name="search" value="{{ request('search') }}" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" type="text" placeholder="Cari Nama Siswa...">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -70,7 +80,7 @@
                             class="w-full sm:w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 text-sm rounded-full shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
                             <option value="">Semua Kelas</option>
                             @foreach ($kelas as $k)
-                            <option value="{{$k->id_kelas}}">{{$k->nama_kelas}}</option>
+                            <option value="{{$k->id_kelas}}" {{ request('kelas') == $k->id_kelas ? 'selected' : '' }}>{{$k->nama_kelas}}</option>
                             @endforeach
                         </select>
                         <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-orange-600 text-white font-medium rounded-full shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
@@ -79,19 +89,9 @@
                     </form>
 
                     <div class="flex gap-3">
-                        <!-- Tombol Tambah Satuan -->
-                        <button @click="openRombel = true"
-                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-purple-600 via-purple-700 to-pink-700 hover:from-purple-700 hover:via-purple-800 hover:to-pink-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-purple-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-purple-500/25 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 group-hover:rotate-12 transition-transform duration-300">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            Tambah Satuan
-                        </button>
-
                         <!-- Tombol Tambah Massal (BARU) -->
                         <button @click="openBulkRombel = true"
-                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 hover:from-blue-700 hover:via-blue-800 hover:to-indigo-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-blue-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-blue-500/25 relative overflow-hidden">
+                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-purple-600 via-purple-700 to-pink-700 hover:from-purple-700 hover:via-purple-800 hover:to-pink-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-purple-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-purple-500/25 relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 group-hover:rotate-12 transition-transform duration-300">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
@@ -221,10 +221,10 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jurusan <span class="text-red-500">*</span></label>
-                                    <select name="id_jurusan" x-model="selectedJurusan" required
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jurusan <span class="text-gray-400">(Opsional)</span></label>
+                                    <select name="id_jurusan" x-model="selectedJurusan"
                                         class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
-                                        <option value="">-- Pilih Jurusan --</option>
+                                        <option value="">-- Tanpa Jurusan --</option>
                                         @foreach ($jurusan as $item)
                                         <option value="{{$item->id_jurusan}}">{{$item->nama_jurusan}}</option>
                                         @endforeach
@@ -233,7 +233,7 @@
                             </div>
 
                             <!-- Daftar Siswa dengan Checkbox -->
-                            <div x-show="selectedKelas && selectedJurusan" class="space-y-3" x-data="{ searchQuery: '' }">
+                            <div x-show="selectedKelas" class="space-y-3" x-data="{ searchSiswa: '' }">
                                 <div class="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 rounded-xl">
                                     <label class="flex items-center gap-3 cursor-pointer">
                                         <input type="checkbox" x-model="selectAll" @change="toggleAll()"
@@ -243,11 +243,11 @@
                                     <span class="text-sm font-semibold text-blue-600 dark:text-blue-400" x-text="selectedCount + ' siswa dipilih'"></span>
                                 </div>
 
-                                <!-- Search Box -->
+                                <!-- Search Box di Modal -->
                                 <div class="relative">
                                     <input 
                                         type="text" 
-                                        x-model="searchQuery"
+                                        x-model="searchSiswa"
                                         placeholder="Cari nama siswa atau NIS..." 
                                         class="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                                     >
@@ -257,8 +257,9 @@
                                         </svg>
                                     </div>
                                     <button 
-                                        x-show="searchQuery" 
-                                        @click="searchQuery = ''"
+                                        x-show="searchSiswa" 
+                                        @click="searchSiswa = ''"
+                                        type="button"
                                         class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                     >
                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -268,11 +269,10 @@
                                 </div>
 
                                 <div class="max-h-96 overflow-y-auto space-y-2 p-2">
-                                    @foreach ($siswa as $item)
+                                    @forelse ($siswa as $item)
                                     <label 
-                                        x-show="searchQuery === '' || '{{strtolower($item->nama_siswa)}} {{strtolower($item->nis)}}'.includes(searchQuery.toLowerCase())"
-                                        class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-gray-200 dark:border-gray-600"
-                                    >
+                                        x-show="searchSiswa === '' || '{{strtolower($item->nama_siswa)}} {{strtolower($item->nis)}}'.includes(searchSiswa.toLowerCase())"
+                                        class="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-gray-200 dark:border-gray-600">
                                         <input type="checkbox" name="siswa_ids[]" value="{{$item->id_siswa}}" 
                                             class="siswa-checkbox w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                             @change="updateCount()">
@@ -286,27 +286,16 @@
                                             </div>
                                         </div>
                                     </label>
-                                    @endforeach
+                                    @empty
+                                    <div class="text-center py-8">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        <p class="mt-2 text-gray-500 dark:text-gray-400 font-medium">Tidak ada siswa yang tersedia</p>
+                                        <p class="text-sm text-gray-400 dark:text-gray-500">Semua siswa sudah masuk rombel</p>
+                                    </div>
+                                    @endforelse
                                 </div>
-
-                                <!-- Info jika tidak ada hasil -->
-                                <div 
-                                    x-show="searchQuery && !Array.from(document.querySelectorAll('.siswa-checkbox')).some(cb => cb.closest('label').style.display !== 'none')"
-                                    class="text-center py-8"
-                                >
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <p class="mt-2 text-gray-500 dark:text-gray-400 font-medium">Siswa tidak ditemukan</p>
-                                    <p class="text-sm text-gray-400 dark:text-gray-500">Coba kata kunci lain</p>
-                                </div>
-                            </div>
-
-                            <div x-show="!selectedKelas || !selectedJurusan" class="text-center py-12">
-                                <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                </svg>
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 font-medium">Silakan pilih Kelas dan Jurusan terlebih dahulu</p>
                             </div>
 
                             <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -318,6 +307,76 @@
                                     class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     :class="{ 'opacity-50 cursor-not-allowed': selectedCount === 0 }">
                                     <span x-text="'Simpan (' + selectedCount + ' siswa)'"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal Edit Rombel (NEW) -->
+                <div x-show="openEditRombel" x-cloak
+                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[99] p-4" 
+                    x-transition:enter="transition ease-out duration-300" 
+                    x-transition:enter-start="opacity-0 scale-90" 
+                    x-transition:enter-end="opacity-100 scale-100" 
+                    x-transition:leave="transition ease-in duration-300" 
+                    x-transition:leave-start="opacity-100 scale-100" 
+                    x-transition:leave-end="opacity-0 scale-90">
+                    <div @click.away="openEditRombel = false"
+                        class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 animate-zoom-in">
+                        <div class="flex justify-between items-center pb-3 mb-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Edit Rombel</h3>
+                            <button @click="openEditRombel = false"
+                                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <form :action="'{{ route('rombel.index') }}/' + editData.id" method="POST" class="space-y-4">
+                            @csrf
+                            @method('PUT')
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Siswa</label>
+                                <select name="id_siswa" x-model="editData.id_siswa" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">-- Nama Siswa --</option>
+                                    @if(isset($allSiswa))
+                                        @foreach ($allSiswa as $item)
+                                        <option value="{{$item->id_siswa}}">{{$item->nama_siswa}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kelas</label>
+                                <select name="id_kelas" x-model="editData.id_kelas" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">-- Pilih Kelas --</option>
+                                    @foreach ($kelas as $item)
+                                    <option value="{{$item->id_kelas}}">{{$item->nama_kelas}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Jurusan</label>
+                                <select name="id_jurusan" x-model="editData.id_jurusan" required
+                                    class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">-- Pilih Jurusan --</option>
+                                    @foreach ($jurusan as $item)
+                                    <option value="{{$item->id_jurusan}}">{{$item->nama_jurusan}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <button type="button" @click="openEditRombel = false"
+                                    class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                    class="px-6 py-3 bg-blue-600 text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg">
+                                    Update
                                 </button>
                             </div>
                         </form>
@@ -408,14 +467,17 @@
                                         <td class="px-6 py-6 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-center gap-2">
                                                 <button
-                                                    class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110">
+                                                    @click="editData = { id: '{{$item->id}}', id_siswa: '{{$item->id_siswa}}', id_kelas: '{{$item->id_kelas}}', id_jurusan: '{{$item->id_jurusan}}' }; openEditRombel = true"
+                                                    type="button"
+                                                    class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110"
+                                                    title="Edit Rombel">
                                                     <i class="fas fa-edit text-sm"></i>
                                                 </button>
                                                 <form action="{{ route('rombel.destroy', $item->id) }}" method="POST"
                                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus rombel ini?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button
+                                                    <button type="submit"
                                                         class="p-3 bg-red-50/50 hover:bg-red-100/50 rounded-xl text-red-600 hover:text-red-800 transition-colors duration-300 shadow-md transform hover:scale-110"
                                                         title="Hapus Rombel">
                                                         <i class="fas fa-trash-alt text-sm"></i>
@@ -546,23 +608,6 @@
     </style>
     
     <script>
-        document.getElementById('searchInput').addEventListener('keyup', function () {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#Table tbody tr');
-    
-            rows.forEach((row) => {
-                const cells = row.querySelectorAll('td');
-                let found = false;
-    
-                for (let i = 1; i < cells.length - 1; i++) {
-                    if (cells[i].textContent.toLowerCase().includes(searchValue)) {
-                        found = true;
-                        break;
-                    }
-                }
-    
-                row.style.display = found ? '' : 'none';
-            });
-        });
+        // Tidak perlu lagi auto-submit karena sudah ada tombol Cari
     </script>
 </x-app-layout>

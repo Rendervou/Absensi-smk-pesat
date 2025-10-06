@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rombels', function (Blueprint $table) {
-            $table->id();
-            $table->string('id_siswa');
-            $table->string('id_kelas');
-            $table->string('id_jurusan');
-            $table->timestamps();
+        $table->id();
+        $table->unsignedBigInteger('id_siswa');  // ← Ubah jadi unsignedBigInteger
+        $table->unsignedBigInteger('id_kelas');  // ← Ubah jadi unsignedBigInteger
+        $table->unsignedBigInteger('id_jurusan')->nullable();
+        $table->timestamps();
         });
     }
 

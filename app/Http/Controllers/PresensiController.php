@@ -21,7 +21,7 @@ class PresensiController extends Controller
     public function index(Request $request)
     {
         $siswa = DataSiswa::all();
-        $kelas = DataKelas::all();
+        $kelas = DataKelas::orderBy('nama_kelas', 'asc')->get();
         $jurusan = DataJurusan::all();
         $presensi = Presensi::all();
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
@@ -36,7 +36,7 @@ class PresensiController extends Controller
             $kelasNama = DataKelas::where('id_kelas', $request->kelas)->value('nama_kelas');
         };
 
-        $rombels = $rombels->orderBy('data_siswas.nama_siswa','asc')->paginate(50);
+        $rombels = $rombels->orderBy('data_siswas.nama_siswa','asc')->get();
         
         return view('admin.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan', 'kelasNama'));
     }

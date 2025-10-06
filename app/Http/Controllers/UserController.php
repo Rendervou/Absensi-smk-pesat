@@ -110,7 +110,6 @@ class UserController extends Controller
             }
         }
 
-        // Kirim ke view: pastikan view kamu (admin.kelas) memakai variabel ini
         return view('user.kelas', compact('kelas','dataBulan','totalTahunan'));
     }
 
