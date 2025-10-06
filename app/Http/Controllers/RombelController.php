@@ -19,26 +19,50 @@ class RombelController extends Controller
     public function index(Request $request)
     {
         // Siswa yang BELUM masuk rombel (untuk tambah baru)
-        $siswa = DataSiswa::whereNotIn('id_siswa', function($query) {
+        $siswaQuery = DataSiswa::whereNotIn('id_siswa', function($query) {
             $query->select('id_siswa')->from('rombels');
-        })->get();
+        });
         
-        // TAMBAHKAN: Semua siswa (untuk edit)
+        // Filter search untuk modal tambah massal
+        if ($request->filled('search_siswa')) {
+            $search = $request->search_siswa;
+            $siswaQuery->where(function($q) use ($search) {
+                $q->where('nama_siswa', 'LIKE', "%{$search}%")
+                ->orWhere('nis', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        $siswa = $siswaQuery->get();
+        
+        // Semua siswa (untuk edit)
         $allSiswa = DataSiswa::all();
         
         $kelas = DataKelas::all();
         $jurusan = DataJurusan::all();
         
+        // Query rombel dengan join
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
             ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
             ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
-            ->select('rombels.*', 'data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
+            ->select('rombels.*', 'data_siswas.nama_siswa', 'data_siswas.nis', 'data_kelas.nama_kelas', 'data_jurusans.nama_jurusan');
 
+        // Filter berdasarkan kelas
         if ($request->filled('kelas')) {
             $rombels->where('data_kelas.id_kelas', $request->kelas);
         }
+        
+        // Filter search untuk tabel rombel
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $rombels->where(function($q) use ($search) {
+                $q->where('data_siswas.nama_siswa', 'LIKE', "%{$search}%")
+                ->orWhere('data_siswas.nis', 'LIKE', "%{$search}%")
+                ->orWhere('data_kelas.nama_kelas', 'LIKE', "%{$search}%")
+                ->orWhere('data_jurusans.nama_jurusan', 'LIKE', "%{$search}%");
+            });
+        }
 
-        $rombels = $rombels->paginate(10);
+        $rombels = $rombels->paginate(10)->withQueryString(); // withQueryString agar parameter search tetap ada saat pagination
 
         return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'allSiswa', 'rombels'));
     }
