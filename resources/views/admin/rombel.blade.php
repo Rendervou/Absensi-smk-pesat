@@ -69,7 +69,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4 animate-fade-in-up">
                     <form action="{{route('rombel.index')}}" method="get" class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                         <div class="relative w-full sm:w-auto">
-                            <input id="searchInput" name="search" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" type="text" placeholder="Cari Nama Siswa...">
+                            <input id="searchInput" name="search" value="{{ request('search') }}" class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" type="text" placeholder="Cari Nama Siswa...">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -80,7 +80,7 @@
                             class="w-full sm:w-48 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 text-sm rounded-full shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
                             <option value="">Semua Kelas</option>
                             @foreach ($kelas as $k)
-                            <option value="{{$k->id_kelas}}">{{$k->nama_kelas}}</option>
+                            <option value="{{$k->id_kelas}}" {{ request('kelas') == $k->id_kelas ? 'selected' : '' }}>{{$k->nama_kelas}}</option>
                             @endforeach
                         </select>
                         <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-orange-600 text-white font-medium rounded-full shadow-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
@@ -598,23 +598,13 @@
     </style>
     
     <script>
+        // Search untuk tabel rombel - submit form otomatis saat mengetik (dengan debounce)
+        let searchTimeout;
         document.getElementById('searchInput').addEventListener('keyup', function () {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#Table tbody tr');
-    
-            rows.forEach((row) => {
-                const cells = row.querySelectorAll('td');
-                let found = false;
-    
-                for (let i = 1; i < cells.length - 1; i++) {
-                    if (cells[i].textContent.toLowerCase().includes(searchValue)) {
-                        found = true;
-                        break;
-                    }
-                }
-    
-                row.style.display = found ? '' : 'none';
-            });
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                this.closest('form').submit();
+            }, 500); // Delay 500ms setelah berhenti mengetik
         });
     </script>
 </x-app-layout>
