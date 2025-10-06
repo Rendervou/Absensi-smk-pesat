@@ -55,7 +55,17 @@
         </div>
 
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <section x-data="{ openRombel: false, openBulkRombel: false }">
+            <section x-data="{ 
+                openRombel: false, 
+                openBulkRombel: false,
+                openEditRombel: false,
+                editData: {
+                    id: '',
+                    id_siswa: '',
+                    id_kelas: '',
+                    id_jurusan: ''
+                }
+            }">
                 <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4 animate-fade-in-up">
                     <form action="{{route('rombel.index')}}" method="get" class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                         <div class="relative w-full sm:w-auto">
@@ -407,10 +417,6 @@
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-center gap-2">
-                                                <button
-                                                    class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110">
-                                                    <i class="fas fa-edit text-sm"></i>
-                                                </button>
                                                 <form action="{{ route('rombel.destroy', $item->id) }}" method="POST"
                                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus rombel ini?');">
                                                     @csrf

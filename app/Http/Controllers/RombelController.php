@@ -122,7 +122,17 @@ class RombelController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $rombel = Rombel::findOrFail($id);
+        $siswa = DataSiswa::all(); // Tampilkan semua siswa untuk edit
+        $kelas = DataKelas::all();
+        $jurusan = DataJurusan::all();
+        
+        return response()->json([
+            'rombel' => $rombel,
+            'siswa' => $siswa,
+            'kelas' => $kelas,
+            'jurusan' => $jurusan
+        ]);
     }
 
     /**
@@ -130,7 +140,21 @@ class RombelController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'id_siswa' => 'required|exists:data_siswas,id_siswa',
+            'id_kelas' => 'required|exists:data_kelas,id_kelas',
+            'id_jurusan' => 'required|exists:data_jurusans,id_jurusan',
+        ]);
+
+        $rombel = Rombel::findOrFail($id);
+        
+        $rombel->update([
+            'id_siswa' => $request->id_siswa,
+            'id_kelas' => $request->id_kelas,
+            'id_jurusan' => $request->id_jurusan,
+        ]);
+
+        return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Diupdate!']);
     }
 
     /**
