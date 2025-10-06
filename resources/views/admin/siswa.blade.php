@@ -203,12 +203,31 @@
                                         <p class="text-gray-600 dark:text-gray-300">Kelola informasi siswa secara terperinci</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-3">
+                                
+                                <!-- Form Search -->
+                                <form action="{{ route('siswa.index') }}" method="GET" class="flex items-center gap-3">
                                     <div class="relative group">
-                                        <input type="text" placeholder="Cari siswa..." class="w-64 bg-white/50 dark:bg-gray-700/50 border border-gray-300/50 dark:border-gray-600/50 rounded-2xl px-4 py-3 pl-12 text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-300">
+                                        <input 
+                                            type="text" 
+                                            name="search"
+                                            id="searchSiswaInput"
+                                            value="{{ request('search') }}"
+                                            placeholder="Cari siswa..." 
+                                            class="w-64 bg-white/50 dark:bg-gray-700/50 border border-gray-300/50 dark:border-gray-600/50 rounded-2xl px-4 py-3 pl-12 text-gray-700 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all duration-300">
                                         <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors duration-300"></i>
                                     </div>
-                                </div>
+                                    <button 
+                                        type="submit"
+                                        class="px-5 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                        <i class="fas fa-search mr-2"></i>Cari
+                                    </button>
+                                    @if(request('search'))
+                                    <a href="{{ route('siswa.index') }}"
+                                        class="px-5 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                        <i class="fas fa-times mr-2"></i>Reset
+                                    </a>
+                                    @endif
+                                </form>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
@@ -505,5 +524,14 @@
                 }
             }
         }
+
+        // Auto submit search setelah delay (opsional)
+        let searchTimeout;
+        document.getElementById('searchSiswaInput')?.addEventListener('keyup', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                this.closest('form').submit();
+            }, 500); // Delay 500ms setelah berhenti mengetik
+        });
     </script>
 </x-app-layout>

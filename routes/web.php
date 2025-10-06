@@ -45,6 +45,7 @@ use Illuminate\Support\Facades\Route;
         Route::post('/siswa/import', [datasiswaController::class, 'import'])->name('admin.siswa.import');
         Route::get('/admin/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('admin.export.perBulan');
         Route::get('/admin/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('admin.export.perKelas');
+        Route::get('/admin/detail-siswa/{nis}', [PresensiController::class, 'detailSiswa'])->name('admin.detailSiswa');
         
         // ==================== ROUTES NAIK KELAS MASSAL ====================
         Route::get('/admin/naik-kelas', [App\Http\Controllers\NaikKelasController::class, 'index'])->name('admin.naikkelas.index');
@@ -80,6 +81,7 @@ use Illuminate\Support\Facades\Route;
         Route::resource('user/presensi', UserPresensiController::class);
         Route::get('/user/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('user.export.perBulan');
         Route::get('/user/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('user.export.perKelas');
+        Route::get('/user/detail-siswa/{nis}', [UserPresensiController::class, 'detailSiswa'])->name('user.detailSiswa');
     });
 
     // User

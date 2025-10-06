@@ -136,13 +136,17 @@ class AdminController extends Controller
             $siswaQuery->where('data_jurusans.id_jurusan', $selected_jurusan);
         }
 
-        // Search (by nama or nis)
+        // Search (by nama, nis, atau kelas)
         if ($search) {
             $siswaQuery->where(function ($q) use ($search) {
                 $q->where('data_siswas.nama_siswa', 'like', "%{$search}%")
-                ->orWhere('data_siswas.nis', 'like', "%{$search}%");
+                ->orWhere('data_siswas.nis', 'like', "%{$search}%")
+                ->orWhere('data_kelas.nama_kelas', 'like', "%{$search}%");
             });
         }
+
+        // PERBAIKAN: Tambahkan orderBy untuk mengurutkan A-Z berdasarkan nama siswa
+        $siswaQuery->orderBy('data_siswas.nama_siswa', 'asc');
 
         // Ambil daftar siswa sesuai filter
         $siswaList = $siswaQuery->get();

@@ -62,7 +62,7 @@ class RombelController extends Controller
             });
         }
 
-        $rombels = $rombels->paginate(10)->withQueryString();
+        $rombels = $rombels->orderBy('nama_siswa', 'asc')->paginate(10)->withQueryString();
 
         return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'allSiswa', 'rombels'));
     }

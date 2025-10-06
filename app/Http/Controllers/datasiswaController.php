@@ -15,9 +15,25 @@ class datasiswaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $siswa = DataSiswa::orderBy('nama_siswa', 'asc')->paginate(10);
+        // Query builder untuk siswa
+        $query = DataSiswa::query();
+
+        // Filter pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama_siswa', 'LIKE', "%{$search}%")
+                  ->orWhere('nis', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Eksekusi query dengan pagination
+        $siswa = $query->orderBy('nama_siswa', 'asc')
+                      ->paginate(10)
+                      ->withQueryString(); // Mempertahankan parameter search di pagination
+
         return view('admin.siswa', compact('siswa'));
     }
 

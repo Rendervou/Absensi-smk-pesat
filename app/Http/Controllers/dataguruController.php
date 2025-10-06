@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DataGuru;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class dataguruController extends Controller
 {
@@ -13,7 +14,7 @@ class dataguruController extends Controller
      */
     public function index()
     {
-        $guru = User::orderBy('name', 'asc')->paginate(10);
+        $guru = User::orderBy('name', 'asc')->paginate(12);
         return view('admin.guru', compact('guru'));
     }
 
@@ -30,7 +31,35 @@ class dataguruController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validasi input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'password' => 'required|string|min:8',
+        ], [
+            'name.required' => 'Nama guru harus diisi',
+            'password.required' => 'Password harus diisi',
+            'password.min' => 'Password minimal 8 karakter',
+        ]);
+
+        // Generate email otomatis dari nama
+        $email = Str::slug($validated['name'], '') . '@guru.com';
+        
+        // Cek jika email sudah ada, tambahkan angka random
+        $counter = 1;
+        $originalEmail = $email;
+        while (User::where('email', $email)->exists()) {
+            $email = str_replace('@guru.com', $counter . '@guru.com', $originalEmail);
+            $counter++;
+        }
+
+        // Buat user baru
+        User::create([
+            'name' => $validated['name'],
+            'email' => $email,
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()->route('admin.guru')->with('success', 'Data guru berhasil ditambahkan!');
     }
 
     /**
@@ -54,7 +83,28 @@ class dataguruController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $guru = User::findOrFail($id);
+
+        // Validasi input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'password' => 'nullable|string|min:8',
+        ], [
+            'name.required' => 'Nama guru harus diisi',
+            'password.min' => 'Password minimal 8 karakter',
+        ]);
+
+        // Update nama
+        $guru->name = $validated['name'];
+        
+        // Update password jika diisi
+        if ($request->filled('password')) {
+            $guru->password = Hash::make($validated['password']);
+        }
+
+        $guru->save();
+
+        return redirect()->route('admin.guru')->with('success', 'Data guru berhasil diupdate!');
     }
 
     /**
@@ -62,13 +112,9 @@ class dataguruController extends Controller
      */
     public function destroy(string $id)
     {
-                $g = DataGuru::findOrFail($id);
+        $guru = User::findOrFail($id);
+        $guru->delete();
 
-
-        //delete product
-        $g->delete();
-
-        //redirect to index
-        return redirect()->route('admin.guru')->with(['success' => 'Data Berhasil Dihapus!']);
+        return redirect()->route('admin.guru')->with('success', 'Data guru berhasil dihapus!');
     }
 }
