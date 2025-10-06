@@ -46,8 +46,8 @@ class RombelController extends Controller
             ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
             ->select('rombels.*', 'data_siswas.nama_siswa', 'data_siswas.nis', 'data_kelas.nama_kelas', 'data_jurusans.nama_jurusan');
 
-        // Filter berdasarkan kelas
-        if ($request->filled('kelas')) {
+        // Filter berdasarkan kelas - PERBAIKAN: hapus kondisi filled
+        if ($request->has('kelas') && $request->kelas != '') {
             $rombels->where('data_kelas.id_kelas', $request->kelas);
         }
         
@@ -62,7 +62,7 @@ class RombelController extends Controller
             });
         }
 
-        $rombels = $rombels->paginate(10)->withQueryString(); // withQueryString agar parameter search tetap ada saat pagination
+        $rombels = $rombels->paginate(10)->withQueryString();
 
         return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'allSiswa', 'rombels'));
     }
