@@ -77,6 +77,25 @@
             </div>
             @endif
 
+            <!-- Alert Error -->
+            @if($errors->any())
+            <div class="mb-6 bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-xl shadow-lg animate-fade-in">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <p class="font-semibold">Terjadi Kesalahan!</p>
+                </div>
+                <ul class="list-disc list-inside text-sm text-red-50 space-y-1 ml-11">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
             <!-- Main Table Card -->
             <div class="bg-[#1e293b] rounded-2xl shadow-2xl border border-gray-700 overflow-hidden">
                 <!-- Header -->
@@ -136,14 +155,14 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button onclick="editGuru({{ $g->id }}, '{{ $g->name }}')" 
+                                        <button onclick="editGuru('{{ $g->id }}', '{{ addslashes($g->name) }}')" 
                                             class="group relative inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 hover:bg-blue-500 text-blue-400 hover:text-white border border-blue-500/50 hover:border-blue-500 rounded-lg transition-all duration-200 font-medium">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                             </svg>
                                             <span>Edit</span>
                                         </button>
-                                        <form action="{{ route('guru.destroy', $g->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus {{ $g->name }}?');">
+                                        <form action="{{ route('guru.destroy', $g->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus {{ addslashes($g->name) }}?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="group relative inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/50 hover:border-red-500 rounded-lg transition-all duration-200 font-medium">
@@ -215,7 +234,7 @@
                 <!-- Nama -->
                 <div>
                     <label for="name" class="block text-sm font-semibold text-gray-300 mb-2">
-                        Nama Lengkap
+                        Nama Lengkap <span class="text-red-400">*</span>
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -227,15 +246,13 @@
                             class="w-full pl-10 px-4 py-3 bg-slate-900 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all placeholder-gray-500"
                             placeholder="Masukkan nama lengkap">
                     </div>
-                    @error('name')
-                    <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
-                    @enderror
+                    <p class="mt-1 text-xs text-gray-400">Nama akan digunakan untuk login</p>
                 </div>
 
                 <!-- Password -->
                 <div id="passwordField">
                     <label for="password" class="block text-sm font-semibold text-gray-300 mb-2">
-                        Password
+                        Password <span class="text-red-400" id="passwordRequired">*</span>
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -246,11 +263,27 @@
                         <input type="password" id="password" name="password"
                             class="w-full pl-10 px-4 py-3 bg-slate-900 border border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all placeholder-gray-500"
                             placeholder="Minimal 8 karakter">
+                        <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <svg id="eyeIcon" class="w-5 h-5 text-gray-500 hover:text-gray-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
                     </div>
-                    <p class="mt-2 text-xs text-gray-400" id="passwordHint">Minimal 8 karakter</p>
-                    @error('password')
-                    <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
-                    @enderror
+                    <p class="mt-1 text-xs text-gray-400" id="passwordHint">Minimal 8 karakter</p>
+                </div>
+
+                <!-- Info Email Auto Generate -->
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        <div class="text-sm text-blue-200">
+                            <p class="font-semibold mb-1">Informasi</p>
+                            <p class="text-blue-300/80">Email akan dibuat otomatis dari nama guru. Guru bisa login menggunakan <strong>nama</strong> dan <strong>password</strong> yang telah dibuat.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Buttons -->
@@ -279,6 +312,7 @@
     </style>
 
     <script>
+        // Open modal untuk tambah guru baru
         function openModal() {
             document.getElementById('guruModal').classList.remove('hidden');
             document.getElementById('modalTitle').textContent = 'Tambah Guru Baru';
@@ -287,29 +321,57 @@
             document.getElementById('guruForm').reset();
             document.getElementById('formMethod').value = '';
             document.getElementById('password').required = true;
+            document.getElementById('passwordRequired').classList.remove('hidden');
             document.getElementById('passwordHint').textContent = 'Minimal 8 karakter';
+            document.getElementById('name').focus();
         }
 
+        // Close modal
         function closeModal() {
             document.getElementById('guruModal').classList.add('hidden');
         }
 
+        // Edit guru - buka modal dengan data guru
         function editGuru(id, name) {
             document.getElementById('guruModal').classList.remove('hidden');
             document.getElementById('modalTitle').textContent = 'Edit Data Guru';
             document.getElementById('submitText').textContent = 'Update';
-            document.getElementById('guruForm').action = `/guru/${id}`;
+            // Gunakan route helper Laravel yang benar
+            document.getElementById('guruForm').action = "{{ url('admin/guru') }}/" + id;
             document.getElementById('formMethod').value = 'PUT';
             document.getElementById('name').value = name;
             document.getElementById('password').required = false;
             document.getElementById('password').value = '';
+            document.getElementById('passwordRequired').classList.add('hidden');
             document.getElementById('passwordHint').textContent = 'Kosongkan jika tidak ingin mengubah password';
+            document.getElementById('name').focus();
         }
 
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                `;
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                `;
+            }
+        }
+
+        // Close modal ketika klik di luar modal
         document.getElementById('guruModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
 
+        // Search functionality
         document.getElementById('searchInput').addEventListener('keyup', function() {
             const searchTerm = this.value.toLowerCase();
             const rows = document.querySelectorAll('.teacher-row');
@@ -318,6 +380,30 @@
                 const name = row.querySelector('.teacher-name')?.textContent.toLowerCase();
                 row.style.display = name?.includes(searchTerm) ? '' : 'none';
             });
+        });
+
+        // Auto open modal jika ada error validasi
+        @if($errors->any())
+            document.addEventListener('DOMContentLoaded', function() {
+                @if(old('_method') === 'PUT')
+                    // Jika ada error saat edit, buka modal edit
+                    // Note: Anda perlu menyimpan ID guru di session jika ada error
+                @else
+                    // Jika ada error saat tambah, buka modal tambah
+                    openModal();
+                    @if(old('name'))
+                        document.getElementById('name').value = "{{ old('name') }}";
+                    @endif
+                @endif
+            });
+        @endif
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // ESC untuk close modal
+            if (e.key === 'Escape') {
+                closeModal();
+            }
         });
     </script>
 </x-app-layout>
