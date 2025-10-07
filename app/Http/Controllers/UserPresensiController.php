@@ -22,36 +22,59 @@ class UserPresensiController extends Controller
     {
         $siswa = DataSiswa::all();
         $kelas = DataKelas::orderBy('nama_kelas', 'asc')->get();
-        $jurusan = DataJurusan::all();
+        $jurusan = DataJurusan::orderBy('nama_jurusan', 'asc')->get();
         $presensi = Presensi::all();
         
-        // ✅ PERBAIKAN: Ubah join menjadi leftJoin untuk data_jurusans
+        // Query dasar dengan leftJoin untuk menangani NULL jurusan
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
             ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
             ->leftJoin('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
-            ->select('data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
+            ->select(
+                'data_siswas.id_siswa',
+                'data_siswas.nis',
+                'data_siswas.nama_siswa',
+                'data_kelas.id_kelas',
+                'data_kelas.nama_kelas',
+                'data_jurusans.id_jurusan',
+                'data_jurusans.nama_jurusan'
+            );
 
+        // Filter Kelas
         $kelasNama = null;
         if ($request->filled('kelas')) {
             $rombels->where('data_kelas.id_kelas', $request->kelas);
             $kelasNama = DataKelas::where('id_kelas', $request->kelas)->value('nama_kelas');
-        };
+        }
+
+        // Filter Jurusan
+        $jurusanNama = null;
+        if ($request->filled('jurusan')) {
+            if ($request->jurusan == 'null') {
+                // Filter untuk siswa yang belum memiliki jurusan
+                $rombels->whereNull('rombels.id_jurusan');
+                $jurusanNama = 'Belum Ada Jurusan';
+            } else {
+                // Filter untuk jurusan tertentu
+                $rombels->where('rombels.id_jurusan', $request->jurusan);
+                $jurusanNama = DataJurusan::where('id_jurusan', $request->jurusan)->value('nama_jurusan');
+            }
+        }
 
         $rombels = $rombels->orderBy('data_siswas.nama_siswa','asc')->get();
         
-        return view('user.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan', 'kelasNama'));
+        return view('user.absensi', compact('presensi', 'rombels', 'siswa', 'kelas', 'jurusan', 'kelasNama', 'jurusanNama'));
     }
 
     public function detailSiswa(Request $request, $nis)
     {
         $bulan = $request->get('bulan', now()->month);
         $tahun = $request->get('tahun', now()->year);
-        $status = $request->get('status'); // Tambahkan filter status
+        $status = $request->get('status');
 
         // Ambil data siswa
         $siswa = DataSiswa::where('nis', $nis)->firstOrFail();
 
-        // ✅ PERBAIKAN: Ubah join menjadi leftJoin untuk data_jurusans
+        // Query dengan leftJoin untuk menangani NULL jurusan
         $rombel = Rombel::where('id_siswa', $siswa->id_siswa)
             ->join('data_kelas', 'rombels.id_kelas', '=', 'data_kelas.id_kelas')
             ->leftJoin('data_jurusans', 'rombels.id_jurusan', '=', 'data_jurusans.id_jurusan')
@@ -104,14 +127,6 @@ class UserPresensiController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -142,10 +157,10 @@ class UserPresensiController extends Controller
             DB::beginTransaction();
 
             $jumlahBerhasil = 0;
-            $siswaProcessed = []; // Track siswa yang sudah diproses
+            $siswaProcessed = [];
 
             foreach ($id_siswa_unique as $index => $siswaId) {
-                // Skip jika siswa sudah diproses (untuk menghindari duplikasi)
+                // Skip jika siswa sudah diproses
                 if (in_array($siswaId, $siswaProcessed)) {
                     continue;
                 }
@@ -160,8 +175,15 @@ class UserPresensiController extends Controller
                 $kelas = DataKelas::find($kelasId);
 
                 if (!$siswa || !$kelas) {
-                    continue; // Skip jika data tidak valid
+                    continue;
                 }
+
+                // Ambil jurusan dari rombel (bisa NULL)
+                $rombel = Rombel::where('id_siswa', $siswaId)
+                    ->where('id_kelas', $kelasId)
+                    ->leftJoin('data_jurusans', 'rombels.id_jurusan', '=', 'data_jurusans.id_jurusan')
+                    ->select('data_jurusans.nama_jurusan')
+                    ->first();
 
                 $status = $request->input("kehadiran_{$siswaId}", 'hadir');
 
@@ -176,14 +198,14 @@ class UserPresensiController extends Controller
                         'id_user'     => $guru->id,
                         'nama_siswa'  => $siswa->nama_siswa,
                         'nama_kelas'  => $kelas->nama_kelas,
-                        'nama_jurusan'=> $kelas->jurusan ? $kelas->jurusan->nama_jurusan : null,
+                        'nama_jurusan'=> $rombel ? $rombel->nama_jurusan : null,
                         'nama_guru'   => $guru->name,
                         'status'      => $status,
                         'tanggal'     => $tanggal,
                     ]
                 );
 
-                $siswaProcessed[] = $siswaId; // Tandai siswa sudah diproses
+                $siswaProcessed[] = $siswaId;
                 $jumlahBerhasil++;
             }
 
@@ -211,33 +233,21 @@ class UserPresensiController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
