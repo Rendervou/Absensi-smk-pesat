@@ -12,7 +12,7 @@ class datakelasController extends Controller
      */
     public function index()
     {
-        $kelas = DataKelas::all();
+        $kelas = DataKelas::orderBy('nama_kelas', 'asc')->get();
         return view('admin.kelasbaru', compact('kelas'));
     }
 

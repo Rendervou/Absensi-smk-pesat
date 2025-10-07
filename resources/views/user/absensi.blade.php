@@ -44,7 +44,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    Cari Kelas
+                    Cari Kelas / Reset
                 </button>
             </form>
         </div>
@@ -53,7 +53,7 @@
             Daftar Absensi Kelas <span class="text-indigo-600 dark:text-indigo-400">{{ $kelasNama ?? 'Semua Kelas' }}</span>
         </h2>
 
-        <form action="{{ route('user.presensi.store') }}" method="POST" class="space-y-8">
+        <form id="formAbsensi" action="{{ route('user.presensi.store') }}" method="POST" class="space-y-8">
             @csrf
 
             <div class="hidden lg:block overflow-x-auto rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl">
@@ -140,10 +140,102 @@
             </div>
 
             <div class="flex justify-end mt-10">
-                <button type="submit" class="w-full sm:w-auto min-w-[220px] rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base px-10 py-4 shadow-lg transition-colors duration-300 hover:shadow-xl">
+                <button type="button" id="btnSimpanAbsensi" class="w-full sm:w-auto min-w-[220px] rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-base px-10 py-4 shadow-lg transition-colors duration-300 hover:shadow-xl">
                     Simpan Absensi
                 </button>
             </div>
         </form>
     </section>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Konfirmasi sebelum submit
+        document.getElementById('btnSimpanAbsensi').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Konfirmasi Penyimpanan',
+                text: "Apakah Anda yakin ingin menyimpan data absensi ini?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#4F46E5',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Simpan!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl px-6 py-3 font-semibold',
+                    cancelButton: 'rounded-xl px-6 py-3 font-semibold'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tampilkan loading
+                    Swal.fire({
+                        title: 'Menyimpan...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        customClass: {
+                            popup: 'rounded-2xl'
+                        },
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Submit form
+                    document.getElementById('formAbsensi').submit();
+                }
+            });
+        });
+
+        // Alert notifikasi dari session
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session("success") }}',
+                confirmButtonColor: '#4F46E5',
+                confirmButtonText: 'OK',
+                timer: 3000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl px-6 py-3 font-semibold'
+                }
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session("error") }}',
+                confirmButtonColor: '#EF4444',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl px-6 py-3 font-semibold'
+                }
+            });
+        @endif
+
+        @if($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan!',
+                html: '<ul style="text-align: left;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                confirmButtonColor: '#EF4444',
+                confirmButtonText: 'OK',
+                customClass: {
+                    popup: 'rounded-2xl',
+                    confirmButton: 'rounded-xl px-6 py-3 font-semibold'
+                }
+            });
+        @endif
+    </script>
 </x-app-layout>

@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\DataGuru;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class dataguruController extends Controller
 {
@@ -13,16 +12,8 @@ class dataguruController extends Controller
      */
     public function index()
     {
-        $guru = User::orderBy('name', 'asc')->paginate(10);
+        $guru = User::orderBy('name', 'asc')->paginate(12);
         return view('admin.guru', compact('guru'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -30,23 +21,24 @@ class dataguruController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // Validasi input - hanya name dan password
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:users,name',
+            'password' => 'required|string|min:8',
+        ], [
+            'name.required' => 'Nama guru harus diisi',
+            'name.unique' => 'Nama guru sudah terdaftar',
+            'password.required' => 'Password harus diisi',
+            'password.min' => 'Password minimal 8 karakter',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        // Buat user baru tanpa email (jika kolom email tidak ada di tabel)
+        User::create([
+            'name' => $validated['name'],
+            'password' => Hash::make($validated['password']),
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return redirect()->route('guru.index')->with('success', 'Data guru berhasil ditambahkan!');
     }
 
     /**
@@ -54,7 +46,29 @@ class dataguruController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $guru = User::findOrFail($id);
+
+        // Validasi input
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:users,name,' . $id,
+            'password' => 'nullable|string|min:8',
+        ], [
+            'name.required' => 'Nama guru harus diisi',
+            'name.unique' => 'Nama guru sudah terdaftar',
+            'password.min' => 'Password minimal 8 karakter',
+        ]);
+
+        // Update nama
+        $guru->name = $validated['name'];
+        
+        // Update password jika diisi
+        if ($request->filled('password')) {
+            $guru->password = Hash::make($validated['password']);
+        }
+
+        $guru->save();
+
+        return redirect()->route('guru.index')->with('success', 'Data guru berhasil diupdate!');
     }
 
     /**
@@ -62,13 +76,9 @@ class dataguruController extends Controller
      */
     public function destroy(string $id)
     {
-                $g = DataGuru::findOrFail($id);
+        $guru = User::findOrFail($id);
+        $guru->delete();
 
-
-        //delete product
-        $g->delete();
-
-        //redirect to index
-        return redirect()->route('admin.guru')->with(['success' => 'Data Berhasil Dihapus!']);
+        return redirect()->route('guru.index')->with('success', 'Data guru berhasil dihapus!');
     }
 }
