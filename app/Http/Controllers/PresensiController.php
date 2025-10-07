@@ -24,13 +24,14 @@ class PresensiController extends Controller
         $kelas = DataKelas::orderBy('nama_kelas', 'asc')->get();
         $jurusan = DataJurusan::all();
         $presensi = Presensi::all();
+        
+        // ✅ PERBAIKAN: Ubah join menjadi leftJoin untuk data_jurusans
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
-        ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
-        ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
+            ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
+            ->leftJoin('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
             ->select('data_siswas.*', 'data_kelas.*', 'data_jurusans.*');
 
-
-            $kelasNama = null;
+        $kelasNama = null;
         if ($request->filled('kelas')) {
             $rombels->where('data_kelas.id_kelas', $request->kelas);
             $kelasNama = DataKelas::where('id_kelas', $request->kelas)->value('nama_kelas');
@@ -45,15 +46,15 @@ class PresensiController extends Controller
     {
         $bulan = $request->get('bulan', now()->month);
         $tahun = $request->get('tahun', now()->year);
-        $status = $request->get('status'); // Tambahkan filter status
+        $status = $request->get('status');
 
         // Ambil data siswa
         $siswa = DataSiswa::where('nis', $nis)->firstOrFail();
 
-        // Ambil data rombel untuk mendapatkan kelas dan jurusan
+        // ✅ PERBAIKAN: Ubah join menjadi leftJoin untuk data_jurusans
         $rombel = Rombel::where('id_siswa', $siswa->id_siswa)
             ->join('data_kelas', 'rombels.id_kelas', '=', 'data_kelas.id_kelas')
-            ->join('data_jurusans', 'rombels.id_jurusan', '=', 'data_jurusans.id_jurusan')
+            ->leftJoin('data_jurusans', 'rombels.id_jurusan', '=', 'data_jurusans.id_jurusan')
             ->select('data_kelas.nama_kelas', 'data_jurusans.nama_jurusan')
             ->first();
 

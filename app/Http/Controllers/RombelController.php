@@ -32,9 +32,9 @@ class RombelController extends Controller
         
         // Query rombel dengan join
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
-            ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
-            ->join('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
-            ->select('rombels.*', 'data_siswas.nama_siswa', 'data_siswas.nis', 'data_kelas.nama_kelas', 'data_jurusans.nama_jurusan');
+        ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
+        ->leftJoin('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan') // ✅ LEFT JOIN
+        ->select('rombels.*', 'data_siswas.nama_siswa', 'data_siswas.nis', 'data_kelas.nama_kelas', 'data_jurusans.nama_jurusan');
 
         // Filter berdasarkan kelas (untuk tabel rombel)
         if ($request->filled('kelas')) {
