@@ -37,7 +37,7 @@ class datakelasController extends Controller
             'nama_kelas'=> $request->nama_kelas,
         ]);
 
-         return redirect()->route('kelas.index')->with(['success' => 'Data Berhasil Disimpan!']);
+        return redirect()->route('kelas.index')->with(['success' => 'Data Berhasil Disimpan!']);
     }
 
     /**
@@ -61,7 +61,21 @@ class datakelasController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Validasi input
+        $request->validate([
+            'nama_kelas' => 'required|min:2',
+        ]);
+
+        // Cari data kelas berdasarkan ID
+        $kelas = DataKelas::findOrFail($id);
+
+        // Update data
+        $kelas->update([
+            'nama_kelas' => $request->nama_kelas,
+        ]);
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('kelas.index')->with(['success' => 'Data Berhasil Diupdate!']);
     }
 
     /**
@@ -71,11 +85,10 @@ class datakelasController extends Controller
     {
         $kelas = DataKelas::findOrFail($id);
 
-
-        //delete product
+        // Delete data
         $kelas->delete();
 
-        //redirect to index
+        // Redirect to index
         return redirect()->route('kelas.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
