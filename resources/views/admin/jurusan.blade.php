@@ -17,17 +17,6 @@
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <div class="relative">
-                    <button class="p-3 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-2xl hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path>
-                        </svg>
-                    </button>
-                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
-                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-600 rounded-full"></div>
-                </div>
-                
                 <div class="flex items-center gap-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-3 shadow-lg border border-white/20 dark:border-gray-700/50 hover:shadow-xl transition-all duration-300">
                     <div class="text-right">
                         <p class="text-sm font-bold text-gray-800 dark:text-gray-200">{{ Auth::user()->name ?? 'Admin' }}</p>
@@ -51,28 +40,59 @@
         <div class="absolute inset-0 pointer-events-none">
             <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-400/10 to-cyan-400/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 4s;"></div>
         </div>
         
         <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <section x-data="jurusanModal()">
-                <div class="flex justify-between items-center mb-5 animate-fade-in-up">
-                    <div x-data="{ openAdd: false }">
-                        <button @click="openAdd = true"
-                            class="group flex items-center gap-3 text-white bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-700 hover:via-emerald-800 hover:to-teal-800 focus:outline-none focus:ring-4 focus:ring-emerald-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-emerald-800 transition-all duration-500 transform group-hover:scale-105 shadow-2xl hover:shadow-emerald-500/25 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-4 group-hover:rotate-12 transition-transform duration-300">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            Tambah Jurusan
-                        </button>
+            @if(session('success'))
+            <div class="mb-6 p-4 bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 rounded-lg animate-fade-in-up">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-emerald-500 text-xl mr-3"></i>
+                    <p class="text-emerald-700 dark:text-emerald-400 font-semibold">{{ session('success') }}</p>
+                </div>
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-lg animate-fade-in-up">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle text-red-500 text-xl mr-3"></i>
+                    <p class="text-red-700 dark:text-red-400 font-semibold">{{ session('error') }}</p>
+                </div>
+            </div>
+            @endif
+
+            @if($errors->any())
+            <div class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-lg animate-fade-in-up">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-xl mr-3 mt-1"></i>
+                    <div>
+                        <p class="text-red-700 dark:text-red-400 font-semibold mb-2">Terdapat kesalahan:</p>
+                        <ul class="list-disc list-inside text-red-600 dark:text-red-400">
+                            @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
+                </div>
+            </div>
+            @endif
+
+            <section x-data="jurusanData()">
+                <div class="flex justify-between items-center mb-5 animate-fade-in-up">
+                    <button @click="openAddModal()"
+                        class="group flex items-center gap-3 text-white bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-700 hover:via-emerald-800 hover:to-teal-800 focus:outline-none focus:ring-4 focus:ring-emerald-300 font-bold rounded-2xl text-sm px-6 py-3.5 text-center dark:focus:ring-emerald-800 transition-all duration-500 transform hover:scale-105 shadow-2xl hover:shadow-emerald-500/25 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-4 group-hover:rotate-90 transition-transform duration-300 relative z-10">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        <span class="relative z-10">Tambah Jurusan</span>
+                    </button>
                 </div>
 
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
                     <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 relative">
-                        <div class="px-8 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
+                        <div class="px-8 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50 rounded-t-3xl">
                             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
@@ -109,48 +129,37 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200/50 dark:divide-gray-700/50">
-                                @foreach ($jurusan as $k)
+                                @forelse ($jurusan as $k)
                                     <tr class="hover:bg-gradient-to-r hover:from-indigo-50/50 hover:to-purple-50/50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 transition-all duration-300 group">
                                         <td class="px-8 py-6">
                                             <div class="flex items-center">
-                                                <span class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-black shadow-md">{{$loop->iteration}}</span>
+                                                <span class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-black shadow-md">{{ $loop->iteration }}</span>
                                             </div>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap">
                                             <div class="flex items-center gap-4">
                                                 <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                                                    {{ substr($k->nama_jurusan, 0, 2) }}
+                                                    {{ strtoupper(substr($k->nama_jurusan, 0, 2)) }}
                                                 </div>
                                                 <div>
-                                                    <h3 class="text-lg font-black text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">{{$k->nama_jurusan}}</h3>
+                                                    <h3 class="text-lg font-black text-gray-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">{{ $k->nama_jurusan }}</h3>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-center gap-2">
-                                                <div x-data="{
-                                                    openEdit: false,
-                                                    editId: null,
-                                                    editNama: '',
-                                                    setEditData(id, nama) {
-                                                        this.editId = id;
-                                                        this.editNama = nama;
-                                                        this.openEdit = true;
-                                                    }
-                                                }">
-                                                    <button
-                                                        @click="setEditData({{ $k->id_jurusan }}, '{{ $k->nama_jurusan }}')"
-                                                        class="p-3 bg-blue-50/50 hover:bg-blue-100/50 rounded-xl text-blue-600 hover:text-blue-800 transition-colors duration-300 shadow-md transform hover:scale-110"
-                                                        title="Edit jurusan">
-                                                        <i class="fas fa-edit text-sm"></i>
-                                                    </button>
-                                                </div>
+                                                <button
+                                                    @click="openEditModal({{ $k->id_jurusan }}, '{{ addslashes($k->nama_jurusan) }}')"
+                                                    class="p-3 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-xl text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-all duration-300 shadow-md transform hover:scale-110"
+                                                    title="Edit jurusan">
+                                                    <i class="fas fa-edit text-sm"></i>
+                                                </button>
                                                 <form action="{{ route('jurusan.destroy', $k->id_jurusan) }}" method="POST"
-                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus jurusan ini?');">
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus jurusan {{ addslashes($k->nama_jurusan) }}?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button
-                                                        class="p-3 bg-red-50/50 hover:bg-red-100/50 rounded-xl text-red-600 hover:text-red-800 transition-colors duration-300 shadow-md transform hover:scale-110"
+                                                    <button type="submit"
+                                                        class="p-3 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 rounded-xl text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-all duration-300 shadow-md transform hover:scale-110"
                                                         title="Hapus jurusan">
                                                         <i class="fas fa-trash-alt text-sm"></i>
                                                     </button>
@@ -158,94 +167,132 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="px-6 py-12 text-center">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <i class="fas fa-inbox text-gray-300 dark:text-gray-600 text-5xl mb-4"></i>
+                                                <p class="text-gray-500 dark:text-gray-400 font-semibold">Belum ada data jurusan</p>
+                                                <p class="text-gray-400 dark:text-gray-500 text-sm">Klik tombol "Tambah Jurusan" untuk menambahkan data</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal Tambah Jurusan -->
+                <div x-show="showAddModal" x-cloak
+                     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <div @click.away="closeAddModal()"
+                         class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md relative border border-gray-200 dark:border-gray-700"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-90"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-90">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-plus text-white"></i>
+                                    </div>
+                                    <h3 class="text-xl font-black text-gray-800 dark:text-gray-100">Tambah Jurusan Baru</h3>
+                                </div>
+                                <button @click="closeAddModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                            <form action="{{ route('jurusan.store') }}" method="POST" class="space-y-4">
+                                @csrf
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                                        <i class="fas fa-building text-emerald-500 mr-2"></i>Nama Jurusan
+                                    </label>
+                                    <input type="text" name="nama_jurusan" required
+                                        class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                                        placeholder="Contoh: Teknik Komputer dan Jaringan">
+                                </div>
+                                <div class="flex justify-end gap-3 pt-4 border-t dark:border-gray-700">
+                                    <button type="button" @click="closeAddModal()"
+                                        class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-2xl text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:scale-105">
+                                        <i class="fas fa-times mr-2"></i>Batal
+                                    </button>
+                                    <button type="submit"
+                                        class="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-2xl font-bold hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-emerald-500/50 transform hover:scale-105">
+                                        <i class="fas fa-save mr-2"></i>Simpan
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Edit Jurusan -->
+                <div x-show="showEditModal" x-cloak
+                     class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0">
+                    <div @click.away="closeEditModal()"
+                         class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md relative border border-gray-200 dark:border-gray-700"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-90"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-90">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                                        <i class="fas fa-edit text-white"></i>
+                                    </div>
+                                    <h3 class="text-xl font-black text-gray-800 dark:text-gray-100">Edit Data Jurusan</h3>
+                                </div>
+                                <button @click="closeEditModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                            <form :action="'{{ url('admin/jurusan') }}/' + editId" method="POST" class="space-y-4">
+                                @csrf
+                                @method('PUT')
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                                        <i class="fas fa-building text-blue-500 mr-2"></i>Nama Jurusan
+                                    </label>
+                                    <input type="text" name="nama_jurusan" x-model="editNama" required
+                                        class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                                        placeholder="Masukkan nama jurusan">
+                                </div>
+                                <div class="flex justify-end gap-3 pt-4 border-t dark:border-gray-700">
+                                    <button type="button" @click="closeEditModal()"
+                                        class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-2xl text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300 transform hover:scale-105">
+                                        <i class="fas fa-times mr-2"></i>Batal
+                                    </button>
+                                    <button type="submit"
+                                        class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/50 transform hover:scale-105">
+                                        <i class="fas fa-save mr-2"></i>Update
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </section>
-        </div>
-    </div>
-
-    <!-- MODAL AREA - Letakkan di luar container utama -->
-    <!-- Modal Tambah Jurusan -->
-    <div x-data="{ openAdd: false }" 
-         @open-add-modal.window="openAdd = true">
-        <div x-show="openAdd" x-cloak
-             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
-             style="z-index: 99999 !important;"
-             x-transition.opacity>
-            <div @click.away="openAdd = false"
-                 class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 relative"
-                 style="z-index: 100000 !important;"
-                 x-transition.scale.origin.center>
-                <h3 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 border-b pb-3">Tambah Jurusan Baru</h3>
-                <form action="{{route('jurusan.store')}}" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jurusan</label>
-                        <input type="text" name="nama_jurusan" required
-                            class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-emerald-500 focus:border-emerald-500"
-                            placeholder="Masukkan nama jurusan">
-                    </div>
-                    <div class="flex justify-end gap-3 pt-4">
-                        <button type="button" @click="openAdd = false"
-                            class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-semibold hover:bg-emerald-700 transition-colors shadow-lg">
-                            Simpan
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit Global -->
-    <div x-data="{
-        openEdit: false,
-        editId: null,
-        editNama: '',
-        setEditData(id, nama) {
-            this.editId = id;
-            this.editNama = nama;
-            this.openEdit = true;
-        }
-    }" 
-    @open-edit-modal.window="setEditData($event.detail.id, $event.detail.nama)">
-        <div x-show="openEdit" x-cloak
-             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
-             style="z-index: 99999 !important;"
-             x-transition.opacity>
-            <div @click.away="openEdit = false"
-                 class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md p-6 relative"
-                 style="z-index: 100000 !important;"
-                 x-transition.scale.origin.center>
-                <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-white border-b pb-3">Edit Data Jurusan</h2>
-                <form :action="`{{ url('admin/jurusan') }}/${editId}`" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Jurusan</label>
-                        <input type="text" name="nama_jurusan" x-model="editNama" required
-                            class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3 focus:ring-emerald-500 focus:border-emerald-500"
-                            placeholder="Masukkan nama jurusan">
-                    </div>
-                    <div class="flex justify-end gap-3 pt-4">
-                        <button type="button" @click="openEdit = false"
-                            class="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-semibold hover:bg-emerald-700 transition-colors shadow-lg">
-                            Simpan
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -254,77 +301,23 @@
             font-family: 'Inter', 'Poppins', sans-serif;
         }
 
-        /* Alpine.js cloak */
         [x-cloak] { 
             display: none !important; 
-        }
-        
-        .wave {
-            animation: wave 2s infinite;
-            transform-origin: 70% 70%;
-            display: inline-block;
-        }
-        
-        @keyframes wave {
-            0% { transform: rotate(0deg); }
-            10% { transform: rotate(14deg); }
-            20% { transform: rotate(-8deg); }
-            30% { transform: rotate(14deg); }
-            40% { transform: rotate(-4deg); }
-            50% { transform: rotate(10deg); }
-            60% { transform: rotate(0deg); }
-            100% { transform: rotate(0deg); }
         }
         
         @keyframes fade-in-up {
             from { 
                 opacity: 0; 
-                transform: translateY(50px) scale(0.95); 
+                transform: translateY(30px); 
             }
             to { 
                 opacity: 1; 
-                transform: translateY(0) scale(1); 
-            }
-        }
-        
-        @keyframes gradient-x {
-            0%, 100% {
-                background-size: 200% 200%;
-                background-position: left center;
-            }
-            50% {
-                background-size: 200% 200%;
-                background-position: right center;
+                transform: translateY(0); 
             }
         }
         
         .animate-fade-in-up {
-            animation: fade-in-up 0.8s ease-out forwards;
-            opacity: 0;
-        }
-        
-        .animate-gradient-x {
-            animation: gradient-x 6s ease infinite;
-        }
-        
-        .group:hover .group-hover\:scale-105 {
-            transform: scale(1.05);
-        }
-        
-        .group:hover .group-hover\:rotate-12 {
-            transform: rotate(12deg);
-        }
-        
-        .group:hover .group-hover\:-translate-y-1 {
-            transform: translateY(-4px);
-        }
-        
-        .group:hover .group-hover\:translate-x-full {
-            transform: translate(100%);
-        }
-
-        .shadow-3xl {
-            box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+            animation: fade-in-up 0.6s ease-out forwards;
         }
         
         .overflow-x-auto::-webkit-scrollbar {
@@ -339,7 +332,6 @@
         .overflow-x-auto::-webkit-scrollbar-thumb {
             background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
             border-radius: 10px;
-            transition: all 0.3s ease;
         }
         
         .overflow-x-auto::-webkit-scrollbar-thumb:hover {
@@ -348,34 +340,47 @@
     </style>
 
     <script>
-        function jurusanModal() {
+        function jurusanData() {
             return {
-                // Global modal functions if needed
+                showAddModal: false,
+                showEditModal: false,
+                editId: null,
+                editNama: '',
+
+                openAddModal() {
+                    this.showAddModal = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeAddModal() {
+                    this.showAddModal = false;
+                    document.body.style.overflow = 'auto';
+                },
+
+                openEditModal(id, nama) {
+                    this.editId = id;
+                    this.editNama = nama;
+                    this.showEditModal = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                closeEditModal() {
+                    this.showEditModal = false;
+                    this.editId = null;
+                    this.editNama = '';
+                    document.body.style.overflow = 'auto';
+                }
             }
         }
 
-        // Trigger modal from button clicks
         document.addEventListener('DOMContentLoaded', function() {
-            // Update button click handler
-            const tambahBtn = document.querySelector('button[\\@click="openAdd = true"]');
-            if (tambahBtn) {
-                tambahBtn.addEventListener('click', function() {
-                    window.dispatchEvent(new CustomEvent('open-add-modal'));
-                });
-            }
-
-            // Update edit button handlers
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.fas.fa-edit')) {
-                    e.preventDefault();
-                    const button = e.target.closest('button');
-                    const id = button.getAttribute('data-id') || button.closest('tr').querySelector('[data-id]')?.getAttribute('data-id');
-                    const nama = button.getAttribute('data-nama') || button.closest('tr').querySelector('[data-nama]')?.getAttribute('data-nama');
-                    
-                    window.dispatchEvent(new CustomEvent('open-edit-modal', {
-                        detail: { id, nama }
-                    }));
-                }
+            const alerts = document.querySelectorAll('[class*="bg-emerald-50"], [class*="bg-red-50"]');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s ease-out';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
             });
         });
     </script>

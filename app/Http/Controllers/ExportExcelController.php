@@ -150,6 +150,54 @@ class ExportExcelController extends Controller
         return $this->generateExcel($rekap, $bulan, $namaKelas);
     }
 
+    public function exportDetailSiswa(Request $request, $nis)
+    {
+        ob_end_clean();
+        
+        $bulan = $request->get('bulan', now()->month);
+        $tahun = $request->get('tahun', now()->year);
+        $status = $request->get('status');
+
+        // Ambil data siswa
+        $siswa = \App\Models\DataSiswa::where('nis', $nis)->firstOrFail();
+
+        // Ambil data rombel untuk mendapatkan kelas dan jurusan
+        $rombel = \App\Models\Rombel::where('id_siswa', $siswa->id_siswa)
+            ->join('data_kelas', 'rombels.id_kelas', '=', 'data_kelas.id_kelas')
+            ->leftJoin('data_jurusans', 'rombels.id_jurusan', '=', 'data_jurusans.id_jurusan')
+            ->select('data_kelas.nama_kelas', 'data_jurusans.nama_jurusan')
+            ->first();
+
+        // Query detail presensi dengan filter
+        $query = \App\Models\Presensi::where('id_siswa', $siswa->id_siswa)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun);
+        
+        if ($status && in_array($status, ['hadir', 'sakit', 'izin', 'alfa'])) {
+            $query->where('status', $status);
+        }
+        
+        $detailPresensi = $query->orderBy('tanggal', 'asc')->get();
+
+        // Hitung statistik
+        $allPresensi = \App\Models\Presensi::where('id_siswa', $siswa->id_siswa)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->get();
+
+        $statistik = [
+            'hadir' => $allPresensi->where('status', 'hadir')->count(),
+            'sakit' => $allPresensi->where('status', 'sakit')->count(),
+            'izin' => $allPresensi->where('status', 'izin')->count(),
+            'alfa' => $allPresensi->where('status', 'alfa')->count(),
+            'total' => $allPresensi->count()
+        ];
+
+        return $this->generateExcelDetailSiswa($siswa, $rombel, $detailPresensi, $statistik, $bulan, $tahun, $status);
+    }
+
+    // private function
+
     private function generateExcel($data, $bulan, $namaKelas)
     {
         $spreadsheet = new Spreadsheet();
@@ -564,5 +612,410 @@ class ExportExcelController extends Controller
             $columnNumber = $columnNumber * 26 + (ord($columnLetter[$i]) - 64);
         }
         return $columnNumber;
+    }
+
+    private function generateExcelDetailSiswa($siswa, $rombel, $detailPresensi, $statistik, $bulan, $tahun, $status)
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Nama bulan
+        $namaBulan = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+
+        // Set column widths - DIPERLEBAR
+        $sheet->getColumnDimension('A')->setWidth(6);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(35);
+        $sheet->getColumnDimension('D')->setWidth(20);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(15);
+
+        // ==================== HEADER SECTION ====================
+        
+        // Title - Row 1
+        $sheet->mergeCells('A1:F1');
+        $sheet->setCellValue('A1', 'LAPORAN PRESENSI SISWA');
+        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(18)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFFFFFFF'));
+        $sheet->getStyle('A1')->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A1')->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FF2E5090');
+        $sheet->getRowDimension(1)->setRowHeight(30);
+
+        // School Name - Row 2
+        $sheet->mergeCells('A2:F2');
+        $sheet->setCellValue('A2', 'SMK INFORMATIKA PESAT');
+        $sheet->getStyle('A2')->getFont()->setBold(true)->setSize(14)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFFFFFFF'));
+        $sheet->getStyle('A2')->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A2')->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FF5B9BD5');
+        $sheet->getRowDimension(2)->setRowHeight(25);
+
+        // Period - Row 3
+        $sheet->mergeCells('A3:F3');
+        $sheet->setCellValue('A3', 'PERIODE: ' . strtoupper($namaBulan[$bulan]) . ' ' . $tahun);
+        $sheet->getStyle('A3')->getFont()->setBold(true)->setSize(12);
+        $sheet->getStyle('A3')->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A3')->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FFDAE3F3');
+        $sheet->getRowDimension(3)->setRowHeight(22);
+
+        // Empty row
+        $sheet->getRowDimension(4)->setRowHeight(8);
+
+        // ==================== INFORMASI SISWA SECTION ====================
+        
+        $currentRow = 5;
+        
+        // Header Info Siswa
+        $sheet->mergeCells("A{$currentRow}:F{$currentRow}");
+        $sheet->setCellValue("A{$currentRow}", 'INFORMASI SISWA');
+        $sheet->getStyle("A{$currentRow}")->getFont()->setBold(true)->setSize(12)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFFFFFFF'));
+        $sheet->getStyle("A{$currentRow}")->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_LEFT)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle("A{$currentRow}")->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FF70AD47');
+        $sheet->getRowDimension($currentRow)->setRowHeight(25);
+        $currentRow++;
+
+        // Data Siswa - Format Tabel 2 Kolom
+        $infoData = [
+            ['NIS', ': ' . $siswa->nis],
+            ['Nama Lengkap', ': ' . $siswa->nama_siswa],
+            ['Kelas', ': ' . ($rombel->nama_kelas ?? '-')],
+            ['Jurusan', ': ' . ($rombel->nama_jurusan ?? '-')],
+        ];
+
+        foreach ($infoData as $info) {
+            $sheet->setCellValue("A{$currentRow}", $info[0]);
+            $sheet->getStyle("A{$currentRow}")->getFont()->setBold(true)->setSize(11);
+            $sheet->getStyle("A{$currentRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$currentRow}")->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FFE2EFDA');
+            
+            $sheet->mergeCells("B{$currentRow}:F{$currentRow}");
+            $sheet->setCellValue("B{$currentRow}", $info[1]);
+            $sheet->getStyle("B{$currentRow}")->getFont()->setSize(11);
+            $sheet->getStyle("B{$currentRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            
+            $sheet->getRowDimension($currentRow)->setRowHeight(20);
+            $currentRow++;
+        }
+
+        // Border untuk info siswa
+        $infoEndRow = $currentRow - 1;
+        $sheet->getStyle("A5:F{$infoEndRow}")->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+                'outline' => [
+                    'borderStyle' => Border::BORDER_MEDIUM,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ]);
+
+        // Empty row
+        $currentRow++;
+        $sheet->getRowDimension($currentRow)->setRowHeight(8);
+        $currentRow++;
+
+        // ==================== STATISTIK SECTION ====================
+        
+        // Header Statistik
+        $sheet->mergeCells("A{$currentRow}:F{$currentRow}");
+        $sheet->setCellValue("A{$currentRow}", 'STATISTIK KEHADIRAN');
+        $sheet->getStyle("A{$currentRow}")->getFont()->setBold(true)->setSize(12)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFFFFFFF'));
+        $sheet->getStyle("A{$currentRow}")->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_LEFT)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle("A{$currentRow}")->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FFFFC000');
+        $sheet->getRowDimension($currentRow)->setRowHeight(25);
+        $statsStartRow = $currentRow;
+        $currentRow++;
+
+        // Statistik Table Header
+        $sheet->setCellValue("A{$currentRow}", 'KETERANGAN');
+        $sheet->setCellValue("B{$currentRow}", 'TOTAL');
+        $sheet->setCellValue("C{$currentRow}", 'HADIR');
+        $sheet->setCellValue("D{$currentRow}", 'SAKIT');
+        $sheet->setCellValue("E{$currentRow}", 'IZIN');
+        $sheet->setCellValue("F{$currentRow}", 'ALFA');
+        
+        $sheet->getStyle("A{$currentRow}:F{$currentRow}")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("A{$currentRow}:F{$currentRow}")->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle("A{$currentRow}:F{$currentRow}")->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FFD9D9D9');
+        $sheet->getRowDimension($currentRow)->setRowHeight(22);
+        $currentRow++;
+
+        // Statistik Data
+        $sheet->setCellValue("A{$currentRow}", 'Jumlah Hari');
+        $sheet->getStyle("A{$currentRow}")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("A{$currentRow}")->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_LEFT)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle("A{$currentRow}")->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FFF2F2F2');
+        
+        // Data dengan warna berbeda
+        $statsData = [
+            ['col' => 'B', 'value' => $statistik['total'], 'color' => 'FFB4C7E7'],
+            ['col' => 'C', 'value' => $statistik['hadir'], 'color' => 'FFC6E0B4'],
+            ['col' => 'D', 'value' => $statistik['sakit'], 'color' => 'FF9BC2E6'],
+            ['col' => 'E', 'value' => $statistik['izin'], 'color' => 'FFFFD966'],
+            ['col' => 'F', 'value' => $statistik['alfa'], 'color' => 'FFF4B084'],
+        ];
+        
+        foreach ($statsData as $data) {
+            $sheet->setCellValue($data['col'] . $currentRow, $data['value']);
+            $sheet->getStyle($data['col'] . $currentRow)->getFont()->setBold(true)->setSize(12);
+            $sheet->getStyle($data['col'] . $currentRow)->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                ->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle($data['col'] . $currentRow)->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setARGB($data['color']);
+        }
+        $sheet->getRowDimension($currentRow)->setRowHeight(25);
+        $currentRow++;
+
+        // Persentase Kehadiran
+        $persentase = $statistik['total'] > 0 ? number_format(($statistik['hadir'] / $statistik['total']) * 100, 1) : 0;
+        
+        $sheet->mergeCells("A{$currentRow}:D{$currentRow}");
+        $sheet->setCellValue("A{$currentRow}", 'PERSENTASE KEHADIRAN');
+        $sheet->getStyle("A{$currentRow}")->getFont()->setBold(true)->setSize(11);
+        $sheet->getStyle("A{$currentRow}")->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_LEFT)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle("A{$currentRow}")->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FFE2EFDA');
+        
+        $sheet->mergeCells("E{$currentRow}:F{$currentRow}");
+        $sheet->setCellValue("E{$currentRow}", $persentase . '%');
+        $sheet->getStyle("E{$currentRow}")->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle("E{$currentRow}")->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        
+        // Color based on percentage
+        $percentColor = $persentase >= 90 ? 'FF70AD47' : ($persentase >= 75 ? 'FFFFC000' : 'FFE74C3C');
+        $sheet->getStyle("E{$currentRow}:F{$currentRow}")->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB($percentColor);
+        $sheet->getStyle("E{$currentRow}:F{$currentRow}")->getFont()->getColor()->setARGB('FFFFFFFF');
+        $sheet->getRowDimension($currentRow)->setRowHeight(25);
+        
+        // Border untuk statistik
+        $statsEndRow = $currentRow;
+        $sheet->getStyle("A{$statsStartRow}:F{$statsEndRow}")->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+                'outline' => [
+                    'borderStyle' => Border::BORDER_MEDIUM,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ]);
+        
+        $currentRow++;
+
+        // Empty row
+        $currentRow++;
+        $sheet->getRowDimension($currentRow)->setRowHeight(8);
+        $currentRow++;
+
+        // ==================== RIWAYAT PRESENSI SECTION ====================
+        
+        // Header Riwayat
+        $sheet->mergeCells("A{$currentRow}:F{$currentRow}");
+        $statusText = $status ? ' - FILTER: ' . strtoupper($status) : '';
+        $sheet->setCellValue("A{$currentRow}", 'RIWAYAT PRESENSI HARIAN' . $statusText);
+        $sheet->getStyle("A{$currentRow}")->getFont()->setBold(true)->setSize(12)->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('FFFFFFFF'));
+        $sheet->getStyle("A{$currentRow}")->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_LEFT)
+            ->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle("A{$currentRow}")->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FF2E5090');
+        $sheet->getRowDimension($currentRow)->setRowHeight(25);
+        $riwayatStartRow = $currentRow;
+        $currentRow++;
+
+        // Table Headers
+        $headers = ['NO', 'TANGGAL', 'HARI', 'STATUS', 'WAKTU ABSEN', 'KETERANGAN'];
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . $currentRow, $header);
+            $sheet->getStyle($col . $currentRow)->getFont()->setBold(true)->setSize(11);
+            $sheet->getStyle($col . $currentRow)->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                ->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle($col . $currentRow)->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FF5B9BD5');
+            $sheet->getStyle($col . $currentRow)->getFont()->getColor()->setARGB('FFFFFFFF');
+            $col++;
+        }
+        $sheet->getRowDimension($currentRow)->setRowHeight(25);
+        $currentRow++;
+
+        // Data Rows
+        $no = 1;
+        $startDataRow = $currentRow;
+        
+        if ($detailPresensi->count() > 0) {
+            foreach ($detailPresensi as $presensi) {
+                $tanggal = \Carbon\Carbon::parse($presensi->tanggal);
+                
+                // NO
+                $sheet->setCellValue("A{$currentRow}", $no);
+                $sheet->getStyle("A{$currentRow}")->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                    ->setVertical(Alignment::VERTICAL_CENTER);
+                
+                // TANGGAL
+                $sheet->setCellValue("B{$currentRow}", $tanggal->format('d/m/Y'));
+                $sheet->getStyle("B{$currentRow}")->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                    ->setVertical(Alignment::VERTICAL_CENTER);
+                
+                // HARI
+                $sheet->setCellValue("C{$currentRow}", $tanggal->locale('id')->isoFormat('dddd'));
+                $sheet->getStyle("C{$currentRow}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                
+                // STATUS dengan color coding
+                $statusText = strtoupper($presensi->status);
+                $sheet->setCellValue("D{$currentRow}", $statusText);
+                $sheet->getStyle("D{$currentRow}")->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                    ->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle("D{$currentRow}")->getFont()->setBold(true)->setSize(11);
+                
+                // Color based on status
+                $statusColors = [
+                    'HADIR' => ['bg' => 'FFC6E0B4', 'text' => 'FF006100'],
+                    'SAKIT' => ['bg' => 'FF9BC2E6', 'text' => 'FF0C2C84'],
+                    'IZIN' => ['bg' => 'FFFFD966', 'text' => 'FF7F6000'],
+                    'ALFA' => ['bg' => 'FFF4B084', 'text' => 'FF7F2704']
+                ];
+                
+                if (isset($statusColors[$statusText])) {
+                    $sheet->getStyle("D{$currentRow}")->getFill()
+                        ->setFillType(Fill::FILL_SOLID)
+                        ->getStartColor()->setARGB($statusColors[$statusText]['bg']);
+                    $sheet->getStyle("D{$currentRow}")->getFont()
+                        ->getColor()->setARGB($statusColors[$statusText]['text']);
+                }
+                
+                // WAKTU
+                $waktu = \Carbon\Carbon::parse($presensi->created_at)->format('H:i');
+                $sheet->setCellValue("E{$currentRow}", $waktu . ' WIB');
+                $sheet->getStyle("E{$currentRow}")->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                    ->setVertical(Alignment::VERTICAL_CENTER);
+                
+                // KETERANGAN
+                $sheet->setCellValue("F{$currentRow}", '-');
+                $sheet->getStyle("F{$currentRow}")->getAlignment()
+                    ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                    ->setVertical(Alignment::VERTICAL_CENTER);
+                
+                // Alternating row colors
+                if ($no % 2 == 0) {
+                    $cols = ['A', 'B', 'C', 'E', 'F'];
+                    foreach ($cols as $c) {
+                        $sheet->getStyle($c . $currentRow)->getFill()
+                            ->setFillType(Fill::FILL_SOLID)
+                            ->getStartColor()->setARGB('FFF2F2F2');
+                    }
+                }
+                
+                $sheet->getStyle("A{$currentRow}:F{$currentRow}")->getFont()->setSize(10);
+                $sheet->getRowDimension($currentRow)->setRowHeight(20);
+                $currentRow++;
+                $no++;
+            }
+        } else {
+            $sheet->mergeCells("A{$currentRow}:F{$currentRow}");
+            $sheet->setCellValue("A{$currentRow}", 'Tidak ada data presensi untuk periode ini');
+            $sheet->getStyle("A{$currentRow}")->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+                ->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$currentRow}")->getFont()->setItalic(true)->setSize(11);
+            $sheet->getStyle("A{$currentRow}")->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FFFFF2CC');
+            $sheet->getRowDimension($currentRow)->setRowHeight(30);
+            $currentRow++;
+        }
+
+        // Border untuk tabel riwayat
+        $riwayatEndRow = $currentRow - 1;
+        $sheet->getStyle("A{$riwayatStartRow}:F{$riwayatEndRow}")->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+                'outline' => [
+                    'borderStyle' => Border::BORDER_MEDIUM,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ]);
+
+        // ==================== FOOTER ====================
+        
+        $currentRow += 2;
+        $sheet->mergeCells("A{$currentRow}:F{$currentRow}");
+        $sheet->setCellValue("A{$currentRow}", 'Dicetak pada: ' . now()->format('d F Y, H:i:s') . ' WIB');
+        $sheet->getStyle("A{$currentRow}")->getFont()->setSize(9)->setItalic(true);
+        $sheet->getStyle("A{$currentRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
+
+        // Generate filename
+        $cleanNama = preg_replace('/[^A-Za-z0-9]/', '_', $siswa->nama_siswa);
+        $filename = 'Detail_Presensi_' . $cleanNama . '_' . $namaBulan[$bulan] . '_' . $tahun . '.xlsx';
+
+        return new StreamedResponse(
+            function () use ($spreadsheet) {
+                $writer = new Xlsx($spreadsheet);
+                $writer->save('php://output');
+            },
+            200,
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Cache-Control' => 'max-age=0',
+            ]
+        );
     }
 }
