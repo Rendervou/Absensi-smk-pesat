@@ -9,8 +9,9 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "maatwebsite/excel": "*",
-        "phpoffice/phpspreadsheet": "^1.30"
+        "maatwebsite/excel": "^3.1.56",
+        "phpoffice/phpspreadsheet": "^1.29",
+        "maennchen/zipstream-php": "^2.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
