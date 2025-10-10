@@ -28,8 +28,10 @@ cmds = [
     'npm run build',
     'mkdir -p storage/framework/{sessions,views,cache}',
     'mkdir -p storage/logs',
+    'mkdir -p storage/app/public/templates',
     'mkdir -p bootstrap/cache',
     'chmod -R 775 storage bootstrap/cache',
+    'php artisan storage:link --force',
     'php artisan config:cache || true',
     'php artisan route:cache || true',
     'php artisan view:cache || true'
