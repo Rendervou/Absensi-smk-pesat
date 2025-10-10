@@ -6,6 +6,8 @@ use App\Http\Controllers\dataJurusanController;
 use App\Http\Controllers\datakelasController;
 use App\Http\Controllers\datasiswaController;
 use App\Http\Controllers\ExportExcelController;
+use App\Http\Controllers\KelulusanController;
+use App\Http\Controllers\NaikKelasController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RombelController;
@@ -38,7 +40,10 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
     Route::delete('admin/jurusan/{id}', [dataJurusanController::class, 'destroy'])->name('jurusan.destroy');
     
     Route::resource('admin/rombel', RombelController::class);
+    // FITUR BARU: Route untuk tambah rombel massal dan tambah jurusan massal
     Route::post('/admin/rombel/bulk-store', [RombelController::class, 'bulkStore'])->name('rombel.bulkStore');
+    Route::post('/admin/rombel/bulk-add-jurusan', [RombelController::class, 'bulkAddJurusan'])->name('rombel.bulkAddJurusan');
+    
     Route::resource('admin/kelas', datakelasController::class);
     Route::resource('admin/guru', dataguruController::class);
     
@@ -51,17 +56,17 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
     Route::get('/admin/detail-siswa/{nis}', [PresensiController::class, 'detailSiswa'])->name('admin.detailSiswa');
     
     // Naik Kelas
-    Route::get('/admin/naik-kelas', [App\Http\Controllers\NaikKelasController::class, 'index'])->name('admin.naikkelas.index');
-    Route::post('/admin/naik-kelas/proses', [App\Http\Controllers\NaikKelasController::class, 'prosesNaikKelas'])->name('admin.naikkelas.proses');
-    Route::post('/admin/naik-kelas/tidak-naik', [App\Http\Controllers\NaikKelasController::class, 'prosesTidakNaikKelas'])->name('admin.naikkelas.tidaknaik');
+    Route::get('/admin/naik-kelas', [NaikKelasController::class, 'index'])->name('admin.naikkelas.index');
+    Route::post('/admin/naik-kelas/proses', [NaikKelasController::class, 'prosesNaikKelas'])->name('admin.naikkelas.proses');
+    Route::post('/admin/naik-kelas/tidak-naik', [NaikKelasController::class, 'prosesTidakNaikKelas'])->name('admin.naikkelas.tidaknaik');
 
     // Kelulusan
-    Route::get('/admin/kelulusan', [App\Http\Controllers\KelulusanController::class, 'index'])->name('admin.kelulusan.index');
-    Route::post('/admin/kelulusan/proses', [App\Http\Controllers\KelulusanController::class, 'prosesKelulusan'])->name('admin.kelulusan.proses');
+    Route::get('/admin/kelulusan', [KelulusanController::class, 'index'])->name('admin.kelulusan.index');
+    Route::post('/admin/kelulusan/proses', [KelulusanController::class, 'prosesKelulusan'])->name('admin.kelulusan.proses');
 
     // Alumni
-    Route::get('/admin/alumni', [App\Http\Controllers\KelulusanController::class, 'daftarAlumni'])->name('admin.alumni.index');
-    Route::delete('/admin/alumni/{id}', [App\Http\Controllers\KelulusanController::class, 'hapusAlumni'])->name('admin.alumni.hapus');
+    Route::get('/admin/alumni', [KelulusanController::class, 'daftarAlumni'])->name('admin.alumni.index');
+    Route::delete('/admin/alumni/{id}', [KelulusanController::class, 'hapusAlumni'])->name('admin.alumni.hapus');
 });
 
 // Presensi Admin
