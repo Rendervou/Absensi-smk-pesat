@@ -13,16 +13,19 @@ nixPkgs = [
     'php82Extensions.pdo_mysql',
     'php82Extensions.bcmath',
     'php82Extensions.exif',
-    'php82Extensions.pcntl'
+    'php82Extensions.pcntl',
+    'nodejs_20'
 ]
 
 [phases.install]
 cmds = [
-    'composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist'
+    'composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist',
+    'npm ci --prefer-offline --no-audit'
 ]
 
 [phases.build]
 cmds = [
+    'npm run build',
     'mkdir -p storage/framework/{sessions,views,cache}',
     'mkdir -p storage/logs',
     'mkdir -p bootstrap/cache',
