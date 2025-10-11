@@ -63,6 +63,10 @@ Route::middleware(['auth', 'role:admin'])->group(function(){
     // Kelulusan
     Route::get('/admin/kelulusan', [KelulusanController::class, 'index'])->name('admin.kelulusan.index');
     Route::post('/admin/kelulusan/proses', [KelulusanController::class, 'prosesKelulusan'])->name('admin.kelulusan.proses');
+    
+    // FITUR BARU: Cleanup siswa lulus
+    Route::post('/admin/kelulusan/cleanup', [KelulusanController::class, 'cleanupSiswaLulus'])->name('admin.kelulusan.cleanup');
+    Route::get('/admin/kelulusan/check-siswa-lulus', [KelulusanController::class, 'checkSiswaLulus'])->name('admin.kelulusan.check');
 
     // Alumni
     Route::get('/admin/alumni', [KelulusanController::class, 'daftarAlumni'])->name('admin.alumni.index');

@@ -97,28 +97,16 @@
                     <div class="bg-white/80 dark:bg-gray-800/80 rounded-3xl shadow-xl border border-white/50 dark:border-gray-700/50 p-6 mb-6">
                         <h3 class="text-xl font-black text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
                             <i class="fas fa-graduation-cap text-teal-500"></i>
-                            Pilih Kelas & Jurusan Tujuan
+                            Pilih Kelas Tujuan
                         </h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Kelas Tujuan *</label>
-                                <select name="kelas_tujuan" required class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3">
-                                    <option value="">-- Pilih Kelas Tujuan --</option>
-                                    @foreach($kelas as $k)
-                                    <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Jurusan Tujuan *</label>
-                                <select name="jurusan_tujuan" required class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3">
-                                    <option value="">-- Pilih Jurusan --</option>
-                                    @foreach($jurusan as $j)
-                                    <option value="{{ $j->id_jurusan }}">{{ $j->nama_jurusan }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Kelas Tujuan *</label>
+                            <select name="kelas_tujuan" required class="w-full rounded-2xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-4 py-3">
+                                <option value="">-- Pilih Kelas Tujuan --</option>
+                                @foreach($kelas as $k)
+                                <option value="{{ $k->id_kelas }}">{{ $k->nama_kelas }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 
@@ -172,7 +160,9 @@
                                         <td class="px-6 py-4">
                                             <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">{{ $siswa['kelas'] }}</span>
                                         </td>
-                                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">{{ $siswa['jurusan'] }}</td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold">{{ $siswa['jurusan'] }}</span>
+                                        </td>
                                         <td class="px-6 py-4">
                                             @if($siswa['status'] == 'aktif')
                                             <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Aktif</span>

@@ -18,7 +18,6 @@ class NaikKelasController extends Controller
     public function index(Request $request)
     {
         $kelas = DataKelas::orderBy('nama_kelas', 'asc')->get();
-        $jurusan = DataJurusan::all();
         
         $siswaList = collect();
         $kelasAsal = null;
@@ -39,6 +38,7 @@ class NaikKelasController extends Controller
                             'nis' => $rombel->siswa->nis,
                             'kelas' => $rombel->kelas->nama_kelas,
                             'jurusan' => $rombel->jurusan->nama_jurusan ?? '-',
+                            'id_jurusan' => $rombel->id_jurusan,
                             'status' => $rombel->siswa->status ?? 'aktif',
                             'id_rombel' => $rombel->id,
                         ];
@@ -46,7 +46,7 @@ class NaikKelasController extends Controller
             }
         }
         
-        return view('admin.naikkelasMassal', compact('kelas', 'jurusan', 'siswaList', 'kelasAsal'));
+        return view('admin.naikkelasMassal', compact('kelas', 'siswaList', 'kelasAsal'));
     }
 
     /**
@@ -56,12 +56,10 @@ class NaikKelasController extends Controller
     {
         $request->validate([
             'kelas_tujuan' => 'required|exists:data_kelas,id_kelas',
-            'jurusan_tujuan' => 'required|exists:data_jurusans,id_jurusan',
             'siswa_ids' => 'required|array|min:1',
             'siswa_ids.*' => 'exists:data_siswas,id_siswa',
         ], [
             'kelas_tujuan.required' => 'Kelas tujuan harus dipilih',
-            'jurusan_tujuan.required' => 'Jurusan tujuan harus dipilih',
             'siswa_ids.required' => 'Minimal pilih 1 siswa untuk naik kelas',
             'siswa_ids.min' => 'Minimal pilih 1 siswa untuk naik kelas',
         ]);
@@ -75,13 +73,13 @@ class NaikKelasController extends Controller
 
             foreach ($request->siswa_ids as $siswaId) {
                 try {
-                    // Update rombel siswa
+                    // Update rombel siswa - hanya update kelas, jurusan tetap sama
                     $rombel = Rombel::where('id_siswa', $siswaId)->first();
                     
                     if ($rombel) {
                         $rombel->update([
                             'id_kelas' => $request->kelas_tujuan,
-                            'id_jurusan' => $request->jurusan_tujuan,
+                            // id_jurusan tidak diubah, tetap menggunakan jurusan yang sama
                         ]);
                         
                         // Update status siswa menjadi aktif

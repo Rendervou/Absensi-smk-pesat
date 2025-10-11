@@ -17,12 +17,23 @@ class datasiswaController extends Controller
      */
     public function index(Request $request)
     {
+        // DEBUG: Log untuk cek parameter yang masuk
+        Log::info('Search Request:', [
+            'search' => $request->search,
+            'all_params' => $request->all(),
+            'filled' => $request->filled('search')
+        ]);
+
         // Query builder untuk siswa
         $query = DataSiswa::query();
 
         // Filter pencarian
         if ($request->filled('search')) {
             $search = $request->search;
+            
+            // DEBUG: Log query search
+            Log::info('Executing search with keyword: ' . $search);
+            
             $query->where(function($q) use ($search) {
                 $q->where('nama_siswa', 'LIKE', "%{$search}%")
                   ->orWhere('nis', 'LIKE', "%{$search}%");
@@ -33,6 +44,9 @@ class datasiswaController extends Controller
         $siswa = $query->orderBy('nama_siswa', 'asc')
                       ->paginate(10)
                       ->withQueryString(); // Mempertahankan parameter search di pagination
+
+        // DEBUG: Log jumlah hasil
+        Log::info('Search results count: ' . $siswa->count());
 
         return view('admin.siswa', compact('siswa'));
     }
