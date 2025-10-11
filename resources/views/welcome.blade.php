@@ -159,7 +159,7 @@
                 <div class="flex items-center justify-center space-x-3 mb-4">                   
                     <span class="font-bold text-xl text-white">SMK PESAT</span>
                 </div>
-                <p class="text-slate-300 mb-4">© 2024 SMK Informatika Pesat. Semua hak cipta dilindungi.</p>
+                <p class="text-slate-300 mb-4">© 2025 SMK Informatika Pesat. Semua hak cipta dilindungi.</p>
                 <p class="text-slate-200 text-sm">Sistem Absensi Digital - Teknologi untuk Pendidikan</p>
             </div>
         </footer>
