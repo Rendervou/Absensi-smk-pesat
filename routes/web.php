@@ -7,6 +7,7 @@ use App\Http\Controllers\datakelasController;
 use App\Http\Controllers\datasiswaController;
 use App\Http\Controllers\ExportExcelController;
 use App\Http\Controllers\KelulusanController;
+use App\Http\Controllers\MonitoringLoginController;
 use App\Http\Controllers\NaikKelasController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\ProfileController;
@@ -15,66 +16,53 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPresensiController;
 use Illuminate\Support\Facades\Route;
 
+// ================================================
+// PUBLIC ROUTES
+// ================================================
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware('auth')->group(function () {
+// ================================================
+// SHARED AUTH ROUTES (Admin & User)
+// ================================================
+Route::middleware(['auth', 'check.activity'])->group(function () {
+    // Profile (bisa diakses admin & user)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Monitoring API - Update Activity (dipanggil dari JavaScript semua role)
+    Route::post('/admin/monitoring/api/update-activity', [MonitoringLoginController::class, 'updateActivity']);
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function(){
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/perkelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
-    Route::get('/admin/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
+// ================================================
+// ADMIN ROUTES
+// ================================================
+Route::middleware(['auth', 'role:admin', 'check.activity'])->prefix('admin')->group(function() {
     
-    // Resource Routes dengan parameter yang benar
-    Route::resource('admin/siswa', datasiswaController::class);
+    // Dashboard & Laporan
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/perkelas', [AdminController::class, 'perKelas'])->name('admin.perKelas');
+    Route::get('/perbulan', [AdminController::class, 'perBulan'])->name('admin.perBulan');
     
-    // PERBAIKAN: Route jurusan dengan parameter id_jurusan
-    Route::get('admin/jurusan', [dataJurusanController::class, 'index'])->name('jurusan.index');
-    Route::post('admin/jurusan', [dataJurusanController::class, 'store'])->name('jurusan.store');
-    Route::put('admin/jurusan/{id}', [dataJurusanController::class, 'update'])->name('jurusan.update');
-    Route::delete('admin/jurusan/{id}', [dataJurusanController::class, 'destroy'])->name('jurusan.destroy');
+    // Data Master
+    Route::resource('siswa', datasiswaController::class);
+    Route::resource('kelas', datakelasController::class);
+    Route::resource('guru', dataguruController::class);
+    Route::resource('rombel', RombelController::class);
     
-    Route::resource('admin/rombel', RombelController::class);
-    // FITUR BARU: Route untuk tambah rombel massal dan tambah jurusan massal
-    Route::post('/admin/rombel/bulk-store', [RombelController::class, 'bulkStore'])->name('rombel.bulkStore');
-    Route::post('/admin/rombel/bulk-add-jurusan', [RombelController::class, 'bulkAddJurusan'])->name('rombel.bulkAddJurusan');
+    // Jurusan (custom routes)
+    Route::get('jurusan', [dataJurusanController::class, 'index'])->name('jurusan.index');
+    Route::post('jurusan', [dataJurusanController::class, 'store'])->name('jurusan.store');
+    Route::put('jurusan/{id}', [dataJurusanController::class, 'update'])->name('jurusan.update');
+    Route::delete('jurusan/{id}', [dataJurusanController::class, 'destroy'])->name('jurusan.destroy');
     
-    Route::resource('admin/kelas', datakelasController::class);
-    Route::resource('admin/guru', dataguruController::class);
+    // Rombel Bulk Actions
+    Route::post('/rombel/bulk-store', [RombelController::class, 'bulkStore'])->name('rombel.bulkStore');
+    Route::post('/rombel/bulk-add-jurusan', [RombelController::class, 'bulkAddJurusan'])->name('rombel.bulkAddJurusan');
     
-    // Import/Export
-    Route::get('/siswa/import', [datasiswaController::class, 'showImportFrom'])->name('siswa.import.from');
-    Route::post('/siswa/import', [datasiswaController::class, 'import'])->name('admin.siswa.import');
-    Route::get('/admin/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('admin.export.perBulan');
-    Route::get('/admin/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('admin.export.perKelas');
-    Route::get('/admin/export-detail-siswa/{nis}', [ExportExcelController::class, 'exportDetailSiswa'])->name('admin.export.detailSiswa');
-    Route::get('/admin/detail-siswa/{nis}', [PresensiController::class, 'detailSiswa'])->name('admin.detailSiswa');
-    
-    // Naik Kelas
-    Route::get('/admin/naik-kelas', [NaikKelasController::class, 'index'])->name('admin.naikkelas.index');
-    Route::post('/admin/naik-kelas/proses', [NaikKelasController::class, 'prosesNaikKelas'])->name('admin.naikkelas.proses');
-    Route::post('/admin/naik-kelas/tidak-naik', [NaikKelasController::class, 'prosesTidakNaikKelas'])->name('admin.naikkelas.tidaknaik');
-
-    // Kelulusan
-    Route::get('/admin/kelulusan', [KelulusanController::class, 'index'])->name('admin.kelulusan.index');
-    Route::post('/admin/kelulusan/proses', [KelulusanController::class, 'prosesKelulusan'])->name('admin.kelulusan.proses');
-    
-    // FITUR BARU: Cleanup siswa lulus
-    Route::post('/admin/kelulusan/cleanup', [KelulusanController::class, 'cleanupSiswaLulus'])->name('admin.kelulusan.cleanup');
-    Route::get('/admin/kelulusan/check-siswa-lulus', [KelulusanController::class, 'checkSiswaLulus'])->name('admin.kelulusan.check');
-
-    // Alumni
-    Route::get('/admin/alumni', [KelulusanController::class, 'daftarAlumni'])->name('admin.alumni.index');
-    Route::delete('/admin/alumni/{id}', [KelulusanController::class, 'hapusAlumni'])->name('admin.alumni.hapus');
-});
-
-// Presensi Admin
-Route::prefix('admin')->middleware(['auth','role:admin'])->group(function () {
+    // Presensi
     Route::resource('presensi', PresensiController::class)->names([
         'index' => 'admin.presensi.index',
         'create' => 'admin.presensi.create',
@@ -84,21 +72,55 @@ Route::prefix('admin')->middleware(['auth','role:admin'])->group(function () {
         'update' => 'admin.presensi.update',
         'destroy' => 'admin.presensi.destroy',
     ]);
+    Route::get('/detail-siswa/{nis}', [PresensiController::class, 'detailSiswa'])->name('admin.detailSiswa');
+    
+    // Import Siswa
+    Route::get('/siswa/import', [datasiswaController::class, 'showImportFrom'])->name('siswa.import.from');
+    Route::post('/siswa/import', [datasiswaController::class, 'import'])->name('admin.siswa.import');
+    
+    // Export
+    Route::get('/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('admin.export.perBulan');
+    Route::get('/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('admin.export.perKelas');
+    Route::get('/export-detail-siswa/{nis}', [ExportExcelController::class, 'exportDetailSiswa'])->name('admin.export.detailSiswa');
+    
+    // Akademik
+    Route::prefix('naik-kelas')->name('admin.naikkelas.')->group(function() {
+        Route::get('/', [NaikKelasController::class, 'index'])->name('index');
+        Route::post('/proses', [NaikKelasController::class, 'prosesNaikKelas'])->name('proses');
+        Route::post('/tidak-naik', [NaikKelasController::class, 'prosesTidakNaikKelas'])->name('tidaknaik');
+    });
+    
+    Route::prefix('kelulusan')->name('admin.kelulusan.')->group(function() {
+        Route::get('/', [KelulusanController::class, 'index'])->name('index');
+        Route::post('/proses', [KelulusanController::class, 'prosesKelulusan'])->name('proses');
+        Route::post('/cleanup', [KelulusanController::class, 'cleanupSiswaLulus'])->name('cleanup');
+        Route::get('/check-siswa-lulus', [KelulusanController::class, 'checkSiswaLulus'])->name('check');
+    });
+    
+    Route::prefix('alumni')->name('admin.alumni.')->group(function() {
+        Route::get('/', [KelulusanController::class, 'daftarAlumni'])->name('index');
+        Route::delete('/{id}', [KelulusanController::class, 'hapusAlumni'])->name('hapus');
+    });
+    
+    // Monitoring Login
+    Route::prefix('monitoring')->name('admin.monitoring.')->group(function() {
+        Route::get('/login', [MonitoringLoginController::class, 'index'])->name('index');
+        Route::get('/api/active-users', [MonitoringLoginController::class, 'getActiveUsers']);
+        Route::get('/api/login-history', [MonitoringLoginController::class, 'getLoginHistory']);
+    });
 });
 
-// User Routes
-Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
-    Route::get('/user/perkelas', [UserController::class, 'perKelas'])->name('user.perKelas');
-    Route::get('/user/perbulan', [UserController::class, 'perBulan'])->name('user.perBulan');
-    Route::get('/user/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('user.export.perBulan');
-    Route::get('/user/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('user.export.perKelas');
-    Route::get('/user/export-detail-siswa/{nis}', [ExportExcelController::class, 'exportDetailSiswa'])->name('user.export.detailSiswa');
-    Route::get('/user/detail-siswa/{nis}', [UserPresensiController::class, 'detailSiswa'])->name('user.detailSiswa');
-});
-
-// Presensi User
-Route::prefix('user')->middleware(['auth','role:user'])->group(function () {
+// ================================================
+// USER (GURU) ROUTES
+// ================================================
+Route::middleware(['auth', 'role:user', 'check.activity'])->prefix('user')->group(function () {
+    
+    // Dashboard & Laporan
+    Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard');
+    Route::get('/perkelas', [UserController::class, 'perKelas'])->name('user.perKelas');
+    Route::get('/perbulan', [UserController::class, 'perBulan'])->name('user.perBulan');
+    
+    // Presensi
     Route::resource('presensi', UserPresensiController::class)->names([
         'index' => 'user.presensi.index',
         'create' => 'user.presensi.create',
@@ -108,6 +130,15 @@ Route::prefix('user')->middleware(['auth','role:user'])->group(function () {
         'update' => 'user.presensi.update',
         'destroy' => 'user.presensi.destroy',
     ]);
+    Route::get('/detail-siswa/{nis}', [UserPresensiController::class, 'detailSiswa'])->name('user.detailSiswa');
+    
+    // Export
+    Route::get('/export-perbulan', [ExportExcelController::class, 'exportPerBulan'])->name('user.export.perBulan');
+    Route::get('/export-perkelas', [ExportExcelController::class, 'exportPerKelas'])->name('user.export.perKelas');
+    Route::get('/export-detail-siswa/{nis}', [ExportExcelController::class, 'exportDetailSiswa'])->name('user.export.detailSiswa');
 });
 
+// ================================================
+// AUTH ROUTES
+// ================================================
 require __DIR__ . '/auth.php';

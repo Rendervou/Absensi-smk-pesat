@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckUserActivity;
 use App\Http\Middleware\Role;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -25,6 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Daftarkan middleware alias
         $middleware->alias([
             'role' => Role::class,
+            'check.activity' => CheckUserActivity::class,
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -54,6 +54,16 @@
             box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
         }
 
+        /* ✅ Style untuk tombol Dashboard (hijau) */
+        .btn-dashboard {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+        .btn-dashboard:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.5);
+        }
+
         .dark-pattern {
             background-image: 
                 radial-gradient(circle at 25% 25%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
@@ -143,12 +153,32 @@
 
                 <!-- Action Buttons -->
                 <div class="fade-in flex flex-col sm:flex-row gap-8 justify-center items-center" id="buttons">
-                    <a href="{{ route('login') }}" class="btn-primary text-white font-bold px-12 py-5 rounded-2xl transition-all duration-300 inline-flex items-center justify-center space-x-4 text-xl shadow-2xl min-w-[200px]">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                        </svg>
-                        <span>Login</span>
-                    </a>    
+                    @auth
+                        {{-- ✅ Jika sudah login, tampilkan tombol Dashboard --}}
+                        @if(Auth::user()->role === 'admin')
+                            <a href="{{ route('admin.dashboard') }}" class="btn-dashboard text-white font-bold px-12 py-5 rounded-2xl transition-all duration-300 inline-flex items-center justify-center space-x-4 text-xl shadow-2xl min-w-[200px]">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                                </svg>
+                                <span>Dashboard Admin</span>
+                            </a>
+                        @else
+                            <a href="{{ route('user.dashboard') }}" class="btn-primary text-white font-bold px-12 py-5 rounded-2xl transition-all duration-300 inline-flex items-center justify-center space-x-4 text-xl shadow-2xl min-w-[200px]">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                                </svg>
+                                <span>Dashboard</span>
+                            </a>
+                        @endif
+                    @else
+                        {{-- ✅ Jika belum login, tampilkan tombol Login --}}
+                        <a href="{{ route('login') }}" class="btn-primary text-white font-bold px-12 py-5 rounded-2xl transition-all duration-300 inline-flex items-center justify-center space-x-4 text-xl shadow-2xl min-w-[200px]">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                            </svg>
+                            <span>Login</span>
+                        </a>
+                    @endauth
                 </div>
             </div>
         </main>
