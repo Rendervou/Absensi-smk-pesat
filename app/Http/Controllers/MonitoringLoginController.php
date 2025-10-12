@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\UserSession;
 use App\Models\User;
+use App\Models\UserActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class MonitoringLoginController extends Controller
 {
@@ -24,7 +26,6 @@ class MonitoringLoginController extends Controller
     public function getActiveUsers(Request $request)
     {
         try {
-            // Ambil semua session yang online dan masih aktif (< 5 menit)
             $activeSessions = UserSession::with('user')
                 ->where('status', 'online')
                 ->where('last_activity', '>=', now()->subMinutes(5))
@@ -34,13 +35,14 @@ class MonitoringLoginController extends Controller
             $users = $activeSessions->map(function($session) {
                 return [
                     'id' => $session->user_id,
+                    'session_id' => $session->id,
                     'name' => $session->user->name,
                     'role' => $session->user->role,
                     'role_badge' => $session->user->role === 'admin' ? 'Admin' : 'Guru',
                     'role_color' => $session->user->role === 'admin' ? 'purple' : 'blue',
                     'ip_address' => $session->ip_address,
-                    'current_page' => $session->current_page ?? 'Tidak diketahui',    // TAMBAHKAN INI
-                    'current_url' => $session->current_url ?? '-',                     // TAMBAHKAN INI
+                    'current_page' => $session->current_page ?? 'Tidak diketahui',
+                    'current_url' => $session->current_url ?? '-',
                     'login_at' => $session->login_at->format('H:i:s'),
                     'login_at_readable' => $session->login_at->diffForHumans(),
                     'last_activity' => $session->last_activity->format('H:i:s'),
@@ -51,7 +53,6 @@ class MonitoringLoginController extends Controller
                 ];
             });
 
-            // Statistik
             $stats = [
                 'total_online' => $users->count(),
                 'total_admin' => $users->where('role', 'admin')->count(),
@@ -76,6 +77,149 @@ class MonitoringLoginController extends Controller
     }
 
     /**
+     * API: Get user detail & activity history
+     */
+    public function getUserDetail(Request $request, $userId)
+    {
+        try {
+            $user = User::with(['activeSession'])->findOrFail($userId);
+            
+            // Get current session info
+            $currentSession = $user->activeSession;
+            
+            // Get all sessions history
+            $sessionsHistory = UserSession::where('user_id', $userId)
+                ->orderBy('login_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function($session) {
+                    return [
+                        'id' => $session->id,
+                        'login_at' => $session->login_at->format('d/m/Y H:i:s'),
+                        'logout_at' => $session->logout_at ? $session->logout_at->format('d/m/Y H:i:s') : 'Masih Online',
+                        'duration' => $session->logout_at 
+                            ? $this->calculateDuration($session->login_at, $session->logout_at)
+                            : $this->calculateDuration($session->login_at),
+                        'ip_address' => $session->ip_address,
+                        'browser' => $this->getBrowser($session->user_agent),
+                        'status' => $session->status,
+                    ];
+                });
+
+            // Get activity logs (limit 50)
+            $activities = UserActivityLog::where('user_id', $userId)
+                ->orderBy('created_at', 'desc')
+                ->limit(50)
+                ->get()
+                ->map(function($activity) {
+                    return [
+                        'id' => $activity->id,
+                        'type' => $activity->activity_type,
+                        'icon' => $activity->icon,
+                        'color_class' => $activity->color_class,
+                        'page_name' => $activity->page_name ?? '-',
+                        'url' => $activity->url ?? '-',
+                        'method' => $activity->method,
+                        'description' => $activity->description ?? '-',
+                        'time' => $activity->created_at->format('d/m/Y H:i:s'),
+                        'time_readable' => $activity->created_at->diffForHumans(),
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'role' => $user->role,
+                        'role_badge' => $user->role === 'admin' ? 'Admin' : 'Guru',
+                    ],
+                    'current_session' => $currentSession ? [
+                        'ip_address' => $currentSession->ip_address,
+                        'browser' => $this->getBrowser($currentSession->user_agent),
+                        'device' => $this->getDevice($currentSession->user_agent),
+                        'current_page' => $currentSession->current_page ?? '-',
+                        'login_at' => $currentSession->login_at->format('d/m/Y H:i:s'),
+                        'last_activity' => $currentSession->last_activity->format('d/m/Y H:i:s'),
+                        'duration' => $this->calculateDuration($currentSession->login_at),
+                    ] : null,
+                    'sessions_history' => $sessionsHistory,
+                    'activities' => $activities,
+                    'stats' => [
+                        'total_sessions' => UserSession::where('user_id', $userId)->count(),
+                        'total_activities' => UserActivityLog::where('user_id', $userId)->count(),
+                        'total_page_visits' => UserActivityLog::where('user_id', $userId)->where('activity_type', 'page_visit')->count(),
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in getUserDetail: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * API: Force logout user
+     */
+    public function forceLogout(Request $request)
+    {
+        try {
+            $request->validate([
+                'session_id' => 'required|exists:user_sessions,id',
+                'reason' => 'nullable|string|max:255'
+            ]);
+
+            $session = UserSession::findOrFail($request->session_id);
+            
+            // Tidak bisa logout diri sendiri
+            if ($session->user_id === Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak dapat logout paksa sesi Anda sendiri!'
+                ], 400);
+            }
+
+            // Log aktivitas force logout
+            UserActivityLog::create([
+                'user_id' => $session->user_id,
+                'session_id' => $session->id,
+                'activity_type' => 'logout',
+                'page_name' => 'Force Logout',
+                'description' => 'Logout paksa oleh admin: ' . Auth::user()->name . ($request->reason ? ' - Alasan: ' . $request->reason : ''),
+                'ip_address' => $session->ip_address,
+                'user_agent' => $session->user_agent,
+            ]);
+
+            // Update session status
+            $session->update([
+                'status' => 'offline',
+                'logout_at' => now()
+            ]);
+
+            // Invalidate Laravel session (jika masih ada)
+            // Note: Ini akan menghapus session dari storage
+            DB::table('sessions')->where('id', $session->session_id)->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil di-logout paksa!'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in forceLogout: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal logout paksa: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * API: Get login history
      */
     public function getLoginHistory(Request $request)
@@ -84,35 +228,21 @@ class MonitoringLoginController extends Controller
             $perPage = $request->get('per_page', 10);
             $role = $request->get('role', 'all');
             
-            Log::info('Login History Request:', [
-                'per_page' => $perPage,
-                'role' => $role,
-                'page' => $request->get('page', 1)
-            ]);
-
-            // Query dasar
             $query = UserSession::with('user')
                 ->orderBy('login_at', 'desc');
 
-            // Filter by role jika bukan 'all'
             if ($role !== 'all') {
                 $query->whereHas('user', function($q) use ($role) {
                     $q->where('role', $role);
                 });
             }
 
-            // Get paginated results
             $history = $query->paginate($perPage);
 
-            Log::info('Query Result:', [
-                'total' => $history->total(),
-                'count' => $history->count()
-            ]);
-
-            // Transform data
             $data = $history->map(function($session) {
                 return [
                     'id' => $session->id,
+                    'user_id' => $session->user_id,
                     'user_name' => $session->user->name ?? 'Unknown',
                     'role' => $session->user->role ?? 'unknown',
                     'role_badge' => $session->user && $session->user->role === 'admin' ? 'Admin' : 'Guru',
@@ -128,35 +258,28 @@ class MonitoringLoginController extends Controller
                 ];
             });
 
-            $response = [
+            return response()->json([
                 'success' => true,
-                'data' => $data->values(), // Re-index array
+                'data' => $data->values(),
                 'pagination' => [
                     'current_page' => $history->currentPage(),
                     'last_page' => $history->lastPage(),
                     'per_page' => $history->perPage(),
                     'total' => $history->total(),
                 ]
-            ];
-
-            Log::info('Response data count:', ['count' => $data->count()]);
-
-            return response()->json($response);
+            ]);
 
         } catch (\Exception $e) {
             Log::error('Error in getLoginHistory: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
-            
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
-                'trace' => config('app.debug') ? $e->getTraceAsString() : null
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Update last activity (dipanggil dari client untuk keep-alive)
+     * Update last activity
      */
     public function updateActivity(Request $request)
     {
@@ -190,7 +313,7 @@ class MonitoringLoginController extends Controller
     }
 
     /**
-     * Helper: Calculate duration
+     * Helper functions
      */
     private function calculateDuration($start, $end = null)
     {
@@ -198,56 +321,29 @@ class MonitoringLoginController extends Controller
         $diff = $start->diff($end);
 
         $parts = [];
-        
-        if ($diff->d > 0) {
-            $parts[] = $diff->d . ' hari';
-        }
-        if ($diff->h > 0) {
-            $parts[] = $diff->h . ' jam';
-        }
-        if ($diff->i > 0) {
-            $parts[] = $diff->i . ' menit';
-        }
-        if (empty($parts) && $diff->s > 0) {
-            $parts[] = $diff->s . ' detik';
-        }
+        if ($diff->d > 0) $parts[] = $diff->d . ' hari';
+        if ($diff->h > 0) $parts[] = $diff->h . ' jam';
+        if ($diff->i > 0) $parts[] = $diff->i . ' menit';
+        if (empty($parts) && $diff->s > 0) $parts[] = $diff->s . ' detik';
 
         return !empty($parts) ? implode(' ', $parts) : '0 detik';
     }
 
-    /**
-     * Helper: Get browser name from user agent
-     */
     private function getBrowser($userAgent)
     {
-        if (preg_match('/MSIE/i', $userAgent)) {
-            return 'Internet Explorer';
-        } elseif (preg_match('/Firefox/i', $userAgent)) {
-            return 'Firefox';
-        } elseif (preg_match('/Chrome/i', $userAgent)) {
-            return 'Chrome';
-        } elseif (preg_match('/Safari/i', $userAgent)) {
-            return 'Safari';
-        } elseif (preg_match('/Opera/i', $userAgent)) {
-            return 'Opera';
-        } elseif (preg_match('/Edge/i', $userAgent)) {
-            return 'Edge';
-        }
-        
+        if (preg_match('/MSIE/i', $userAgent)) return 'Internet Explorer';
+        if (preg_match('/Firefox/i', $userAgent)) return 'Firefox';
+        if (preg_match('/Chrome/i', $userAgent)) return 'Chrome';
+        if (preg_match('/Safari/i', $userAgent)) return 'Safari';
+        if (preg_match('/Opera/i', $userAgent)) return 'Opera';
+        if (preg_match('/Edge/i', $userAgent)) return 'Edge';
         return 'Unknown';
     }
 
-    /**
-     * Helper: Get device type from user agent
-     */
     private function getDevice($userAgent)
     {
-        if (preg_match('/mobile/i', $userAgent)) {
-            return 'Mobile';
-        } elseif (preg_match('/tablet/i', $userAgent)) {
-            return 'Tablet';
-        }
-        
+        if (preg_match('/mobile/i', $userAgent)) return 'Mobile';
+        if (preg_match('/tablet/i', $userAgent)) return 'Tablet';
         return 'Desktop';
     }
 }

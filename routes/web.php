@@ -107,6 +107,8 @@ Route::middleware(['auth', 'role:admin', 'check.activity'])->prefix('admin')->gr
         Route::get('/login', [MonitoringLoginController::class, 'index'])->name('index');
         Route::get('/api/active-users', [MonitoringLoginController::class, 'getActiveUsers']);
         Route::get('/api/login-history', [MonitoringLoginController::class, 'getLoginHistory']);
+        Route::get('/api/user-detail/{userId}', [MonitoringLoginController::class, 'getUserDetail']);
+        Route::post('/api/force-logout', [MonitoringLoginController::class, 'forceLogout']);
     });
 });
 
