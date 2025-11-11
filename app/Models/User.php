@@ -44,4 +44,22 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Relasi ke UserSession
+     */
+    public function sessions()
+    {
+        return $this->hasMany(UserSession::class);
+    }
+
+    /**
+     * Get active session
+     */
+    public function activeSession()
+    {
+        return $this->hasOne(UserSession::class)
+                    ->where('status', 'online')
+                    ->latest('login_at');
+    }
 }

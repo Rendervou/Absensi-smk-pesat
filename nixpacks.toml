@@ -1,0 +1,41 @@
+[phases.setup]
+nixPkgs = [
+    'php82',
+    'php82Packages.composer',
+    'php82Extensions.zip',
+    'php82Extensions.gd',
+    'php82Extensions.xml',
+    'php82Extensions.dom',
+    'php82Extensions.xmlreader',
+    'php82Extensions.xmlwriter',
+    'php82Extensions.mbstring',
+    'php82Extensions.pdo',
+    'php82Extensions.pdo_mysql',
+    'php82Extensions.bcmath',
+    'php82Extensions.exif',
+    'php82Extensions.pcntl',
+    'nodejs_20'
+]
+
+[phases.install]
+cmds = [
+    'composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist',
+    'npm ci --prefer-offline --no-audit'
+]
+
+[phases.build]
+cmds = [
+    'npm run build',
+    'mkdir -p storage/framework/{sessions,views,cache}',
+    'mkdir -p storage/logs',
+    'mkdir -p storage/app/public/templates',
+    'mkdir -p bootstrap/cache',
+    'chmod -R 775 storage bootstrap/cache',
+    'php artisan storage:link --force',
+    'php artisan config:cache || true',
+    'php artisan route:cache || true',
+    'php artisan view:cache || true'
+]
+
+[start]
+cmd = 'php artisan migrate --force && php artisan optimize && php artisan serve --host=0.0.0.0 --port=$PORT'

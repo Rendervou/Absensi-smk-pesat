@@ -36,13 +36,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen relative">
-        <div class="absolute inset-0 pointer-events-none">
+    <div class="py-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 min-h-screen">
+        <div class="absolute inset-0 pointer-events-none overflow-hidden">
             <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
         </div>
         
-        <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             @if(session('success'))
             <div class="mb-6 p-4 bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 rounded-lg animate-fade-in-up">
                 <div class="flex items-center">
@@ -91,17 +91,15 @@
                 </div>
 
                 <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 relative">
-                        <div class="px-8 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50 rounded-t-3xl">
-                            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                                        <i class="fas fa-chart-bar text-white text-lg"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-2xl font-black text-gray-800 dark:text-gray-100">Data Jurusan</h3>
-                                        <p class="text-gray-600 dark:text-gray-300">Daftar semua jurusan yang terdaftar</p>
-                                    </div>
+                    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-gray-700/50 overflow-hidden">
+                        <div class="px-6 py-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border-b border-indigo-200/30 dark:border-gray-600/50">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                                    <i class="fas fa-chart-bar text-white text-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-black text-gray-800 dark:text-gray-100">Data Jurusan</h3>
+                                    <p class="text-gray-600 dark:text-gray-300">Daftar semua jurusan yang terdaftar</p>
                                 </div>
                             </div>
                         </div>
@@ -109,18 +107,18 @@
                             <table class="w-full text-sm text-left">
                                 <thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
                                     <tr>
-                                        <th scope="col" class="px-8 py-6 font-bold">
+                                        <th scope="col" class="px-6 py-4 font-bold">
                                             <div class="flex items-center gap-2">
                                                 No.
                                             </div>
                                         </th>
-                                        <th scope="col" class="px-6 py-6 font-bold">
+                                        <th scope="col" class="px-6 py-4 font-bold">
                                             <div class="flex items-center gap-2">
                                                 <i class="fas fa-building text-lg text-indigo-500"></i>
                                                 Nama Jurusan
                                             </div>
                                         </th>
-                                        <th scope="col" class="px-6 py-6 text-center font-bold">
+                                        <th scope="col" class="px-6 py-4 text-center font-bold">
                                             <div class="flex items-center justify-center gap-2">
                                                 <i class="fas fa-cogs text-lg text-purple-500"></i>
                                                 Aksi
@@ -131,12 +129,12 @@
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                 @forelse ($jurusan as $k)
                                     <tr class="hover:bg-gradient-to-r hover:from-indigo-50/50 hover:to-purple-50/50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 transition-all duration-300 group">
-                                        <td class="px-8 py-6">
+                                        <td class="px-6 py-4">
                                             <div class="flex items-center">
                                                 <span class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-black shadow-md">{{ $loop->iteration }}</span>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-6 whitespace-nowrap">
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center gap-4">
                                                 <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-lg transform group-hover:scale-110 transition-transform duration-300">
                                                     {{ strtoupper(substr($k->nama_jurusan, 0, 2)) }}
@@ -146,7 +144,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-6 whitespace-nowrap text-sm font-medium">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-center gap-2">
                                                 <button
                                                     @click="openEditModal({{ $k->id_jurusan }}, '{{ addslashes($k->nama_jurusan) }}')"
@@ -303,6 +301,16 @@
 
         [x-cloak] { 
             display: none !important; 
+        }
+
+        /* PERBAIKAN: Prevent horizontal & vertical overflow */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        body {
+            position: relative;
         }
         
         @keyframes fade-in-up {

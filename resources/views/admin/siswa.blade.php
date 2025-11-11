@@ -205,7 +205,7 @@
                                 </div>
                                 
                                 <!-- Form Search -->
-                                <form action="{{ route('siswa.index') }}" method="GET" class="flex items-center gap-3">
+                                <form action="{{ route('siswa.index') }}" method="GET" class="flex items-center gap-3" id="searchForm">
                                     <div class="relative group">
                                         <input 
                                             type="text" 
@@ -254,7 +254,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200/50 dark:divide-gray-700/50">
-                                    @foreach ($siswa as $s)
+                                    @forelse ($siswa as $s)
                                     <tr class="hover:bg-gradient-to-r hover:from-indigo-50/50 hover:to-purple-50/50 dark:hover:from-gray-700/50 dark:hover:to-gray-600/50 transition-all duration-300 group">
                                         <td class="px-6 py-6">
                                             <div class="flex items-center">
@@ -292,7 +292,22 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    @endforeach
+                                    @empty
+                                    <tr>
+                                        <td colspan="3" class="px-6 py-12 text-center">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <i class="fas fa-search text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                                                <p class="text-gray-500 dark:text-gray-400 font-semibold">
+                                                    @if(request('search'))
+                                                        Tidak ada siswa yang ditemukan dengan kata kunci "{{ request('search') }}"
+                                                    @else
+                                                        Belum ada data siswa
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -525,13 +540,20 @@
             }
         }
 
-        // Auto submit search setelah delay (opsional)
-        let searchTimeout;
-        document.getElementById('searchSiswaInput')?.addEventListener('keyup', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                this.closest('form').submit();
-            }, 500); // Delay 500ms setelah berhenti mengetik
+        // Event listener untuk search input (Enter key)
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchSiswaInput');
+            const searchForm = document.getElementById('searchForm');
+            
+            if (searchInput && searchForm) {
+                // Submit saat tekan Enter
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchForm.submit();
+                    }
+                });
+            }
         });
     </script>
 </x-app-layout>

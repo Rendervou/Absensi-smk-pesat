@@ -186,6 +186,15 @@
                     </a>
                 </div>
             </li>
+
+            <li>
+                <x-nav-link
+                    :href="route('admin.monitoring.index')"
+                    :active="request()->routeIs('admin.monitoring.*')">
+                    <i class="fi fi-rr-signal-alt text-lg items-center flex text-gray-700 dark:text-gray-200"></i>
+                    <span class="hidden lg:block text-gray-700 dark:text-gray-300">{{ __('Monitoring Login') }}</span>
+                </x-nav-link>
+            </li>
             @endif
             @endauth
 

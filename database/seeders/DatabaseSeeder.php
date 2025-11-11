@@ -2,30 +2,58 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-        $users = DB::table('users')->get();
+        $rawNames = [
+            'Mohammad Taufiq Aziz',
+            'Prasetyo Laksono',
+            'Dede Jamaludin',
+            'Lita Lidya',
+            'Asep Hermawan',
+            'Shildi Andriani',
+            'Erian Sukarna Putera',
+            'Raenal Apriansyah',
+            'Deby Rahmawati',
+            'Supriyadi',
+            'Wira Mahardika Putra',
+            'Triana',
+            'Bowo Putranto',
+            'Aditya Rahmadian Pamungkas',
+            'Selvi Afriandini',
+            'Rafli Maulana',
+            'Citra Chairunnisa',
+            'Sevira Rahmatuti',
+            'Aesa Madiyah Walminah',
+            'Ratnaningsih',
+            'Herlina Apriani',
+            'Novan Abdul Humaemi',
+            'Abdul Fikri',
+            'Shandra Eka Putri',
+            'Muhammad Fajar Al Fathin',
+            'Meidiyanto Yasin Nugraha Putra',
+        ];
 
-        foreach ($users as $user) {
-            if (!str_starts_with($user->password, '$2y$')) {
-                DB::table('users')
-                    ->where('id', $user->id)
-                    ->update([
-                        'password' => Hash::make($user->password)
-                    ]);
-            }
+        foreach ($rawNames as $raw) {
+            // Hapus gelar apa pun yang mengikuti koma, lalu trim spasi
+            $name = trim(preg_replace('/,.*$/', '', $raw));
+
+            // Buat user jika belum ada (firstOrCreate agar idempotent)
+            User::firstOrCreate(
+                ['name' => $name],
+                [
+                    'password' => Hash::make('12345678'),
+                    // 'role' => 'user' // uncomment/set jika ingin menyertakan role
+                ]
+            );
         }
     }
 }

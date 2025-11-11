@@ -19,10 +19,17 @@ class RombelController extends Controller
     public function index(Request $request)
     {
         // Siswa yang BELUM masuk rombel (untuk tambah baru)
-        // Query ini TIDAK terpengaruh search tabel rombel
         $siswa = DataSiswa::whereNotIn('id_siswa', function($query) {
             $query->select('id_siswa')->from('rombels');
         })->orderBy('nama_siswa', 'asc')->get();
+        
+        // Siswa yang SUDAH di rombel tapi BELUM punya jurusan (untuk tambah jurusan massal)
+        $siswaNoJurusan = Rombel::join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
+            ->join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
+            ->whereNull('rombels.id_jurusan')
+            ->select('rombels.id', 'rombels.id_siswa', 'rombels.id_kelas', 'data_siswas.nama_siswa', 'data_siswas.nis', 'data_kelas.nama_kelas')
+            ->orderBy('data_siswas.nama_siswa', 'asc')
+            ->get();
         
         // Semua siswa (untuk edit)
         $allSiswa = DataSiswa::all();
@@ -33,15 +40,25 @@ class RombelController extends Controller
         // Query rombel dengan join
         $rombels = Rombel::join('data_kelas', 'data_kelas.id_kelas', '=', 'rombels.id_kelas')
         ->join('data_siswas', 'data_siswas.id_siswa', '=', 'rombels.id_siswa')
-        ->leftJoin('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan') // ✅ LEFT JOIN
+        ->leftJoin('data_jurusans', 'data_jurusans.id_jurusan', '=', 'rombels.id_jurusan')
         ->select('rombels.*', 'data_siswas.nama_siswa', 'data_siswas.nis', 'data_kelas.nama_kelas', 'data_jurusans.nama_jurusan');
 
-        // Filter berdasarkan kelas (untuk tabel rombel)
+        // Filter berdasarkan kelas
         if ($request->filled('kelas')) {
             $rombels->where('data_kelas.id_kelas', $request->kelas);
         }
         
-        // Filter search (untuk tabel rombel)
+        // Filter berdasarkan jurusan (FITUR BARU)
+        if ($request->filled('jurusan')) {
+            if ($request->jurusan === 'null') {
+                // Filter siswa yang belum punya jurusan
+                $rombels->whereNull('rombels.id_jurusan');
+            } else {
+                $rombels->where('data_jurusans.id_jurusan', $request->jurusan);
+            }
+        }
+        
+        // Filter search
         if ($request->filled('search')) {
             $search = $request->search;
             $rombels->where(function($q) use ($search) {
@@ -54,14 +71,7 @@ class RombelController extends Controller
 
         $rombels = $rombels->orderBy('nama_kelas','asc')->orderBy('nama_siswa','asc')->paginate(10)->withQueryString();
 
-        return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'allSiswa', 'rombels'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
+        return view('admin.rombel', compact('jurusan', 'kelas', 'siswa', 'allSiswa', 'rombels', 'siswaNoJurusan'));
     }
 
     /**
@@ -72,13 +82,13 @@ class RombelController extends Controller
         $request->validate([
             'id_siswa' => 'required|exists:data_siswas,id_siswa',
             'id_kelas' => 'required|exists:data_kelas,id_kelas',
-            'id_jurusan' => 'nullable|exists:data_jurusans,id_jurusan', // ubah jadi nullable
+            'id_jurusan' => 'nullable|exists:data_jurusans,id_jurusan',
         ]);
 
         Rombel::create([
             'id_siswa'=> $request->id_siswa,
             'id_kelas'=> $request->id_kelas,
-            'id_jurusan'=> $request->id_jurusan, // bisa null
+            'id_jurusan'=> $request->id_jurusan,
         ]);
 
         return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Disimpan!']);
@@ -91,7 +101,7 @@ class RombelController extends Controller
     {
         $request->validate([
             'id_kelas' => 'required|exists:data_kelas,id_kelas',
-            'id_jurusan' => 'nullable|exists:data_jurusans,id_jurusan', // ubah jadi nullable
+            'id_jurusan' => 'nullable|exists:data_jurusans,id_jurusan',
             'siswa_ids' => 'required|array',
             'siswa_ids.*' => 'exists:data_siswas,id_siswa',
         ]);
@@ -106,7 +116,7 @@ class RombelController extends Controller
                 Rombel::create([
                     'id_siswa' => $siswa_id,
                     'id_kelas' => $request->id_kelas,
-                    'id_jurusan' => $request->id_jurusan, // bisa null
+                    'id_jurusan' => $request->id_jurusan,
                 ]);
                 $inserted++;
             } else {
@@ -123,11 +133,33 @@ class RombelController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Tambah jurusan massal untuk siswa yang belum punya jurusan (FITUR BARU)
      */
-    public function show(string $id)
+    public function bulkAddJurusan(Request $request)
     {
-        //
+        $request->validate([
+            'id_jurusan' => 'required|exists:data_jurusans,id_jurusan',
+            'rombel_ids' => 'required|array',
+            'rombel_ids.*' => 'exists:rombels,id',
+        ]);
+
+        $updated = 0;
+
+        foreach ($request->rombel_ids as $rombel_id) {
+            $rombel = Rombel::find($rombel_id);
+            
+            // Pastikan hanya update yang belum punya jurusan
+            if ($rombel && is_null($rombel->id_jurusan)) {
+                $rombel->update([
+                    'id_jurusan' => $request->id_jurusan,
+                ]);
+                $updated++;
+            }
+        }
+
+        $message = "$updated siswa berhasil ditambahkan jurusan.";
+
+        return redirect()->route('rombel.index')->with(['success' => $message]);
     }
 
     /**
@@ -152,37 +184,32 @@ class RombelController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-{
-    $request->validate([
-        'id_siswa' => 'required|exists:data_siswas,id_siswa',
-        'id_kelas' => 'required|exists:data_kelas,id_kelas',
-        'id_jurusan' => 'nullable|exists:data_jurusans,id_jurusan', // ubah jadi nullable
-    ]);
+    {
+        $request->validate([
+            'id_siswa' => 'required|exists:data_siswas,id_siswa',
+            'id_kelas' => 'required|exists:data_kelas,id_kelas',
+            'id_jurusan' => 'nullable|exists:data_jurusans,id_jurusan',
+        ]);
 
-    $rombel = Rombel::findOrFail($id);
-    
-    $rombel->update([
-        'id_siswa' => $request->id_siswa,
-        'id_kelas' => $request->id_kelas,
-        'id_jurusan' => $request->id_jurusan, // bisa null
-    ]);
+        $rombel = Rombel::findOrFail($id);
+        
+        $rombel->update([
+            'id_siswa' => $request->id_siswa,
+            'id_kelas' => $request->id_kelas,
+            'id_jurusan' => $request->id_jurusan,
+        ]);
 
-    return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Diupdate!']);
-}
+        return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Diupdate!']);
+    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {   
-        
         $rombels = Rombel::findOrFail($id);
-
-
-        //delete product
         $rombels->delete();
 
-        //redirect to index
         return redirect()->route('rombel.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
